@@ -1,0 +1,724 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Type Erasure</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-interactiveBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-translucentGray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="50cf50b2-9005-4e41-96c1-2b2f0fb583ae" class="page sans"><header><div class="page-header-icon undefined"><span class="icon">🌵</span></div><h1 class="page-title">Type Erasure</h1><p class="page-description"></p></header><div class="page-body"><p id="ba8f3c04-0544-4946-8fab-5b1e71c24779" class="">Java takes a <em>code sharing</em> approach, instead of creating a new type for every instantiation, it chooses to <em>erase</em> the type parameters and type arguments during compilation (after type checking, of course). Thus, there is only one representation of the generic type in the generated code, representing all the instantiated generic types, regardless of the type arguments.</p><figure class="block-color-blue_background callout" style="white-space:pre-wrap;display:flex" id="df76f511-7391-4692-ad99-03b7f3b9bf36"><div style="font-size:1.5em"><span class="icon">💡</span></div><div style="width:100%"><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Function of Generics: </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong>Enforce type checking
+The generated code is similar to what we would write earlier, but this is generated by the compiler after type checking, it ensures that the casting will not lead to <code>ClassCastException </code>during run-time.</div></figure><figure class="block-color-pink_background callout" style="white-space:pre-wrap;display:flex" id="43083707-01d0-4678-a7f5-aceb61a28a65"><div style="font-size:1.5em"><span class="icon">❗</span></div><div style="width:100%"><code>Potato&lt;String&gt;</code> will be type erased to <code>Potato</code> || <code>Potato&lt;T extends Number&gt; </code>will also become <code>Potato</code> but all instances of T will be replaced with Number </div></figure><div id="9319ed68-77a2-4ca1-b3ad-cca99cf64cd4" class="column-list"><div id="44272917-71a8-484d-858e-936afabc4873" style="width:41.666666666666664%" class="column"><figure id="1c74424d-18d0-4e11-889b-dd303fceb65d" class="image"><a href="Type%20Erasure%2050cf50b290054e4196c12b2f0fb583ae/Untitled.png"><img style="width:192px" src="Type%20Erasure%2050cf50b290054e4196c12b2f0fb583ae/Untitled.png"/></a></figure></div><div id="4ecb0545-0e28-4154-8060-3a8018120cc4" style="width:4.166666666666666%" class="column"><p id="b45f24b1-35f5-4e1f-a94f-d0aad6cc1e69" class="">➡️</p></div><div id="588bbe59-ccad-409d-8ad3-c2e1484c3861" style="width:54.16666666666667%" class="column"><figure id="b2501ebe-d1b3-4942-b0ad-ee823734c80e" class="image"><a href="Type%20Erasure%2050cf50b290054e4196c12b2f0fb583ae/Untitled%201.png"><img style="width:192px" src="Type%20Erasure%2050cf50b290054e4196c12b2f0fb583ae/Untitled%201.png"/></a></figure></div></div><p id="0abf4732-c75b-4c35-a2f4-7abe944cf26c" class="">Note that each type parameter <code>S</code>and <code>T</code>are replaced with <code>Object</code>. If the type parameter is bounded, it is replaced by the bounds instead (e.g., If <code>T extends GetAreable</code>, then <code>T</code> is replaced with <code>GetAreable</code>)</p><p id="fe4b1e7e-510d-4a0b-8aab-1164f0ea884b" class=""><code>Integer i = new Pair&lt;String,Integer&gt;(&quot;hello&quot;, 4).getSecond();</code>  ⇒ <code>Integer i = (Integer) new Pair(&quot;hello&quot;, 4).getSecond(); </code> because the return type of <code>getSecond()</code> is T which is now an Integer object;</p><div id="0275a0b5-f31d-4e33-830c-32391b482e1d" class="column-list"><div id="f36f6ba7-3c76-4bf9-a120-9b323efd3970" style="width:50%" class="column"><figure id="12c83189-8226-4315-9869-236b9ddc503c" class="image"><a href="Type%20Erasure%2050cf50b290054e4196c12b2f0fb583ae/Untitled%202.png"><img style="width:288px" src="Type%20Erasure%2050cf50b290054e4196c12b2f0fb583ae/Untitled%202.png"/></a></figure></div><div id="d131cf46-7123-4238-b794-517077e08927" style="width:50%" class="column"><p id="6650f893-f151-448e-9cf9-f8d4eb891cb9" class="">Even if it seems like they have different method signatures so “overloading” seems alright, the compiler will complain since both will be erased to <code>void foo(Queue c)</code> so <strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>compilation error</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong> occurs</p></div></div><h3 id="de7712cd-e688-4bb6-a2d5-087242a7fade" class="">😱 Generics are <span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid">invariant</span></span></span></span></span></span> but Arrays are <span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid">covariant</span></span></span></span></span></span></span></span></span></h3><pre id="90e4ebba-5fdc-4441-ace2-76fe06480dec" class="code"><code>// create a new array of pairs
+// THE BELOW IS HYPOTHETICAL SO TECHNICALLY IT WILL NOT COMPILE
+Pair&lt;String,Integer&gt;[] pairArray = new Pair&lt;String,Integer&gt;[2];
+
+// pass around the array of pairs as an array of object
+Object[] objArray = pairArray;
+
+// put a pair into the array -- no ArrayStoreException!
+objArray[0] = new Pair&lt;Double, Boolean&gt;(3.14, true);
+
+// After type erasure ----------------------------------------
+// create a new array of pairs
+Pair[] pairArray = new Pair[2];
+
+// pass around the array of pairs as an array of object
+Object[] objArray = pairArray;
+
+// put a pair into the array -- no ArrayStoreException!
+objArray[0] = new Pair(3.14, true);
+// The above is fine, compiler won&#x27;t complain</code></pre><ul id="e57e5b75-bef7-4f7b-ab4a-1df638b3e69d" class="bulleted-list"><li style="list-style-type:disc">The runtime has no idea about the type arguments that are passed to <code>Pair</code> class so since Array is covariant <code>Object[] objArray = pairArray;</code> this is okay! It checks that we have an array of <code>Pair</code> and we are just putting another <code>Pair</code> ⇒ This will cause <em><em><em><em><em><em><em><em><em><em><em><em><em><em>heap pollution (a term that refers to the situation where a variable of a parameterized type refers to an object that is not of that parameterized type).</em></em></em></em></em></em></em></em></em></em></em></em></em></em></li></ul><ul id="17ebcbbb-faf2-4a73-93a7-e10fb1131785" class="bulleted-list"><li style="list-style-type:disc">But when try to put it another <code>Pair </code>of different type, there will be <strong><strong><strong>NO </strong></strong></strong><code>ArrayStoreException</code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Remember: </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><em>We would not, however, get an exception when we try to put a pair of double and boolean, into an array meant to store a pair of string and integer</em></li></ul><ul id="ca2ef63e-7a8a-44e8-bf49-3842491369a6" class="bulleted-list"><li style="list-style-type:disc">The problem is when we try to retrieve the data</li></ul><pre id="4a74d758-4252-4987-ba74-d7d696f2c402" class="code"><code>// getting back a string?  -- now we get ClassCastException
+String str = pairArray[0].getFirst();</code></pre><p id="7a07baba-8d4e-4e7d-8609-d978ae7e31c3" class="">This will cause us to get <code>ClassCastException</code> which is a Runtime Exception</p><p id="0678af08-afe3-4426-a1d8-8dfa32c2d3be" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Side reason : (TLDR ⇒ read the heading) </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong>An array is what is called <em>reifiable</em> type -- a type where full type information is available during run-time. It is because Java array is reifiable that the Java run-time can check what we store into the array matches the type of the array and throw an <code>ArrayStoreException</code> at us if there is a mismatch. Java generics, however, is not reifiable due to type erasure.</p><table id="85939be9-1aa9-4881-b3f4-74cfb584c2f6" class="simple-table"><tbody><tr id="398538d0-6716-421d-a851-6f12d519a9df"><td id="W}&lt;n" class="" style="width:604px">Code</td><td id="qLz|" class="block-color-brown_background" style="width:65px">Valid</td></tr><tr id="86ecb1a3-1929-4cf3-adfa-10bce297fb83"><td id="W}&lt;n" class="" style="width:604px"><strong><code>T[] a = new T[0];</code></strong></td><td id="qLz|" class="block-color-brown_background" style="width:65px">❌</td></tr><tr id="eee14b09-52e0-4ef7-972f-f9f7e424c1c0"><td id="W}&lt;n" class="" style="width:604px"><strong><code>Pair&lt;String,Integer&gt;[] pairArray = new Pair&lt;String,Integer&gt;[2];</code></strong></td><td id="qLz|" class="block-color-brown_background" style="width:65px">❌</td></tr><tr id="efb78189-6518-491d-8ca1-5aa8282f3311"><td id="W}&lt;n" class="" style="width:604px"><strong><code>Object[] objects = new Pair[10];</code></strong></td><td id="qLz|" class="block-color-brown_background" style="width:65px">✅</td></tr><tr id="efaf2579-129e-469e-a60a-0d5d9e9c0ed9"><td id="W}&lt;n" class="" style="width:604px"><strong><code>Object[] object1 = new Pair&lt;Integer&gt;[10]</code></strong></td><td id="qLz|" class="block-color-brown_background" style="width:65px">❌</td></tr><tr id="0667be7a-9161-46d5-9b3a-1f91582ab59a"><td id="W}&lt;n" class="" style="width:604px"><code>O</code><code><strong>bject[] object1 = new Pair&lt;?&gt;[10];</strong></code><strong> *</strong></td><td id="qLz|" class="block-color-brown_background" style="width:65px">✅</td></tr><tr id="4de92fc1-b800-4c6d-b59a-63c070d722f4"><td id="W}&lt;n" class="" style="width:604px"><strong><code>new Pair&lt;S,T&gt;[2];</code></strong></td><td id="qLz|" class="block-color-brown_background" style="width:65px">❌</td></tr><tr id="df3f7a96-056d-4b31-8c22-d855c472038c"><td id="W}&lt;n" class="" style="width:604px"><code><strong>T[] a = new Comparable[0]; </strong></code></td><td id="qLz|" class="block-color-brown_background" style="width:65px">❌</td></tr></tbody></table><p id="4b08d3bb-37a5-4443-a3a7-086b26538ce4" class="">*<em>This is allowed because it is refiable where no type info is lost during compilation</em></p><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="f7d9fcfb-c1e9-455a-b325-9c84f56d7502"><div style="font-size:1.5em"><span class="icon">❗</span></div><div style="width:100%"><strong><strong><strong><strong><strong><strong>TLDR: </strong></strong></strong></strong></strong></strong>We cannot <strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>create an array of parameterized types</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong>. <span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong>IF</strong></span></strong></span> it was allowed we could have an element of incompatible type <code>Pair&lt;String&gt; </code> into an array of <code>Pair&lt;Integer&gt;</code> which might be dangerous ⇒ <span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid">so Java does not allow this, it will give compilation error</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span><pre id="bcefb205-889e-4747-baf9-6ac808199e24" class="code code-wrap"><code>// this will be compile error
+Queue&lt;Circle&gt;[] twoQs = new Queue&lt;Circle&gt;[2];
+twoQs[0] = new Queue&lt;Circle&gt;();
+twoQs[1] = new Queue&lt;Point&gt;();</code></pre></div></figure><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="7810dbbd-279b-482d-83a6-9bb287725c71"><div style="font-size:1.5em"><span class="icon">❗</span></div><div style="width:100%"><code>a instanceof A&lt;?&gt;</code> ⇒ We can do this where <code>instanceof</code> checks for the runtime type of <code>a</code> but we cannot do this <code>a instanceof A&lt;String&gt;</code> because the type String is not available during runtime due to type erasure</div></figure><pre id="8b17eb15-950d-4b78-b968-0a6b01d96085" class="code"><code>T[] a; 
+@SuppressWarnings({&quot;unchecked&quot;, &quot;rawtypes&quot;})
+ a = (T[]) new Object[0]; // Illegal 
+
+@SuppressWarnings({&quot;unchecked&quot;, &quot;rawtypes&quot;}) 
+T[] temp = (T[]) new Object[0]; 
+T[] a = temp; // Do it this way</code></pre><h3 id="2a926300-154c-4a53-83d7-6cf5829d8a7c" class="">😱 Using <span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid">static</span></span></span></span></span></span> methods or fields for Generics</h3><pre id="9bdc34c6-47a8-42ab-8983-94fd09e2a1e3" class="code"><code>class Pair&lt;T&gt; {
+    static int x = 1;
+
+		//This is not allowed
+    static T foo;
+
+		// This is not allowed
+    static T bar(T t) {
+        return t;
+    } 
+
+		// This is ok!
+    static &lt;T&gt; T bark(T t) {
+        return t;
+    }
+}</code></pre><ul id="ed0dcc3a-5dcd-498b-8547-aa71fb7a886e" class="bulleted-list"><li style="list-style-type:disc"><code>static int x = 1 </code>: After type erasure, <code>Pair&lt;String&gt;</code> and <code>Pair&lt;Integer&gt;</code> will be compiled to <code>Pair</code>⇒ so they will share the <span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong>SAME</strong></span></strong></span></strong></span></strong></span> x although it might seem like they are two different classes</li></ul><ul id="16f19372-2e95-4588-b9f3-4ba668af814a" class="bulleted-list"><li style="list-style-type:disc"><code>static T foo </code>and <code>static T bar(T t)</code> are <span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong>NOT ALLOWED</strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span> and will generate compilation error because there will only be one copy of <code>foo</code> shared by both <code>Pair&lt;String&gt; </code> and <code>Pair&lt;Integer&gt;</code> and the compiler doesn’t know what</li></ul><ul id="67f4303e-6ff7-4cf9-bf9d-f35edc3e11bc" class="bulleted-list"><li style="list-style-type:disc"><code>static &lt;T&gt; T bark(T t)</code> ⇒ This is okay because we need to declare a type when we want to use the method so the T here does not refer to the T in the class Pair</li></ul><figure class="block-color-pink_background callout" style="white-space:pre-wrap;display:flex" id="5c10d165-a06b-4998-9708-2b2ee03de1bb"><div style="font-size:1.5em"><span class="icon">❗</span></div><div style="width:100%">After Type Erasure, there is no more parameterized type T, R, U, etc.</div></figure><h3 id="05803824-a7fb-440a-8a74-65890d29a142" class="">Practice</h3><ul id="6cbb9b1c-debc-40cc-a66c-ac602c2a718d" class="toggle"><li><details open=""><summary>Practice #1</summary><figure id="1ba9f3b2-4a42-443b-9d26-f6fe98549d63" class="image"><a href="Type%20Erasure%2050cf50b290054e4196c12b2f0fb583ae/Untitled%203.png"><img style="width:806px" src="Type%20Erasure%2050cf50b290054e4196c12b2f0fb583ae/Untitled%203.png"/></a></figure><p id="54e2cb32-5094-4442-b870-420d210a1086" class=""><code>Array a = new Array(1);</code></p><p id="2e70e5db-8075-4352-a38e-674a4a98eb08" class=""><code>Integer i = (Integer) a.get(0);</code></p></details></li></ul><ul id="6467b32b-bae9-4aec-bb87-c48f0e999bec" class="toggle"><li><details open=""><summary>Practice #2</summary><div id="18964b34-b826-4b5a-9900-3731c611337a" class="column-list"><div id="44af72a3-c2c0-46a1-9cd1-663785e36696" style="width:50.000000000000014%" class="column"><figure id="3daaca7d-6ba2-489e-9d9d-ad358d8dcb7a" class="image"><a href="Type%20Erasure%2050cf50b290054e4196c12b2f0fb583ae/Untitled%204.png"><img style="width:240px" src="Type%20Erasure%2050cf50b290054e4196c12b2f0fb583ae/Untitled%204.png"/></a></figure><p id="76bb32d5-4cc8-46ea-adb9-fb499a089bc8" class="">
+</p></div><div id="74581349-e521-457f-8230-43538fa56979" style="width:50%" class="column"><p id="06e42d54-d433-4d15-b3ae-2f5c640978d1" class="">What will be the type of <code>obj2</code> after type erasure?</p><p id="1de4c921-10ce-4816-abb7-6496d27373b4" class="">Answer: <code>Car</code></p><p id="462cc254-b412-41be-a61a-5616782deac9" class="">
+</p></div></div><p id="d1c8797d-bef6-497c-975e-ca0e1a057e9a" class="">
+</p></details></li></ul><ul id="90573305-3f4a-4281-9549-0d8ddc78deed" class="toggle"><li><details open=""><summary>Practice #3</summary><figure id="fb5e714c-436e-4462-b678-6ccbdc5524bd" class="image"><a href="Type%20Erasure%2050cf50b290054e4196c12b2f0fb583ae/Untitled%205.png"><img style="width:618px" src="Type%20Erasure%2050cf50b290054e4196c12b2f0fb583ae/Untitled%205.png"/></a></figure><p id="0492f77f-a71d-463a-9643-ceccfc15e6dd" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Answer: False, since both </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>foo</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong> will have the same method signature after type erasure so this is not allowed</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></p></details></li></ul><ul id="a86f1ad8-52fe-46f1-a57e-5e8e059a53b6" class="toggle"><li><details open=""><summary>Practice #4</summary><figure id="585132f0-2d53-4880-9f4d-9cb287347981" class="image"><a href="Type%20Erasure%2050cf50b290054e4196c12b2f0fb583ae/Untitled%206.png"><img style="width:648px" src="Type%20Erasure%2050cf50b290054e4196c12b2f0fb583ae/Untitled%206.png"/></a></figure><p id="3423bd4b-d387-44be-bcc9-479130a7ac9f" class=""><strong><strong><strong><strong><strong>Answer: </strong></strong></strong></strong></strong><code>T</code> in class <code>A</code> will be erased to just <code>Comparable</code>  but the <code>T</code> in class <code>B</code> will be erased to type <code>Object</code> so the return type of the method <code>foo()</code> cannot be a supertype of the return type of the overridden <code>foo()</code></p><p id="f4a66076-18c8-4598-9699-d942702746d1" class="">Also, the <code>T</code> in A require <code>T</code> to be a subclass of <code>Comparable&lt;T&gt;</code> but the <code>T</code> in B does not have the constraint so it cannot be passed as type argument to A</p></details></li></ul></div></article></body></html>

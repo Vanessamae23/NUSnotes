@@ -1,0 +1,1849 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>PE Workspace</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-interactiveBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-translucentGray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="cd16b98b-1b5b-47a0-960e-8d7481bc82ef" class="page sans"><header><img class="page-cover-image" src="https://www.notion.so/images/page-cover/webb4.jpg" style="object-position:center 50%"/><div class="page-header-icon page-header-icon-with-cover"><span class="icon">💼</span></div><h1 class="page-title">PE Workspace</h1><p class="page-description"></p></header><div class="page-body"><h3 id="8abc0bfb-971d-4096-8adb-3c8082fe077b" class=""><a href="http://Lazy.java">Lazy.java</a> (From Lab 6)</h3><pre id="7b160311-230b-4fd3-ac49-3626e8b9ee09" class="code code-wrap"><code>package cs2030s.fp;
+
+/**
+ * A wrapper around a lazy evaluated list that
+ * can be generated with a lambda expression.
+ *
+ * @author Vanessa Mae
+ * @version CS2030S AY 22/23 Sem 2
+ *
+ */
+
+
+public class Lazy&lt;T&gt; {
+  /**
+   * A producer field that extends the generic type casted.
+   */
+  private Producer&lt;? extends T&gt; producer;
+
+  /**
+   *The value of Maybe inside the lazy class.
+   */
+  private Maybe&lt;T&gt; value;
+
+  /** 
+   * A private constructor to initialize the lazy class. 
+   *
+   * @param v The given generic for the value that is intended to be     stored
+   */
+  private Lazy(T v) {
+    this.value = Maybe.some(v);
+    this.producer = () -&gt; v;
+  }
+
+  /** 
+   * A private constructor to initialize the list to the given one. 
+   *
+   * @param producer The given java.util.List to wrap around.
+   */
+  private Lazy(Producer&lt;? extends T&gt; producer) {
+    this.producer = producer;
+    this.value = Maybe.of(null);
+  }
+
+  /** 
+   * A static method to create a lazy object. 
+   *
+   * @param &lt;T&gt; The type of the element in the Lazy
+   * @param v The given value for the lazy
+   * @return a Lazy class
+   */
+  public static &lt;T&gt; Lazy&lt;T&gt; of(T v) {
+    return new Lazy&lt;T&gt;(v);
+  }
+
+
+  /** 
+   * A different static method to create a lazy object.
+   *
+   * @param &lt;T&gt; the type parameter of the element value
+   * @param producer The given producer to make a function
+   * @return Lazy object
+   */
+  public static &lt;T&gt; Lazy&lt;T&gt; of(Producer&lt;? extends T&gt; producer) {
+    return new Lazy&lt;T&gt;(producer);
+  }
+
+
+  /** 
+   * A method to get the content of the list. 
+   *
+   * @return T returns the value
+   */
+  public T get() {
+    T val = this.value.orElseGet(this.producer);
+    this.value = Maybe.of(val);
+    return val;
+  }
+
+
+
+  /** 
+   * Combining operations together.
+   *
+   * @param &lt;S&gt; The type of the second lazy to be combined
+   * @param &lt;R&gt; the type of the result from combinations
+   * @param lazy One of the combinations for the param
+   * @param combiner Interface to combine operations together
+   * @return returns Lazy from the combinations of the previous computations.
+   */
+  public &lt;S, R&gt; Lazy&lt;R&gt; combine(Lazy&lt;S&gt; lazy, 
+      Combiner&lt;? super T, ? super S, ? extends R&gt; combiner) {
+    Producer&lt;? extends R&gt; newProducer = () -&gt; combiner
+                  .combine(this.get(), lazy.get());
+    return Lazy.of(newProducer);
+  }
+
+  /** 
+   * A method to apply a function to the given lazy. 
+   *
+   * @param transformer just a function to transform one type to another
+   * @param &lt;S&gt; the type supplied as the result of the product from transformer
+   * @return another lazy from the resulting map
+   */
+  public &lt;S&gt; Lazy&lt;S&gt; map(Transformer&lt;? super T, ? extends S&gt; transformer) {
+    Producer&lt;? extends S&gt; newProducer = () -&gt; transformer.transform(this.get());
+    return Lazy.&lt;S&gt;of(newProducer);
+  }
+
+  /** 
+   * A method to apply a function to the given lazy but returns you not a wrapped one. 
+   *
+   * @param transformer just a function to transform one type to another
+   * @param &lt;S&gt; the type supplied as the result of the product from transformer
+   * @return another lazy from the resulting flatmap
+   */
+  public &lt;S&gt; Lazy&lt;S&gt; flatMap(Transformer&lt;? super T, ? extends Lazy&lt;? extends S&gt;&gt; transformer) {
+    Producer&lt;? extends S&gt; newProducer = () -&gt; transformer.transform(this.get()).get();
+    return Lazy.&lt;S&gt;of(newProducer);
+  }
+
+  /** 
+   * A method to filter according to the supplied boolean condition to see if it satisfies. 
+   *
+   * @param bool so this is a BooleanCondition to see if it satisfies the condition given
+   * @return Lazy the returned value if it satisfies is a boolean lazy 
+   */
+
+  public Lazy&lt;Boolean&gt; filter(BooleanCondition&lt;? super T&gt; bool) {
+    return Lazy.&lt;Boolean&gt;of(() -&gt; bool.test(this.get()) ? true : false);
+  }
+
+
+  /** 
+   * A method to print out the result ? if not evaluated yet.
+   *
+   * @return just another String representation of the value
+   */
+
+  @Override 
+  public String toString() {
+    Transformer&lt;T, String&gt; transformer = x -&gt; String.valueOf(x);
+    return this.value.map(transformer).orElse(&quot;?&quot;).toString();
+  }
+
+  /** 
+   * A method to show whether two lazy objects are equal value.
+   *
+   * @param obj the other object to see if it is the same lazy values
+   * @return boolean to see if it is true or false
+   */
+  @Override 
+  public boolean equals(Object obj) {
+    if (!(obj instanceof Lazy)) {
+      return false;
+    }
+
+    if (obj == this) {
+      return true;
+    }
+
+    if (obj instanceof Lazy&lt;?&gt;) {
+      Lazy&lt;?&gt; temp = (Lazy&lt;?&gt;) obj;
+      return this.get().equals(temp.get());
+    }
+
+    return false;
+
+
+  }
+}</code></pre><h3 id="72f15ef9-aafa-4f21-acdb-447065f0d030" class=""><a href="http://Maybe.java">Maybe.java</a> (From Lab 6)</h3><pre id="93ba2c7c-57ec-4ee2-8760-222a48294476" class="code code-wrap"><code>package cs2030s.fp;
+
+import java.util.NoSuchElementException;
+
+/**
+ * CS2030S Lab 5.
+ * AY22/23 Semester 2
+ *
+ * @author vanessa mae (Lab Group 14h)
+ */
+
+public abstract class Maybe&lt;T&gt; {
+  private static final Maybe&lt;?&gt; NONE = new None();  
+
+  static class None extends Maybe&lt;Object&gt; {
+    @Override
+    public Maybe&lt;Object&gt; filter(BooleanCondition&lt;? super Object&gt; test) {
+      return none();
+      //return (Maybe&lt;Object&gt;) NONE;  
+    }
+
+    @Override
+    public &lt;R&gt; Maybe&lt;R&gt; map(Transformer&lt;? super Object, ? extends R&gt; transformer) {
+      return none();
+    }
+
+    @Override 
+    public &lt;R&gt; Maybe&lt;R&gt; flatMap(Transformer&lt;? super Object, 
+        ? extends Maybe&lt;? extends R&gt;&gt; transformer) {
+      return none();
+    }
+
+    @Override
+    public String toString() {
+      return &quot;[]&quot;;
+    }
+
+    @Override
+    protected Maybe&lt;Object&gt; get() {
+      throw new NoSuchElementException();
+    }
+
+    @Override 
+    public boolean equals(Object obj) {
+      if (obj == this) {
+        return true;
+      }
+
+      if (obj instanceof Maybe&lt;?&gt;) {
+        if (obj == NONE) {
+          return true;
+        }
+      }
+      return false;
+
+    }
+
+    @Override 
+    public Object orElse(Object s) {
+      return s;
+    }
+
+    @Override 
+    public Object orElseGet(Producer&lt;? extends Object&gt; producer) {
+      return producer.produce();
+    }
+
+    @Override
+    public void ifPresent(Consumer&lt;? super Object&gt; consumer) {
+      return;
+    }
+  }
+
+  public static &lt;R&gt; Maybe&lt;R&gt; none() {
+    @SuppressWarnings(&quot;unchecked&quot;)
+    Maybe&lt;R&gt; item = (Maybe&lt;R&gt;) NONE;
+    return item;
+  }
+
+  // SOME NESTED CLASS
+  static class Some&lt;U&gt; extends Maybe&lt;U&gt; {
+    private U item;  
+
+    private Some(U u) {
+      this.item = u;
+    }
+
+    @Override
+    protected U get() {
+      return this.item;
+    }
+
+    @Override 
+    public Maybe&lt;U&gt; filter(BooleanCondition&lt;? super U&gt; result) {
+      if (this.item == null) {
+        return this;
+      }
+      return (result.test(this.item)) ? this : none();
+    }
+
+    @Override
+    public String toString() {
+      if (this.item == null) {
+        return &quot;[null]&quot;;
+      }
+      return &quot;[&quot; + this.item + &quot;]&quot;;
+    }
+
+    @Override 
+    public &lt;L&gt; Maybe&lt;L&gt; map(Transformer&lt;? super U, 
+        ? extends L&gt; transformer) throws NullPointerException {
+      return some(transformer.transform(this.item));
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (obj == this) {
+        return true;
+      }
+
+      if (obj instanceof Some&lt;?&gt;) {
+        Some&lt;?&gt; stuff = (Some&lt;?&gt;) obj;
+        if (this.item == stuff.item) {
+          return true;
+        }
+
+        if (this.item == null || stuff.item == null) {
+          return false;
+        }
+
+        return this.item.equals(stuff.item);
+      }
+      return false;
+    }
+
+    @Override 
+    public &lt;T&gt; Maybe&lt;T&gt; flatMap(Transformer&lt;? super U, ? extends Maybe&lt;? extends T&gt;&gt; transformer) {
+      @SuppressWarnings(&quot;unchecked&quot;)
+      Maybe&lt;T&gt; t = (Maybe&lt;T&gt;) transformer.transform(this.item);
+      return t;
+    }
+
+    @Override
+    public U orElse(U s) {
+      return this.item;
+    }
+
+    @Override
+    public U orElseGet(Producer&lt;? extends U&gt; producer) {
+      return this.item;
+    }
+
+    @Override 
+    public void ifPresent(Consumer&lt;? super U&gt; consumer) {
+      consumer.consume(this.item);
+    }
+
+  }
+
+  public static &lt;R&gt; Maybe&lt;R&gt; of(R x) {
+    if (x == null) {
+      return none();
+    } else {
+      return some(x);
+    }
+  }
+
+  public static &lt;U&gt; Maybe&lt;U&gt; some(U u) {
+    if (u == null) {
+      return new Some&lt;&gt;(null);
+    }
+    return new Some&lt;U&gt;(u);
+  }
+
+  protected abstract T get();
+
+  public abstract Maybe&lt;T&gt; filter(BooleanCondition&lt;? super T&gt; test);
+
+  public abstract &lt;R&gt; Maybe&lt;R&gt; map(Transformer&lt;? super T, ? extends R&gt; transformer);
+
+  public abstract &lt;U&gt; Maybe&lt;U&gt; flatMap(Transformer&lt;? super T, 
+      ? extends Maybe&lt;? extends U&gt;&gt; transformer); 
+
+  public abstract T orElse(T s);
+
+  public abstract T orElseGet(Producer&lt;? extends T&gt; producer);
+
+  public abstract void ifPresent(Consumer&lt;? super T&gt; consumer); 
+}</code></pre><h3 id="33f30248-b412-4457-87ad-9766006b2162" class=""><a href="http://Streamer.java">Streamer.java</a> (Just some streams practice)</h3><pre id="498cb4ca-d9d3-471d-a919-6e01b0d88b2c" class="code code-wrap"><code>import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.BiFunction;
+import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
+public class Streamers {
+    public static Stream&lt;Integer&gt; fibo(int x) {
+        return Stream.iterate(new Pair&lt;Integer&gt;(1, 1), p -&gt; new Pair&lt;Integer&gt;(p.second, p.first + p.second))
+                .map(t -&gt; t.first)
+                .limit(x);
+    }
+
+    public static Long countDuplicate(Stream&lt;Integer&gt; s) {
+        return s.distinct().count();
+    }
+
+    public static String pattern(int n) {
+        String str = &quot;&quot;;
+       List s = Stream.iterate(1, x -&gt; x &lt;= n, x -&gt; x + 1).flatMap(m -&gt; Stream
+                .iterate(n, x -&gt; x &gt; 0 , x -&gt; x - 1).sorted().map(y -&gt; y &lt;= m ? String.valueOf(y) : &quot;.&quot;)).collect( Collectors.toList());
+       Collections.reverse(s);
+       for(int i = 0; i &lt; s.size(); i++ ) {
+           str += s.get(i);
+       }
+       return str;
+    }
+
+    public static Stream&lt;Integer&gt; intStream(int n) {
+        // prints out 1, 3, 5, 7, 9 when n = 10
+        return Stream.iterate(1, x -&gt; x &lt;= 10, x -&gt; x + 2);
+    }
+
+    public static Stream&lt;String&gt; zipString(List&lt;String&gt; ls) {
+        return Stream.iterate(1, x -&gt; x + 1).filter(x -&gt; x % 3 != 0).flatMap(y -&gt; ls.stream().flatMap(x -&gt; Stream.of(y + x)));
+    }
+
+    public static Stream&lt;Integer&gt; less10() {
+        //prints out 1 3 5 7 9
+        return intStream(10).takeWhile(x -&gt; x &lt; 10);
+    }
+
+    public static Stream&lt;Integer&gt; less10more5(){
+        //prints 7 9
+        return intStream(10).dropWhile(x -&gt; x &lt;= 5);
+    }
+
+    public static Stream&lt;String&gt; toLower(Stream&lt;String&gt; str) {
+        return str.map(x -&gt; x.toLowerCase());
+    }
+
+    public static Stream&lt;Integer&gt; toNumber(Stream&lt;String&gt; str) {
+        return str.filter(x -&gt; isNumber(x)).map(x -&gt; Integer.parseInt(x));
+    }
+
+    public static String concat(Stream&lt;String&gt; str, String separator) {
+        return str.reduce(&quot;&quot;, (bef, aft) -&gt; bef + separator + aft);
+    }
+
+    public static Stream&lt;Character&gt; reverse(Stream&lt;Character&gt; str) {
+        return str.reduce(Stream.empty(), (acc, elem) -&gt; Stream.concat(Stream.of(elem), acc), (res1, res2) -&gt; {
+            System.out.println(&quot;Combiner called&quot;);
+            //combiner is not called, it is only called if you do parallel
+            return Stream.concat(res2, res1);
+        } );
+    }
+
+    public static double ewma(DoubleStream str, double alpha) {
+        return str.reduce(1, (bef, aft) -&gt; alpha * aft + (bef * (1 - alpha)));
+    }
+
+    public static boolean isNumber(String str) {
+        try {
+            Integer.parseInt(str);
+            return true;
+        } catch(Exception e) {
+            return false;
+        }
+    }
+
+//    public static String reverse(String s) {
+//        Stream&lt;Character&gt; str = Utilities.split(s); // method to invert String into a stream of characters
+//        return str.map(x -&gt; x.toString()).reduce(&quot;&quot;, (bef,aft) -&gt; aft + bef);
+//    }
+//    public static Stream&lt;String&gt; palindrome(Stream&lt;String&gt; stream) {
+//        return stream.filter(x -&gt; x.equals(reverse(x)));
+//    }
+
+    public static &lt;T, U, R&gt; Stream&lt;R&gt; product(List&lt;? extends T&gt; list1, List&lt;? extends U&gt; list2, BiFunction&lt;? super T, ? super U, ? extends R&gt; func) {
+        //List must be &quot;extends&quot; because it is a producer
+        return list1.stream().&lt;R&gt;flatMap(x -&gt; list2.stream().map(y -&gt; func.apply(x, y)));
+    }
+
+    public static boolean isPrime(int n) {
+
+        return IntStream.range(2, n).noneMatch(x -&gt; n % x == 0);
+    }
+
+    public static Stream&lt;Long&gt; omega(int num) {
+        return Stream.iterate(1, x -&gt; x &lt;= num, x  -&gt; x + 1)
+                .map(x -&gt; Stream.iterate(2, i -&gt; i &lt;= x, i -&gt; i + 1 )
+                        .filter(y -&gt;( x % y == 0 &amp;&amp; isPrime(y)))
+                        .count());
+    }
+
+
+
+
+
+    static void print() {
+        Stream&lt;Integer&gt; stream = Stream.of(1,2,3,4);
+        Integer z = IntStream.range(1, 5).reduce(10, (x, y) -&gt; x + y);
+        // returns 20
+
+
+
+        Integer y = Stream.iterate(1, x -&gt; x + 1).limit(4).reduce(1, (bef, aft) -&gt; bef * aft);
+        // produce 24
+        //omega(10).forEach(System.out::println);
+        System.out.println((pattern(4))); // prints 4321.321..21...1
+        System.out.println(concat(Stream.of(&quot;I&quot;, &quot;love&quot;, &quot;CS2030S&quot;), &quot; &quot;)); // I love CS2030s
+        reverse(Stream.of(&#x27;C&#x27;, &#x27;S&#x27;, &#x27;2&#x27;, &#x27;0&#x27;, &#x27;3&#x27;, &#x27;0&#x27;, &#x27;S&#x27;)).forEach(System.out::println);
+
+    }
+
+    public static void main(String[] args) {
+        System.out.println(&quot;Intstream prints out&quot;);
+        intStream(10).limit(9).forEach(System.out::println);
+        // prints out 1, 3, 5, 7, 9
+
+        System.out.println(&quot;less10 TakeWhile test&quot;);
+        less10().forEach(System.out::println);
+
+        System.out.println(&quot;less10more5 Dropwhile test&quot;);
+        less10more5().forEach(System.out::println);
+
+        //returns false
+        System.out.println(&quot;Any match test &quot; + less10().anyMatch(x -&gt; x &gt; 10));
+
+        System.out.println(countDuplicate(Stream.of(1,2,3,4,2,12,13,4,12,1)));
+
+        List l = List.of(1,2,3,4,5);
+        System.out.println(&quot;SASA&quot;);
+        l.stream().forEach(System.out::println);
+
+        System.out.println(&quot;Finals 2021&quot;);
+        zipString(List.of(&quot;A&quot;, &quot;B&quot;)).limit(20).forEach(System.out::println);
+    }
+
+}
+</code></pre><h3 id="c6ac6550-8a5d-48d8-9856-7d5762e5159f" class=""><a href="http://Result.java">Result.java</a> </h3><pre id="589cffc0-08e7-49ee-a52a-81b12b967144" class="code code-wrap"><code>import java.util.function.Function;
+import java.util.function.Predicate;
+
+abstract class Result&lt;T&gt; {
+  private static final Result&lt;?&gt; ERROR = error(&quot;&quot;);
+
+
+  private static class Success&lt;T&gt; extends Result&lt;T&gt; {
+    private T val;
+    private Success(T val) {
+      this.val = val;
+    }
+
+    public Result&lt;?&gt; filter(Predicate&lt;? super T&gt; pred, String msg) {
+      return pred.test(val) ? this : Result.error(msg);
+    }
+
+    public &lt;U&gt; Result&lt;?&gt; flatMap(Function&lt;? super T, ? extends Result&lt;? extends U&gt;&gt; func) throws Exception {
+      try {
+        Result&lt;?&gt; u = func.apply(this.val);
+        return u;
+      } catch(Exception e) {
+        Result&lt;?&gt; u = func.apply(this.val);
+        Result&lt;?&gt; err =  u;
+        return  err;
+      }
+    }
+
+    @Override 
+    public Result&lt;T&gt; orElseThrow(Exception e) {
+      return this;
+    }
+
+    @Override
+    public String toString() {
+      return &quot;Success: &quot; + val;
+    }
+  }
+
+  private static class Error&lt;T&gt; extends Result&lt;T&gt; {
+    private String msg;
+    private Error(String msg) {
+      this.msg = msg;
+    }
+
+    public Result&lt;?&gt; filter(Predicate&lt;? super T&gt; pred, String msg) {
+      return this;
+    }
+
+    public &lt;U&gt; Result&lt;?&gt; flatMap(Function&lt;? super T, ? extends Result&lt;? extends U&gt;&gt; func)  throws Exception {
+      return this;
+    }
+
+    @Override 
+    public Result&lt;T&gt; orElseThrow(Exception e) throws Exception {
+      throw e;
+    }
+
+    @Override
+    public String toString() {
+      return &quot;Error: &quot; + msg;
+    }
+  }
+
+  public static &lt;T&gt; Success&lt;T&gt; success(T value) {
+    return new Success&lt;T&gt;(value);
+  }
+
+  public static &lt;T&gt; Result&lt;T&gt; error(String msg) {
+    return new Error&lt;T&gt;(msg);
+  }
+
+  public abstract Result&lt;?&gt; filter(Predicate&lt;? super T&gt; pred, String msg);
+
+  public abstract &lt;U&gt; Result&lt;?&gt; flatMap(Function&lt;? super T, ? extends Result&lt;? extends U&gt;&gt; func) throws Exception;
+
+  public abstract Result&lt;T&gt; orElseThrow(Exception e) throws Exception;
+}</code></pre><h3 id="34b6251c-e0b9-4798-9b87-9939b9f792b1" class="">Either.java</h3><pre id="3c1cce4e-1fdc-4df7-abca-46a906076f72" class="code code-wrap"><code>package cs2030s.fp;
+import java.util.NoSuchElementException;
+
+public abstract class Either&lt;S,T&gt; {
+
+  public abstract boolean isLeft();
+
+  public abstract boolean isRight();
+
+  private static class Left&lt;S, T&gt; extends Either&lt;S,T&gt; {
+    private S val;
+    private Left(S val) {
+      this.val = val;
+    }
+
+    public boolean equals(Object obj) {
+      if(obj instanceof Either &amp;&amp; obj instanceof Left) {
+        Left&lt;?, ?&gt; e = (Left&lt;?, ?&gt;) obj;
+        if(e.val == null &amp;&amp; this.val == null){
+          return true;
+        }
+        if(e.val.equals(this.val)) {
+          return true;
+        }
+        return false;
+      }
+      return false;
+    }
+
+    public String toString() {
+      return &quot;Left[&quot; + this.val + &quot;]&quot;;
+    }
+    
+    public boolean isLeft() {
+      return true;
+    }
+    public boolean isRight() {
+      return false;
+    }
+    public T getRight() throws NoSuchElementException {
+      throw new NoSuchElementException();
+    }
+    public S getLeft() throws NoSuchElementException {
+      return this.val;
+    }
+    public &lt;R, W&gt; Either&lt;R,W&gt; map(Transformer&lt;? super S, ? extends R&gt; l, Transformer&lt;? super T, ? extends W&gt; r) {
+       Either&lt;R,W&gt; res = (Either&lt;R,W&gt;) Either.&lt;R, W&gt;left(l.transform(this.val)); 
+        return res;
+    }
+
+    public Either&lt;S,T&gt; filterOrElse(BooleanCondition&lt;? super T&gt; pred, Transformer&lt;? super T, ? extends S&gt; trans) {
+      return Either.left(this.val);
+    }
+  public &lt;P&gt; P fold(Transformer&lt;? super S, ? extends P&gt; l, Transformer&lt;? super T, ? extends P&gt; r) {
+    return l.transform(this.val);
+  }
+    public &lt;R,W&gt; Either&lt;R,W&gt; flatMap(Transformer&lt;? super S, ? extends Either&lt;? extends R, ? extends W&gt;&gt; l, Transformer&lt;? super T, ? extends Either&lt;? extends R, ? extends W&gt;&gt; r) {
+      Either&lt;R,W&gt; res = (Either&lt;R,W&gt;) l.transform(this.val);
+      return res;
+    }
+
+    
+  }
+
+
+  private static class Right&lt;S, T&gt; extends Either&lt;S,T&gt; {
+    private T val;
+    private Right(T val) {
+      this.val = val;
+    }
+    public boolean isRight() {
+      return true;
+    }
+    public boolean isLeft() {
+      return false;
+    }
+    public  S getLeft() throws NoSuchElementException {
+      throw new NoSuchElementException();
+    }
+    public T getRight() throws NoSuchElementException {
+      return this.val;
+    }
+    public String toString() {
+      return &quot;Right[&quot; + this.val + &quot;]&quot;;
+    }
+    public boolean equals(Object obj) {
+      if(obj instanceof Either &amp;&amp; obj instanceof Right) {
+        Right&lt;?, ?&gt; e = (Right&lt;?, ?&gt;) obj;
+        if(e.val == null &amp;&amp; this.val == null){
+          return true;
+        }
+        if(e.val.equals(this.val)) {
+          return true;
+        }
+        return false;
+      }
+      return false;
+    }
+  public &lt;P&gt; P fold(Transformer&lt;? super S, ? extends P&gt; l, Transformer&lt;? super T, ? extends P&gt; r) {
+    return r.transform(this.val);
+  }
+
+    public &lt;R, W&gt; Either&lt;R,W&gt; map(Transformer&lt;? super S, ? extends R&gt; l, Transformer&lt;? super T, ? extends W&gt; r) {
+      Either&lt;R,W&gt; res = (Either&lt;R,W&gt;) Either.&lt;R,W&gt;right(r.transform(this.val)); 
+      return res;
+    }
+    public &lt;R,W&gt; Either&lt;R,W&gt; flatMap(Transformer&lt;? super S, ? extends Either&lt;? extends R, ? extends W&gt;&gt; l, Transformer&lt;? super T, ? extends Either&lt;? extends R,? extends W&gt;&gt; r) {
+      Either&lt;R,W&gt; res = (Either&lt;R,W&gt;) r.transform(this.val);
+      return res;
+    }
+
+    public Either&lt;S,T&gt; filterOrElse(BooleanCondition&lt;? super T&gt; pred, Transformer&lt;? super T, ? extends S&gt; trans) {
+      if(pred.test(this.val)) {
+        return Either.right(this.val); 
+      } else {
+        return Either.left(trans.transform(this.val));
+      }
+    }
+  }
+  public static &lt;S, T&gt; Either&lt;S, T&gt; left(S val) {
+    return new Left&lt;S, T&gt;(val);
+  }
+
+  public static &lt;S,T&gt; Either&lt;S, T&gt; right(T val) {
+    return new Right&lt;S, T&gt;(val);
+  }
+
+  public abstract S getLeft() throws NoSuchElementException;
+
+  public abstract T getRight() throws NoSuchElementException;
+
+  public abstract &lt;R,W&gt; Either&lt;R,W&gt; flatMap(Transformer&lt;? super S, ? extends Either&lt;? extends R, ? extends W&gt;&gt; l, Transformer&lt;? super T, ? extends Either&lt;? extends R, ? extends W&gt;&gt; r);
+
+  public abstract &lt;R, W&gt; Either&lt;R, W&gt; map(Transformer&lt;? super S, ? extends R&gt; left, Transformer&lt;? super T, ? extends W&gt; right);
+
+  public abstract &lt;P&gt; P fold(Transformer&lt;? super S, ? extends P&gt; l, Transformer&lt;? super T, ? extends P&gt; r);
+  
+  public abstract Either&lt;S,T&gt; filterOrElse(BooleanCondition&lt;? super T&gt; pred, Transformer&lt;? super T, ? extends S&gt; trans);
+
+}</code></pre><h3 id="2eb11572-19f8-4b84-b811-81f5b4c01c8a" class="">Rand.java</h3><pre id="2932554f-3b3f-4df7-bda1-40a744cb013b" class="code code-wrap"><code>import java.util.Random;
+import java.util.function.Function;
+import java.util.stream.Stream;
+import java.util.function.Supplier;
+
+public class Rand&lt;T&gt; {
+  private Supplier&lt;Integer&gt; supplier;
+  private Function&lt;Integer, T&gt; mapper;
+  private Rand(Supplier&lt;Integer&gt; supplier, Function&lt;Integer, T&gt; func) {
+      this.supplier = supplier;
+      this.mapper = func;
+  }
+
+  public static  Rand&lt;Integer&gt; of(int val) {
+        Function&lt;Integer, Integer&gt; f = x -&gt; x;
+        return new Rand&lt;Integer&gt;(() -&gt; val, f);
+  }
+
+  public T get() {
+    return this.mapper.apply(this.supplier.get());
+  }
+
+  @Override
+  public String toString() {
+    return &quot;Rand&quot;;
+  }
+
+  public  &lt;U&gt; Rand&lt;U&gt; map(Function&lt;T, U&gt; f) {
+    Function&lt;Integer, U&gt; func = x -&gt; f.apply(this.mapper.apply(x));
+    return new Rand&lt;U&gt;(this.supplier,  func);
+  }
+
+  public &lt;R&gt; Rand&lt;R&gt; flatMap(Function&lt;T, Rand&lt;R&gt;&gt; f) {
+    Function&lt;Integer, R&gt; func = x -&gt; f.apply(this.mapper.apply(x)).get();
+    return new Rand&lt;R&gt;(this.supplier, func);
+  }
+
+ 
+  public Stream&lt;T&gt; stream() {
+    return Stream.iterate(this, x -&gt; x.next()).map(x -&gt; x.get());
+  }
+
+  public Rand&lt;T&gt; next() {
+    return new Rand&lt;T&gt;(() -&gt; new Random(this.supplier.get()).nextInt(Integer.MAX_VALUE), this.mapper);
+  }
+
+  
+  public static &lt;U&gt; Stream&lt;U&gt; randRange(int num, Function&lt;Integer, U&gt; f) {
+    return Stream.iterate(Rand.of(num), x -&gt; x.next()).map(x -&gt; x.&lt;U&gt;map(f).get()); 
+  }
+
+  
+}</code></pre><h3 id="11c4feb2-f829-49c1-9c3e-93aa4ea45282" class="">Try.java</h3><pre id="c3646a2a-51aa-4447-b9b6-328d89cc3803" class="code code-wrap"><code>package cs2030s.fp;
+import java.util.*;
+/**
+ * CS2030S PE2 Question 1
+ * AY20/21 Semester 2
+ *
+ * @author A0000000X
+ */
+
+public abstract class Try&lt;T&gt; {
+  static class Success&lt;T&gt; extends Try&lt;T&gt; {
+    private T val;
+    
+    public Success(T val) {
+      this.val = val;
+    }
+
+    public T get() {
+      return val;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if(obj instanceof Success) {
+        
+        Success&lt;?&gt; s = (Success&lt;?&gt;) obj;
+        return s.get() == this.get();
+      }
+      return false;
+    }
+
+    @Override
+    public Try&lt;T&gt; onFailure(Consumer&lt;? super Throwable&gt; consumer) {
+      try {
+        this.get();
+        return Try.&lt;T&gt;success(this.val);
+      } catch(Throwable t) {
+        consumer.consume(t);
+        Try&lt;T&gt; s = Try.&lt;T&gt;failure(t);
+        return s;
+      }
+    }
+
+    @Override
+    public Try&lt;? extends T&gt; recover(Transformer&lt;? super Throwable, ? extends T&gt; transformer) {
+      return Try.&lt;T&gt;success(this.val);
+    }
+    @Override
+    public &lt;S&gt; Try&lt;S&gt; map(Transformer&lt;? super T, ? extends S&gt; transformer) {
+      try {
+        Try&lt;S&gt; s = success(transformer.transform(this.val));
+        return s;
+      } catch(Throwable t) {
+        Try&lt;S&gt; p = Try.&lt;S&gt;failure(t);
+        return p;
+      }
+    }
+
+    @Override
+    public &lt;S&gt; Try&lt;S&gt; flatMap(Transformer&lt;? super T, ? extends Try&lt;? extends S&gt;&gt; transformer) {
+      try {
+        return Try.&lt;S&gt;success(transformer.transform(this.val).get()); 
+       
+      } catch (Throwable t) {
+        Try&lt;S&gt; p = Try.&lt;S&gt;failure(t);
+        return p;
+      }
+    }
+  }
+
+  static class Failure extends Try&lt;Object&gt; {
+    private Throwable t;
+    public Failure(Throwable t) {
+      this.t = t;
+    }
+
+    public &lt;S&gt; Try&lt;S&gt; map(Transformer&lt;? super Object, ? extends S&gt; t) {
+      return Try.failure(this.t);
+    }
+
+
+    public &lt;S&gt; Try&lt;S&gt; flatMap(Transformer&lt;? super Object, ? extends Try&lt;? extends S&gt;&gt; transformer) {
+      return Try.&lt;S&gt;failure(this.t);
+    }
+
+    public Object get() throws Throwable {
+      throw t;
+    }
+
+    public Try&lt;Object&gt; onFailure(Consumer&lt;? super Throwable&gt; consumer) {
+      consumer.consume(t);
+      return Try.&lt;Object&gt;failure(t);
+    }
+
+    public  Try&lt;? extends Object&gt; recover(Transformer&lt;? super Throwable, ? extends Object&gt; transformer) {
+      try {
+        Object val = transformer.transform(t);
+        return Try.&lt;Object&gt;success(val);
+        
+      } catch(Throwable t) {
+        return Try.&lt;Object&gt;failure(t);
+      }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if(obj instanceof Failure) {
+        Failure f = (Failure) obj;
+        if(f.t instanceof Error &amp;&amp; t instanceof Error) {
+          return this.t.getMessage() == f.t.getMessage();
+        } 
+
+        if(f.t instanceof Exception &amp;&amp; t instanceof Exception) {
+          return this.t.getMessage() == f.t.getMessage();
+        } 
+        return false;
+      }
+    return false;
+    }
+  }
+
+  public static &lt;T&gt; Try&lt;T&gt; of(Producer&lt;? extends T&gt; producer) {
+    try {
+      T val = producer.produce();
+      return (Try&lt;T&gt;) success(val);
+    } catch(Throwable t) {
+      return Try.&lt;T&gt;failure(t);
+    }
+  }
+
+  public static &lt;T&gt; Try&lt;T&gt; success(T val) {
+    return new Success&lt;T&gt;(val);
+  } 
+
+  public static &lt;T&gt; Try&lt;T&gt; failure(Throwable t) {
+    @SuppressWarnings(&quot;unchecked&quot;)
+    Try&lt;T&gt; tt = (Try&lt;T&gt;) new Failure(t);
+    return tt;
+  }
+
+  public abstract T get() throws Throwable;
+
+  public abstract &lt;S&gt; Try&lt;S&gt; map(Transformer&lt;? super T, ? extends S&gt; t);
+  
+  public abstract &lt;S&gt; Try&lt;S&gt; flatMap(Transformer&lt;? super T, ? extends Try&lt;? extends S&gt;&gt; transformer);
+ 
+  public abstract Try&lt;T&gt; onFailure(Consumer&lt;? super Throwable&gt; consumer);
+
+  public abstract Try&lt;? extends T&gt; recover(Transformer&lt;? super Throwable, ? extends T&gt; transformer);  
+}</code></pre><h3 id="7a78403f-008c-4946-a240-45d3fc4ecd14" class="">Reader.java</h3><pre id="e1edcec0-712c-4822-b8f6-ccab850ffccd" class="code code-wrap"><code>package cs2030s.fp;
+
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.ArrayList;
+
+public abstract class Reader&lt;T&gt; {
+  //1:26
+  public abstract Reader&lt;T&gt; consume() throws NoSuchElementException;
+
+  public abstract T read();
+
+  public abstract boolean hasNext();
+
+  public abstract &lt;S&gt; Reader&lt;S&gt; map(Immutator&lt;? extends S, ? super T&gt; imm);
+  
+  public abstract Reader&lt;T&gt; flatMap(Immutator&lt;? extends Reader&lt;? extends T&gt;, ? super T&gt; imm);
+  public static final Reader&lt;?&gt; NONE = new None();
+  
+  private static class None extends Reader&lt;Object&gt; {
+    private None() {  
+    }
+
+    @Override 
+    public &lt;S&gt; Reader&lt;S&gt; map(Immutator&lt;? extends S, ? super Object&gt; imm) throws NoSuchElementException {
+      throw new NoSuchElementException();
+    }
+    
+    @Override 
+    public Reader&lt;Object&gt; flatMap(Immutator&lt;? extends Reader&lt;? extends Object&gt;, ? super Object&gt; imm) throws NoSuchElementException {
+      throw new NoSuchElementException();
+    }
+    
+    @Override
+    public Reader&lt;Object&gt; consume() throws NoSuchElementException {
+      throw new NoSuchElementException();
+    }
+
+    @Override
+    public Object read() throws NoSuchElementException {
+      throw new NoSuchElementException();
+    }
+
+    @Override 
+    public boolean hasNext() {
+      return false;
+    }
+
+    @Override 
+    public String toString() {
+      return &quot;EOF&quot;;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if(o instanceof Reader) {
+        return o instanceof None;
+      }
+      return false;
+    }
+  }
+
+  private static class Some&lt;T&gt; extends Reader&lt;T&gt; {
+    private List&lt;T&gt; l;
+    @SafeVarargs
+    private Some(T... v) {
+      this.l = new ArrayList&lt;T&gt;(v.length);
+      for(T elem : v) {
+        l.add(elem);
+      }
+    }
+
+    @Override
+    public &lt;S&gt; Reader&lt;S&gt; map(Immutator&lt;? extends S, ? super T&gt; imm) {
+      
+      Object[] tt = new Object[this.l.size()];
+      S[] t = (S[]) tt;
+      for(int i = 0; i &lt; this.l.size(); i++) {
+        t[i] = imm.invoke(this.l.get(i));
+      }
+      return Reader.of(t);
+      
+    }
+
+    @Override
+    public  Reader&lt;T&gt; flatMap(Immutator&lt;? extends Reader&lt;? extends T&gt;, ? super T&gt; imm) {
+      Reader&lt;T&gt; newReader = (Reader&lt;T&gt;) imm.invoke(this.l.get(0));
+      int i = 0;
+      while(newReader.hasNext()) {
+        newReader = newReader.consume();
+        i++;
+      }
+      List&lt;T&gt; ll = new ArrayList&lt;T&gt;(i);  
+      newReader = (Reader&lt;T&gt;) imm.invoke(this.l.get(0));
+      while(newReader.hasNext()) {
+        T elem = (T) newReader.read();
+        ll.add(elem);
+        System.out.println(elem);
+        newReader = newReader.consume();
+      }
+      Object[] o = new Object[ll.size() + this.l.size() - 1];
+      T[] tt = (T[]) o;
+      for(int z = 0; z &lt; ll.size(); z++) {
+       tt[z] = ll.get(z); 
+      }
+      int p = 1;
+      for(int j = i; j &lt; tt.length; j++) {
+        T elem = (T) this.l.get(p);
+        tt[j] = elem;
+        p++;
+      }
+      return Reader.of(tt);
+      
+    }
+    @Override
+    public T read() throws NoSuchElementException {
+      if (this.l.size() == 0) {
+        throw new NoSuchElementException();
+      }
+      return this.l.get(0);
+    }
+
+    @Override
+    public boolean hasNext() {
+      return l.isEmpty() ? false : true;
+    }
+
+    @Override 
+    public String toString() {
+      return l.isEmpty() ? &quot;EOF&quot; : &quot;Reader&quot;;
+    }
+
+    @Override
+    public Reader&lt;T&gt; consume() throws NoSuchElementException  {
+        
+      if(this.hasNext()) {
+        
+        //T removed = this.l.get(0);
+        Object[] tt = new Object[this.l.size()- 1];
+        T[] t = (T[]) tt;
+        for(int i = 1; i &lt; this.l.size(); i++) {
+          t[i-1] = this.l.get(i);
+        }
+        //T[] t = (T[]) this.l.toArray();
+        return Reader.&lt;T&gt;of(t);
+      }
+      return Reader.none(); 
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if(o instanceof Reader) {
+        return o instanceof Some;
+      }
+      return false;
+    }
+
+
+  }
+
+  @SafeVarargs
+  public static &lt;T&gt; Reader&lt;T&gt; of(T... values) {
+    if(values.length &gt; 0) {
+      return Reader.&lt;T&gt;some(values);
+    } else {
+      return Reader.none();
+    }
+  }
+  
+  @SafeVarargs
+  private static &lt;T&gt; Reader&lt;T&gt; some(T... v) {
+    return new Some&lt;T&gt;(v);
+  }
+
+  private static &lt;T&gt; Reader&lt;T&gt; none() {
+    @SuppressWarnings(&quot;unchecked&quot;) 
+    Reader&lt;T&gt; r =  (Reader&lt;T&gt;) NONE;
+     return r;
+  }
+
+}</code></pre><h3 id="b4200c44-8782-44f8-a59c-bfd7bf4a19f3" class="">Query.java</h3><pre id="da8cffdc-a227-45b3-88c0-0f5df13707cc" class="code code-wrap"><code>/**
+ * CS2030S PE1 Question 2
+ * AY21/22 Semester 2
+ *
+ * @author A0000000X
+ */
+import java.util.Map;
+import java.util.List;
+import java.util.stream.Stream;
+import java.util.function.Predicate;
+
+class Query {
+
+    public static &lt;T,S&gt; Stream&lt;Map.Entry&lt;T, S&gt;&gt; getFilteredByKey(Map&lt;T, S&gt; table, Predicate&lt;T&gt; p) {
+        return table.entrySet().stream().filter(x -&gt; p.test(x.getKey())); // Write your first answer here
+    }
+
+    public static Stream&lt;Integer&gt; getIdsFromName(Map&lt;String, List&lt;Integer&gt;&gt; table, String name) {
+      return Query.getFilteredByKey(table, x -&gt; x.equals(name)).map(x -&gt; x.getValue()).flatMap(x -&gt; Stream.iterate(0, i -&gt; i &lt; x.size(), i -&gt; i + 1).map(y -&gt; x.get(y)));//List Integer to Integer
+    }
+
+    public static Stream&lt;Double&gt; getCostsFromIDs(Map&lt;Integer, Double&gt; table, Stream&lt;Integer&gt; stream) {
+   //   return table.keySet().stream().filter(x -&gt; stream.anyMatch(y -&gt; x == y)).map(x -&gt; table.get(x)); 
+    return stream.map(x -&gt; table.get(x)).filter(y -&gt; y != null);
+    }
+
+    public static Stream&lt;String&gt; allCustomerCosts(Map&lt;String, List&lt;Integer&gt;&gt; cTable, Map&lt;Integer,Double&gt; sTable) {
+      return cTable.keySet().stream()
+        .flatMap(name -&gt; Query.getIdsFromName(cTable, name)
+                    .flatMap(id -&gt; Query.getCostsFromIDs(sTable, Stream.of(id)))
+                    .filter(y -&gt; y != null)
+                    .map(y -&gt; name+ &quot;: &quot;+ (y == null ? 0.0 : y))
+                );
+    }
+
+    public static Stream&lt;String&gt; totaledCustomerCosts(Map&lt;String, List&lt;Integer&gt;&gt; cTable, Map&lt;Integer, Double&gt; sTable) {
+      return cTable.keySet().stream()
+          .map(name -&gt; name + &quot;: &quot; + Query.getIdsFromName(cTable, name)
+              .flatMap(id -&gt; Query.getCostsFromIDs(sTable, Stream.of(id)))
+              .filter(y -&gt; y != null)
+              .reduce(0.0, (bef, aft) -&gt; bef + aft).toString()
+            );
+
+    }
+}</code></pre><h3 id="b9457448-70b7-4aca-8e20-7df01f959021" class="">Mock PE on Circles and Points (Stream)</h3><pre id="6047ea5a-a4bb-4851-9d7c-3767279125f0" class="code code-wrap"><code>import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
+
+class Main {
+  
+  public static Stream&lt;Point&gt; pointStream(Point point, Function&lt;Point, Point&gt; f) {
+    return Stream.iterate(point, x -&gt; f.apply(x));
+  }
+
+  public static Stream&lt;Point&gt; generateGrid(Point point, int n) {
+    return Stream.iterate(point, p -&gt; new Point(p.getX() + 1, p.getY())).limit(n).flatMap(x -&gt; Stream.iterate(x, y -&gt; new Point(y.getX(), y.getY() + 1)).limit(n)).limit(n * n);
+  }
+
+  public static Stream&lt;Circle&gt; concentricCircles(Circle circle, Function&lt;Double, Double&gt; f) {
+    return Stream.iterate(circle, c -&gt; new Circle(c.getCenter(), f.apply(c.getRadius())));
+  }
+
+  public static Stream&lt;Point&gt; pointStreamFromCircle(Stream&lt;Circle&gt; circles) {
+  //  return circles.flatMap(x -&gt; Stream.of(x.getCenter()));
+    return circles.map(x -&gt; x.getCenter());
+  }
+}</code></pre></div></article></body></html>

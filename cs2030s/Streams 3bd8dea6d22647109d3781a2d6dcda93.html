@@ -1,0 +1,873 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Streams</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-interactiveBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-translucentGray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="3bd8dea6-d226-4710-9d37-81a2d6dcda93" class="page sans"><header><div class="page-header-icon undefined"><span class="icon">🚀</span></div><h1 class="page-title">Streams</h1><p class="page-description"></p></header><div class="page-body"><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="d5da97cd-2e31-4949-a34c-be6654476fa0"><div style="font-size:1.5em"><span class="icon">❗</span></div><div style="width:100%">Streams can only be used once
+<code>Stream&lt;Integer&gt; stream = Stream.of(1,2,3)
+s.count(); // 3
+s.count(); // stream has already been closed</code></div></figure><h2 id="02f999a2-4240-47be-b7bd-3bed4d372fbc" class="">Creating a Stream</h2><details open=""><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0"><code>static &lt;T&gt; </code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html"><code><strong>Stream</strong></code></a><code>&lt;T&gt; </code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html#of-T-"><code><strong>of</strong></code></a><code>(T... values)</code></summary><div class="indented"><p id="fa901d7a-d1ea-4b0b-aaca-566551c0fd0f" class="">To create a stream from similar type of data</p><pre id="e20c698d-22fe-4d3d-8e3e-c64cb6d9710c" class="code"><code>Stream&lt;Integer&gt; stream = Stream.of(1,2,3,4);
+        stream.forEach(x -&gt; System.out.println(x)); // returns 1, 2, 3,4</code></pre><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="f3029c8f-2500-4c2a-ba38-2f24c7ca2304"><div style="font-size:1.5em"><span class="icon">❗</span></div><div style="width:100%">We can use it on an array of objects but there will be compile time error if we use it on primitive array</div></figure><pre id="cba56e10-066c-4394-9be4-ba4e04b9dd06" class="code"><code>Stream&lt;Integer&gt; stream = Stream.of(new Integer[]{1,2,3,4}); 
+//works fine
+
+Stream&lt;Integer&gt; stream1 = Stream.of(new int[]{1,2,3,4}); 
+//Compile time error, Type mismatch: cannot convert from Stream&lt;int[]&gt; to Stream&lt;Integer&gt;</code></pre></div></details><details open=""><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0"><code>static &lt;T&gt; </code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html"><code><strong>Stream</strong></code></a><code>&lt;T&gt; </code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html#generate-java.util.function.Supplier-"><code><strong>generate</strong></code></a><code>(</code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html"><code><strong>Supplier</strong></code></a><code>&lt;T&gt; s)</code></summary><div class="indented"><p id="ae136328-8885-40c2-a83f-4f5313f10237" class="">Returns an infinite sequential unordered stream where each element is generated by the provided <code>Supplier</code>. It <strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>receives no parameter</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong>.</p><pre id="fceebb41-5e6a-487f-ba1c-2eb89270da47" class="code"><code>Stream&lt;String&gt; streamGenerated = Stream.generate(() -&gt; “hi”).limit(10);
+// 10 “hi”s</code></pre></div></details><details open=""><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0"><code>static &lt;T&gt; </code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html"><code><strong>Stream</strong></code></a><code>&lt;T&gt; </code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html#iterate-T-java.util.function.UnaryOperator-"><code><strong>iterate</strong></code></a><code>(T seed, </code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/UnaryOperator.html"><code><strong>UnaryOperator</strong></code></a><code>&lt;T&gt; f)</code></summary><div class="indented"><p id="a6c8f339-df12-4c4b-9d39-7caafb582e36" class="">Returns an infinite sequential ordered <code>Stream</code>produced by iterative application of a function <code>f</code> to an initial element <code>seed</code>, producing a <code>Stream</code> consisting of <code>seed</code>, <code>f(seed)</code>, <code>f(f(seed))</code>, etc.</p><p id="3c3b547c-8144-498d-9b09-d1e1bf805df9" class=""><strong><strong><strong><strong>Parameters</strong></strong></strong></strong></p><p id="364ba69a-40cf-411a-98e0-545fc868d468" class=""><code>seed</code> - the initial element</p><p id="c048f3ee-2631-442d-ae7e-9d3ac5fe0a34" class=""><code>f</code> - a function to be applied to the previous element to produce a new element</p></div></details><details open=""><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0"><code><strong>static &lt;T&gt; Stream&lt;T&gt; iterate(T seed, Predicate&lt;? suepr T&gt; hasNext, UnaryOperator&lt;T&gt; next);</strong></code></summary><div class="indented"><p id="156a0e56-10f5-4bd1-b09f-088039d1464d" class="">returns a sequential ordered Steam produced by iterative application of the given<code>next</code> function to an initial element <code>seed</code> , conditioned on satisfying the given <code>hasNext</code> predicate</p><pre id="edf99b8f-d030-4758-8782-05b05cdaa539" class="code code-wrap"><code>public static Stream&lt;Integer&gt; intStream(int n) {
+        // prints out 1, 3, 5, 7, 9 when n = 10
+        return Stream.iterate(1, x -&gt; x &lt;= 10, x -&gt; x + 2);
+    }</code></pre></div></details><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="077fc136-3967-48cb-9c14-87f0de493499"><div style="font-size:1.5em"><span class="icon">❗</span></div><div style="width:100%">Use <code><strong><strong><strong><strong><strong><strong><strong>iterate</strong></strong></strong></strong></strong></strong></strong></code> when we want to iteratively apply a function f to an initial element seed, otherwise if the same seed is generated, we can just use <code><em><strong><strong><strong><strong><strong><strong><strong>Stream.generate()</strong></strong></strong></strong></strong></strong></strong></em></code></div></figure><h2 id="7fd3e613-8d21-4e5b-8f09-c9efe8b12914" class="">Intermediate Operation</h2><details open=""><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0"><a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html"><code><strong>Stream</strong></code></a><code>&lt;</code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html"><code><strong>T</strong></code></a><code>&gt; </code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html#filter-java.util.function.Predicate-"><code><strong>filter</strong></code></a><code>(</code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html"><code><strong>Predicate</strong></code></a><code>&lt;? super </code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html"><code><strong>T</strong></code></a><code>&gt; predicate)</code></summary><div class="indented"><p id="67ae095c-504f-492a-a97e-bcabfb912109" class="">Returns a stream consisting of the elements of this stream that match the given predicate.</p><figure id="00e918a1-7e1a-48f0-94de-b22715134cf9" class="image"><a href="Streams%203bd8dea6d22647109d3781a2d6dcda93/Untitled.png"><img style="width:449px" src="Streams%203bd8dea6d22647109d3781a2d6dcda93/Untitled.png"/></a></figure><pre id="80beada3-5c0c-47fa-9000-dc378089385e" class="code"><code>Stream&lt;Integer&gt; stream = Stream.of(1,2,3,4);
+        stream.filter(num -&gt; num % 2 == 0).forEach(System.out::println);
+        // returns 2,4</code></pre></div></details><details open=""><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0"><code>&lt;R&gt; </code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html"><code>Stream</code></a><code>&lt;R&gt; map(</code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html"><code>Function</code></a><code>&lt;? super </code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html"><code>T</code></a><code>,? extends R&gt; mapper)</code></summary><div class="indented"><figure id="d7c4f83f-cc34-4e2e-9ab0-45c067900159" class="image"><a href="Streams%203bd8dea6d22647109d3781a2d6dcda93/Untitled%201.png"><img style="width:456px" src="Streams%203bd8dea6d22647109d3781a2d6dcda93/Untitled%201.png"/></a></figure><pre id="0487de31-7b3f-4c50-854f-94f85d813c3b" class="code"><code>Stream&lt;String&gt; names = Stream.of(&quot;aBc&quot;, &quot;d&quot;, &quot;ef&quot;);
+System.out.println(names.map(s -&gt; {
+		return s.toUpperCase();
+	}).collect(Collectors.toList()));
+//prints [ABC, D, EF]</code></pre><p id="18986ffc-4a94-49c6-be9c-c7d631284def" class="">Returns a stream consisting of the results of applying the given function to the elements of this stream.</p></div></details><details open=""><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0"><code>&lt;R&gt; </code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html"><code><strong>Stream</strong></code></a><code>&lt;R&gt; </code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html#flatMap-java.util.function.Function-"><code><strong>flatMap</strong></code></a><code>(</code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html"><code><strong>Function</strong></code></a><code>&lt;? super </code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html"><code><strong>T</strong></code></a><code>,? extends </code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html"><code><strong>Stream</strong></code></a><code>&lt;? extends R&gt;&gt; mapper)</code></summary><div class="indented"><p id="6ae40744-242c-47b2-b1fe-e6a4860b7987" class="">Returns a stream consisting of the results of replacing each element of this stream with the contents of a mapped stream produced by applying the provided mapping function to each element. Each mapped stream is <a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/BaseStream.html#close--"><code>closed</code></a> after its contents have been placed into this stream. (If a mapped stream is <code>null</code> an empty stream is used, instead.)</p><figure id="fe5e4766-42f4-4302-a1bc-cdfb38494fe1" class="image"><a href="Streams%203bd8dea6d22647109d3781a2d6dcda93/Untitled%202.png"><img style="width:540px" src="Streams%203bd8dea6d22647109d3781a2d6dcda93/Untitled%202.png"/></a></figure><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="7ab5189f-ffe3-40e8-a721-33f804106056"><div style="font-size:1.5em"><span class="icon">❗</span></div><div style="width:100%">The <code>flatMap()</code>operation has the effect of applying a one-to-many transformation to the elements of the stream, and then flattening the resulting elements into a new stream.</div></figure><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="03d100f3-8090-4c90-bf33-191526e52beb"><div style="font-size:1.5em"><span class="icon">❗</span></div><div style="width:100%">The  <code>flatMap()</code>operation must return a <strong><strong><strong><strong>STREAM. </strong></strong></strong></strong><strong><mark class="highlight-blue_background">To make a line of items into a stream can use the</mark></strong><strong><mark class="highlight-blue_background"><code> stream()</code></mark></strong><strong><mark class="highlight-blue_background"> function.</mark></strong> <strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Returns: the new stream</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></div></figure></div></details><details open=""><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0"><a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html"><code><strong>Stream</strong></code></a><code>&lt;</code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html"><code><strong>T</strong></code></a><code>&gt; </code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html#peek-java.util.function.Consumer-"><code><strong>peek</strong></code></a><code>(</code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Consumer.html"><code><strong>Consumer</strong></code></a><code>&lt;? super </code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html"><code><strong>T</strong></code></a><code>&gt; action)</code></summary><div class="indented"><p id="c2d5ae30-23a1-481c-8924-6c2c38c394eb" class="">Returns a stream consisting of the elements of this stream, additionally performing the provided action on each element as elements are consumed from the resulting stream.</p><p id="36812dd0-caf7-4020-b019-edfc1c9ed2a5" class="">This method exists mainly to support debugging, where you want to see the elements as they flow past a certain point in a pipeline:</p><pre id="4911dbdc-33ff-4a04-8370-20632738dce7" class="code"><code>Stream.of(&quot;one&quot;, &quot;two&quot;, &quot;three&quot;, &quot;four&quot;)
+         .filter(e -&gt; e.length() &gt; 3)
+         .peek(e -&gt; System.out.println(&quot;Filtered value: &quot; + e))
+         .map(String::toUpperCase)
+         .peek(e -&gt; System.out.println(&quot;Mapped value: &quot; + e))
+         .collect(Collectors.toList());</code></pre></div></details><details open=""><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0"><a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html"><code><strong>Stream</strong></code></a><code>&lt;</code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html"><code><strong>T</strong></code></a><code>&gt; </code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html#limit-long-"><code><strong>limit</strong></code></a><code>(long maxSize)</code></summary><div class="indented"><p id="b05f5531-9c8c-43fd-b9c3-cc358d7e5b33" class="">Returns a stream consisting of the elements of this stream, truncated to be no longer than <code>maxSize</code> in length.</p></div></details><details open=""><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0"><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Stream&lt;T&gt; takeWhile(Predicate&lt;? super T&gt; predicate)</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code></summary><div class="indented"><p id="5299c0a6-a5da-46d9-b443-e0e03c820d0d" class="">returns if the stream is ordered, a stream consisting of the longest prefix of elements taken from this stream that match the given predicate</p><pre id="e879e850-b0ca-4b37-ab41-ed88b3a27628" class="code code-wrap"><code>public static Stream&lt;Integer&gt; less10() {
+        //prints out 1 3 5 7 9
+        return intStream(10).takeWhile(x -&gt; x &lt; 10);
+    }</code></pre></div></details><details open=""><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0"><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Stream&lt;T&gt; dropWhile(Predicate&lt;? super T&gt; predicate)</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code></summary><div class="indented"><p id="e98e7ed8-14a3-4db8-ac9c-3d0b71996cee" class="">Return if this stream is ordered, a stream consisting of the remaining elements of this stream after dropping the longest prefix that satisfies the predicate</p><pre id="578860cc-372c-4a9d-8cb4-385a7270c1ba" class="code code-wrap"><code>public static Stream&lt;Integer&gt; less10more5(){
+        //prints 7 9
+        return intStream(10).dropWhile(x -&gt; x &lt;= 5);
+    }</code></pre></div></details><details open=""><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0"><code>Stream&lt;T&gt; skip(long n)</code></summary><div class="indented"><p id="1372272a-0155-42ec-bdae-420b4cbd5d1e" class="">Returns a stream consisting of the remaining elements of this stream after discarding the first <code>n</code>elements of the stream.</p></div></details><details open=""><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0"><code>static &lt;T&gt; Stream&lt;T&gt; concat(Stream&lt;? extends T&gt; a, Stream&lt;? extends T&gt; b)</code></summary><div class="indented"><p id="3c787dbd-079d-46d2-b93d-9d967cef7de8" class="">Creates a lazily concatenated stream whose elements are all the elements of the first stream followed by all the elements of the second stream.</p></div></details><details open=""><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0"><code>Stream&lt;T&gt; distinct()</code></summary><div class="indented"><p id="f33a616c-abdf-460d-bf86-0c0c31f8fbf8" class="">Returns a stream consisting of the distinct elements (according to <a href="https://docs.oracle.com/en/java/javase/18/docs/api/java.base/java/lang/Object.html#equals(java.lang.Object)"><code>Object.equals(Object)</code></a> of this stream.</p></div></details><details open=""><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0"><code>Stream&lt;T&gt; sorted()</code></summary><div class="indented"><p id="fc9cefe8-f31a-4634-b7d2-b4fb66b4eedc" class="">Returns a stream consisting of the elements of this stream, sorted according to natural order.</p></div></details><h2 id="f266e207-5fb4-4dbd-a735-2f9d1e98d80a" class="">Terminal Operation</h2><details open=""><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0"><code>void forEach(Consumer&lt;? super T&gt; action)</code></summary><div class="indented"><p id="c4c6e159-6949-417b-9dc2-0ab500948b24" class="">Performs an action for each element of this stream</p><pre id="c08b547b-7aef-4a61-b085-c6fdc433e32f" class="code code-wrap"><code>less10().forEach(System.out::println);</code></pre></div></details><details open=""><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0"><code>boolean anyMatch(Predicate&lt;? super T&gt; predicate)</code></summary><div class="indented"><pre id="354de2d7-6aa1-4e3b-b47d-a82fde35d85c" class="code code-wrap"><code>//returns false
+less10().anyMatch(x -&gt; x &gt; 10);</code></pre><p id="8009fdeb-9d43-4f7b-a516-a10459d97bc1" class="">returns whether all elements of this stream match the provided predicate</p></div></details><details open=""><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0"><code>boolean allMatch(Predicate&lt;? super T&gt; predicate)</code></summary></details><details open=""><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0"><code>boolean noneMatch(Predicate&lt;? super T&gt; predicate)</code></summary></details><details open=""><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0"><code>long count()</code></summary><div class="indented"><p id="4c72b81d-c93d-44c7-b7e8-729a60b375d4" class="">returns the count of elements in the stream</p></div></details><details open=""><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0"><code>List&lt;T&gt; toList()</code></summary><div class="indented"><p id="9b7f025b-b447-4908-91de-c6ba36d23ed4" class="">Accumulates the elements of this stream into a <code>List</code>.</p></div></details><details open=""><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0"><code>&lt;A&gt; A[] toArray()</code></summary><div class="indented"><p id="b7e0a10c-2507-4592-ae34-4bfeba803719" class="">Returns an array containing the elements of this stream, using the provided <code>generator</code> function to allocate the returned array, as well as any additional arrays that might be required for a partitioned execution or for resizing.</p></div></details><details open=""><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0"><code>&lt;R, A&gt; R collect(Collector&lt;? super T, A, R&gt; collector)</code></summary><div class="indented"><p id="97de5b0f-7152-43ce-904a-8746630c5e4b" class="">performs a mutable reduction operation on the elements of this stream using a <code>Collector</code> </p><p id="8c355ccc-6022-4a5e-8337-11bed8ac285c" class=""><code>Collectors.toList()</code> will be useful, to use it please import <code>java.util.stream.Collectors</code></p></div></details><details open=""><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0"><a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html"><code><strong>T </strong></code></a><a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html#reduce-T-java.util.function.BinaryOperator-"><code><strong>reduce</strong></code></a><code>(</code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html"><code><strong>T</strong></code></a><code> identity, </code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/BinaryOperator.html"><code><strong>BinaryOperator</strong></code></a><code>&lt;</code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html"><code><strong>T</strong></code></a><code>&gt; accumulator)</code></summary><div class="indented"><p id="f889e083-42cb-4f2e-863a-76caf4297de8" class="">Performs a <a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/package-summary.html#Reduction">reduction</a> on the elements of this stream, using the provided identity value and an <a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/package-summary.html#Associativity">associative</a> accumulation function, and returns the reduced value.</p><p id="e66e1789-9457-4395-8a45-f2a10c3c1780" class="">This returns <strong>the result of the reduction</strong></p><pre id="76c6a4ce-e8c7-4e45-999e-405f54607a33" class="code code-wrap"><code> T result = identity;
+     for (T element : this stream)
+         result = accumulator.apply(result, element)
+     return result;</code></pre><p id="11ffde4a-8e9b-44b0-9809-4de0c7d63990" class="">The <code>identity</code> value must be an identity for the accumulator function. This means that for all <code>t</code>, <code>accumulator.apply(identity, t)</code>is equal to <code>t</code>. The <code>accumulator</code> function must be an <a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/package-summary.html#Associativity">associative</a> function.</p></div></details><details open=""><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0"><code>&lt;U&gt; U </code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html#reduce-U-java.util.function.BiFunction-java.util.function.BinaryOperator-"><code><strong>reduce</strong></code></a><code>(U identity, </code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/BiFunction.html"><code><strong>BiFunction</strong></code></a><code>&lt;U,? super </code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html"><code><strong>T</strong></code></a><code>,U&gt; accumulator, </code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/BinaryOperator.html"><code><strong>BinaryOperator</strong></code></a><code>&lt;U&gt; combiner)</code></summary><div class="indented"><p id="86f207b8-cfd9-44a9-85f7-e5154a14e0b2" class="">Performs a <a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/package-summary.html#Reduction">reduction</a> on the elements of this stream, using the provided identity, accumulation and combining functions.</p><figure id="e88ff737-ee6c-4388-8570-099b3ad12b70" class="image"><a href="Streams%203bd8dea6d22647109d3781a2d6dcda93/Untitled%203.png"><img style="width:450px" src="Streams%203bd8dea6d22647109d3781a2d6dcda93/Untitled%203.png"/></a></figure><p id="35af26f0-e12b-498d-8154-7965bb9a250e" class="">The <code>identity</code> value must be an identity for the combiner function. This means that for all <code>u</code>, <code>combiner(identity, u)</code> is equal to <code>u</code>. </p><p id="8509bbfb-8899-4379-b5f3-b31d6909a045" class="">Additionally, the <code>combiner</code>function must be compatible with the <code>accumulator</code>function; for all <code>u</code>and <code>t</code>, the following must hold:</p><p id="b0460ef2-b807-40e8-8c57-9775bbd37dae" class=""><strong><code>combiner.apply(u, accumulator.apply(identity, t)) == accumulator.apply(u, t)</code></strong></p><p id="afe49f03-4c38-4e47-b3f2-f64d39564f9e" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Parameters:</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></p><p id="1e3b981f-8b03-40d9-90bc-b7b6bea9961d" class=""><code>identity</code> - the identity value for the combiner function</p><p id="095134b3-c1bf-4d2a-8e81-8d18a7e3b587" class=""><code>accumulator</code> - an <a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/package-summary.html#Associativity">associative</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/package-summary.html#NonInterference">non-interfering</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/package-summary.html#Statelessness">stateless</a> function for incorporating an additional element into a result</p><p id="ce5e4da2-660b-4f68-bf28-e00b65bdd500" class=""><code>combiner</code> - an <a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/package-summary.html#Associativity">associative</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/package-summary.html#NonInterference">non-interfering</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/package-summary.html#Statelessness">stateless</a> function for combining two values, which must be compatible with the accumulator function</p></div></details><p id="c7b5900a-cd42-4ea8-9299-59c70d746af1" class="">
+</p><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="0a763256-1ccd-4357-94f2-bba5b75629a1"><div style="font-size:1.5em"><span class="icon">❓</span></div><div style="width:100%">The following example will return 20<pre id="559e15c5-485d-4210-bd31-8f7b7337bbbb" class="code code-wrap"><code>Integer z = IntStream.range(1, 5).reduce(10, (x, y) -&gt; x + y);
+// returns 20</code></pre><ul id="1d831869-9056-4e0e-9915-2aff1ed46733" class="bulleted-list"><li style="list-style-type:disc">We know that 10 is the identity</li></ul><ul id="43253e8b-9efd-4151-b049-0826bf4059c7" class="bulleted-list"><li style="list-style-type:disc">x is the <strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>previous result</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></li></ul><ul id="558fb056-4925-4a1a-b205-83ccb18cfabb" class="bulleted-list"><li style="list-style-type:disc"><strong><strong><strong><strong><strong><strong><strong><strong>y is the next element in the stream</strong></strong></strong></strong></strong></strong></strong></strong></li></ul><p id="e8ecef1d-bb9c-4a23-9c89-fc212b5e9b55" class="">So initially, 10 + 1 = 11<div class="indented"><p id="21483771-d998-4a88-b35e-21943f49b52f" class="">11 + 2 = 13</p><p id="4090fc52-0889-40a9-a9c5-503fe41705d4" class="">13 + 3 = 16</p><p id="fb6021b0-8caa-4e69-bd53-bfcd5ea7a175" class="">16 + 4 = 20</p></div></p></div></figure><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="c4911fd8-e467-477e-b12c-e29e5bc8cb71"><div style="font-size:1.5em"><span class="icon">❓</span></div><div style="width:100%">The result will be the same as in the previous example (16) and there will be no log which means, that combiner wasn’t called. To make <strong><mark class="highlight-red">a combiner work, a stream should be paralle</mark></strong>l:<pre id="0933ce1b-3406-48f8-be32-b9c89c960938" class="code"><code>int reducedParams = Stream.of(1,2,3)
+.reduce(10, (a,b) -&gt; a + b,
+	(a,b) -&gt; {
+		log.info(&quot;combiner called&quot;);
+		return a + b;
+	});</code></pre></div></figure><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="2c2c7d60-47e7-446b-992d-ba0f46ee01a5"><div style="font-size:1.5em"><span class="icon">❓</span></div><div style="width:100%">The result here is different (36) and the combiner was called twice. 
+Reduction works by the following algorithm: accumulator ran three times by adding every element of the stream to identity to every element of the stream. These actions are being done in parallel. As a result, they have (10 + 1 = 11; 10 + 2 = 12; 10 + 3 = 13;). Now combiner can merge these three results. It needs two iterations
+for that (12 + 13 = 25; 25 + 11 = 36)<pre id="7832cb81-2546-4493-b842-eb77a558feab" class="code"><code>int reducedParams = Stream.of(1,2,3)
+.reduce(10, (a,b) -&gt; a + b,
+	(a,bint reducedParam = Arrays.asList(1,2,3).parallelStream()
+ .reduce(10, (a,b) -&gt; a + b, 
+		 (a,b) -&gt; {
+		log.info(“combiner called”);
+				return a + b;
+});</code></pre></div></figure><hr id="fd4cd594-1a27-49ce-84b5-88a124c59e42"/><ul id="e709c595-7bb9-4945-83e2-f2c02b061b72" class="toggle"><li><details open=""><summary><strong>Example #1</strong></summary><p id="c6a6e9b6-8b8c-4fff-bdf2-a856761e4589" class=""><code>Stream&lt;Integer&gt; s = Stream.generate(() -&gt; 0)</code>Which of the following operations on <code>s</code> will cause an infinite loop?<div class="indented"><p id="fbc5b11e-b2b1-42d1-83d2-d938336576f8" class=""><code>s.limit(5).count()</code> ❌ </p><p id="0a27e7a2-03db-465e-95de-a6b96329139d" class=""><code>s.sorted().count()</code> ✅</p><p id="9f173ca2-530c-4f9f-83fb-f1fd41d12cd8" class=""><code>s.distinct().count()</code>✅</p><p id="2526182d-c9ea-4b5a-a84a-9a62d90e9d5a" class=""><code>s.filter(x -&gt; x &gt; 0).count()</code>✅</p><p id="1140d3be-d997-4e28-b58e-78ac251535a5" class=""><code>s.anyMatch(x -&gt; x == 0)</code>❌ Because it will find until one element matches so it will not be an infinite loop since the generate will produce zeros</p><p id="97ee093b-78ec-4654-ba8b-9fcbe8ed9aa8" class=""><code>s.allMatch(x -&gt; x == 0)</code>✅</p><p id="9f4fe342-d412-4d18-8301-5b393047acce" class=""><code>s.takeWhile(x -&gt; x &lt; 5).count()</code>✅ Because it will produce zeros all the time and it will not terminate</p><p id="26d805ca-de6a-448e-a9d9-ea830cc1d7c3" class=""><code>s.reduce(0, (i, j) -&gt; i + j)</code>✅ Generate will not end since it is infinitely computed in the reduce since reduce needs a termination in the stream</p></div></p></details></li></ul><ul id="c822e587-078b-4e55-8367-ed5249c8a30d" class="toggle"><li><details open=""><summary><strong>Example #2</strong></summary><p id="32d40369-038c-4927-8c9f-3d1b268bf1da" class="">Which of the following expression computes the factorial of n?<div class="indented"><p id="8e34bcfd-2ef2-491d-9939-6d80565eabea" class=""><code>Stream.iterate(1, x -&gt; x &lt;= n, x -&gt; x + 1).reduce(1, (fac, x) -&gt; fac * x)</code> ✅
+<code>Stream.iterate(1, x -&gt; x &lt;= n, x -&gt; x + 1).reduce(0, (fac, x) -&gt; fac * x)</code> ❌ The initial is zero so the multiplication will always be zero</p><p id="f7df74bc-2eca-468e-a0a1-31910a1f9f38" class=""><code>Stream.</code><code><em>iterate</em></code><code>(1, x -&gt; x + 1).limit(4).reduce(1, (bef, aft) -&gt; bef * aft);</code> ✅
+<code>Stream.iterate(1, x -&gt; x &lt;= n, x -&gt; x + 1).reduce(1, (fac, x) -&gt; fac * n)</code>❌ The fac * n is wrong 
+<code>Stream.iterate(1, x -&gt; x &lt;= n, x -&gt; x + 1).reduce(1, x -&gt; x * (x - 1))</code>❌ x - 1 doesn’t work because in the end it will just be last element * last element - 1
+<code>Stream.iterate(1, x -&gt; x &lt;= n, x -&gt; x + 1).reduce(n, x -&gt; x * (x - 1))</code>❌</p></div></p><p id="a4a3e20c-326d-4eb6-9c51-33fab079ec58" class="">
+</p><p id="c8bcc5a4-4410-49ff-be44-f0818c705c6b" class="">
+</p></details></li></ul><ul id="af7b93d4-fc91-460f-82ef-4845244d5c65" class="toggle"><li><details open=""><summary><strong>Example #3</strong></summary><p id="2f51a8b2-a82b-4a27-8e6d-ff902cbc2037" class="">Which of the following statements about stream in Java are correct?<div class="indented"><p id="27d39465-be5f-4c4c-ba46-35c023a235bf" class="">A stream is immutable ❌ </p><p id="980a9f04-283f-4595-bae7-760520f20270" class="">Streams are lazily evaluated ✅ </p><p id="d7d3e317-db6e-4c77-816d-5f48517c03eb" class="">Evaluation of a stream is triggered by a terminal operation ✅</p><p id="00ddba5e-5bec-4b4e-a770-83e50a9548fc" class="">Stream can either be infinite or finite in length ✅</p></div></p></details></li></ul><ul id="d7b8c13a-cde0-48d5-97b4-400e79028837" class="toggle"><li><details open=""><summary><strong>Example #4</strong></summary><pre id="29da7b0e-00fe-4835-ae77-72917119e3a7" class="code"><code>public static Stream&lt;Integer&gt; fibo(int x) {
+        return Stream.iterate(new Pair&lt;Integer&gt;(1, 1), p -&gt; new Pair&lt;Integer&gt;(p.second, p.first + p.second))
+                .map(t -&gt; t.first)
+                .limit(x);
+    }
+
+    public static &lt;T, U, R&gt; Stream&lt;R&gt; product(List&lt;? extends T&gt; list1, List&lt;? extends U&gt; list2, 
+									BiFunction&lt;? super T, ? super U, ? extends R&gt; func) {
+        //List must be &quot;extends&quot; because it is a producer
+        return list1.stream().&lt;R&gt;flatMap(x -&gt; list2.stream().map(y -&gt; func.apply(x, y)));
+    }
+
+    public static boolean isPrime(int n) {
+        return IntStream.range(2, n).noneMatch(x -&gt; n % x == 0);
+    }
+
+    public static Stream&lt;Long&gt; omega(int num) {
+        return Stream.iterate(1, x -&gt; x &lt;= num, x  -&gt; x + 1)
+                .map(x -&gt; Stream.iterate(2, i -&gt; i &lt;= x, i -&gt; i + 1 )
+                        .filter(y -&gt;( x % y == 0 &amp;&amp; isPrime(y))).count());
+    }</code></pre></details></li></ul><ul id="9fe77d53-c745-4645-8e6c-ccf2b81c20ba" class="toggle"><li><details open=""><summary><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Example #5</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></summary><figure id="4efb6e43-d718-4785-beac-83a494ae7dc8" class="image"><a href="Streams%203bd8dea6d22647109d3781a2d6dcda93/Untitled%204.png"><img style="width:432px" src="Streams%203bd8dea6d22647109d3781a2d6dcda93/Untitled%204.png"/></a></figure><pre id="d39477ef-9cde-4d13-990a-64ec94adbd18" class="code code-wrap"><code>public &lt;T, U&gt; Stream&lt;U&gt; merge(Stream&lt;? super T&gt; s2, BiFunction&lt;? super S, ? super T, ? extends U&gt; func) {
+	...
+}</code></pre><figure id="b1f93176-ee4d-4621-a21b-fcb4693b3c2f" class="image"><a href="Streams%203bd8dea6d22647109d3781a2d6dcda93/Untitled%205.png"><img style="width:432px" src="Streams%203bd8dea6d22647109d3781a2d6dcda93/Untitled%205.png"/></a></figure><pre id="3ec27266-68d5-4e0d-9d21-6177b39900cf" class="code code-wrap"><code>public &lt;U&gt; U doubleReduce(T identity, Function&lt;? super T , ? extends BiFunction&lt;? super T, ? super T, ? extends U&gt;&gt; func) {}</code></pre><figure class="block-color-purple_background callout" style="white-space:pre-wrap;display:flex" id="e3bf3d16-d1c4-4afc-91a0-9205cf33dbb7"><div style="font-size:1.5em"><span class="icon">🐙</span></div><div style="width:100%">In here, we can only use <code>? extends BiFunction</code> because it is inside another generic method <code>Function</code> in the first example, it is only a normal parameter</div></figure><figure id="e3384c44-c62a-45ab-8430-4ecda747c42c" class="image"><a href="Streams%203bd8dea6d22647109d3781a2d6dcda93/Untitled%206.png"><img style="width:480px" src="Streams%203bd8dea6d22647109d3781a2d6dcda93/Untitled%206.png"/></a></figure><pre id="a9c30ea5-9335-4aa8-9084-ee050a250290" class="code code-wrap"><code>public &lt;U&gt; Stream&lt;Stream&lt;U&gt;&gt; nestedMap(BiFunction&lt;? super T, ? super T, ? extends U&gt; func) {
+	...
+	// we know that map here will return a stream
+}</code></pre></details></li></ul><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="264b34a8-9089-4ed7-91bf-ac38a8db5480"><div style="font-size:1.5em"><span class="icon">❗</span></div><div style="width:100%">A stream is <strong><strong><strong><strong><strong><strong><strong><strong><strong>immutable</strong></strong></strong></strong></strong></strong></strong></strong></strong></div></figure><h1 id="3fad58c7-5c43-4e77-9102-670ba89b6c0a" class="">Parallel Streams</h1><ul id="113456b8-13f1-4eb7-bea6-3f714f5e8b54" class="bulleted-list"><li style="list-style-type:disc">A single-core processor can only execute one instruction at one time -- this means that only one <em>process </em>(or less precisely speaking, one application) can run at any one time</li></ul><h3 id="1bb39513-f96b-4295-bb43-27f5cd214983" class="">Concurrency</h3><ul id="8d035628-fbdc-4d5e-9881-abfda23184de" class="bulleted-list"><li style="list-style-type:disc">The operating system, behind the scenes, is switching between the different processes, to give the user the illusion that they are running at the same time.<figure id="0f326dd9-63a6-4ccc-a018-663fada9c831" class="image"><a href="Streams%203bd8dea6d22647109d3781a2d6dcda93/Untitled%207.png"><img style="width:384px" src="Streams%203bd8dea6d22647109d3781a2d6dcda93/Untitled%207.png"/></a></figure></li></ul><ul id="e44acf6d-5b4a-4e2b-a8c3-0a702e65335b" class="bulleted-list"><li style="list-style-type:disc">We can write program to let it run concurrently by dividing the computation into subtasks called <code>Threads</code>. For instance, if I/O is in one thread, and UI rendering is in another, then when the processor is waiting for I/O to complete, it can switch to the rendering thread to make sure that the slow I/O does not affect the responsiveness of UI.<ul id="ec2b77cd-10e0-49e4-92b8-c143cbd23270" class="bulleted-list"><li style="list-style-type:circle">Allows programmers to separate unrelated tasks into thread and write each thread separately</li></ul><ul id="ca56f0d6-6066-438d-bf7b-4902239ad3dd" class="bulleted-list"><li style="list-style-type:circle">Improves the utilization of the processor</li></ul></li></ul><h3 id="853b8544-d264-41a3-b8cb-55da1a393aa1" class="">Parallelism</h3><ul id="88721fe5-0f24-46e8-92d3-fb4979e208a7" class="bulleted-list"><li style="list-style-type:disc">Parallelism will allow multiple subtasks to run at the same time — either we have a processor that is capable of running multiple instructions at the same time, or we have multiple cores/processors and dispatch the instructions to the cores/processors so that they are executed at the same time.</li></ul><figure id="4e6589dc-f9ab-497e-8300-af7d0bde1918" class="image"><a href="Streams%203bd8dea6d22647109d3781a2d6dcda93/Untitled%208.png"><img style="width:917px" src="Streams%203bd8dea6d22647109d3781a2d6dcda93/Untitled%208.png"/></a></figure><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="afd70e48-6f21-44cb-9cb9-90c3acfdb787"><div style="font-size:1.5em"><span class="icon">❗</span></div><div style="width:100%"><strong><mark class="highlight-red">All parallel programs are concurrent, but not all concurrent programs are parallel.</mark></strong></div></figure><figure id="94c2e5d9-01b6-454f-a165-dfd8702da2c4" class="image"><a href="Streams%203bd8dea6d22647109d3781a2d6dcda93/Untitled%209.png"><img style="width:663px" src="Streams%203bd8dea6d22647109d3781a2d6dcda93/Untitled%209.png"/></a></figure><h3 id="c501b95a-8580-400e-84d9-fb32a71c60d8" class="">How to parallelize a stream?</h3><pre id="87580a7f-5e42-493e-86fb-20ad68b2c99b" class="code code-wrap"><code>//first
+IntStream.range(2_030_000, 2_040_000)
+    .filter(x -&gt; isPrime(x))
+    .parallel()
+    .forEach(System.out::println);
+
+//Second stateless
+IntStream.range(2_030_000, 2_040_000)
+    .filter(x -&gt; isPrime(x))
+    .parallel()
+    .count();</code></pre><ul id="e3918a2d-6fc5-4e48-a163-beb988cb02db" class="bulleted-list"><li style="list-style-type:disc">The first one output will not be as expected since it will be reordered but the same set of numbers will be produced. The <code>stream</code> has been broken down into subsequences and running<code>filter</code> and <code>forEach</code> to each subsequence in parallel. <strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Whichever parallel task is completed will have be output into the screen first</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></li></ul><ul id="c7be9f2d-6755-4456-837f-415216432b55" class="bulleted-list"><li style="list-style-type:disc">The second code above will give the same output regardless if it is parallelized. The above code is stateless and <strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>does not produce any side effects. </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong>Furthermore, each element is processed individually without depending on other elements. Such computation is sometimes known as <em>embarrassingly parallel</em>. The only communication needed for each of the parallel subtasks is to combine the result of <code>count()</code> from the subtasks into the final count (which has been implemented in <code>Stream</code> for us).</li></ul><figure class="block-color-purple_background callout" style="white-space:pre-wrap;display:flex" id="f5802b5d-9668-4944-bdca-d657aa857f24"><div style="font-size:1.5em"><span class="icon">🐙</span></div><div style="width:100%"><code>parallel()</code>to the pipeline of calls in a stream enables parallel processing of the stream. Note that <code>parallel()</code> is a lazy operation -- it merely marks the stream to be processed in parallel. As such, you can insert the call to <code>parallel()</code>anywhere in the pipeline after the <em>data source</em> and before the <em>terminal operation</em>.</div></figure><figure class="block-color-purple_background callout" style="white-space:pre-wrap;display:flex" id="d21651c2-7525-4fcc-8f19-3265feff4ad6"><div style="font-size:1.5em"><span class="icon">🐙</span></div><div style="width:100%"><code>sequential()</code> will mark the stream to be run sequentially. If both <code>parallel()</code> and <code>sequential()</code> are in the line of code, the last call will be the one running. So in the following example, <code>sequential()</code> will be run instead
+<code>s.parallel().filter(x -&gt; x &lt; 0).sequential().forEach(..);</code></div></figure><figure class="block-color-purple_background callout" style="white-space:pre-wrap;display:flex" id="32477fb2-0c13-4e3a-8ac5-7ebc174dcff4"><div style="font-size:1.5em"><span class="icon">🐙</span></div><div style="width:100%">Another way to create a parallel stream is to call the method  <code>parallelStream()</code>  instead of <code>stream()</code> of the  <code>Collector</code> class. Doing so would create a stream that will be processed in parallel from the collection.</div></figure><h3 id="a7097317-2259-469a-bb17-b1f6b47b8faa" class="">Embarrassingly Parallel</h3><pre id="58b27559-8f8b-4b14-802a-00cdf2740e37" class="code code-wrap"><code>IntStream.range(1,1000000)
+	.filter(...)
+	.parallel()
+	.count()</code></pre><p id="ac83c8bb-dbd8-4b32-bc2d-bab23c69838d" class="">The above code produces the same output regardless of it being parallelized or not
+• Because the task above is stateless and does not produce any side-effect.
+• Each element is processed individually without depending on other elements.
+• Such a computation is sometimes known as embarrassingly parallel
+• The only communication needed for each of the parallel subtask is to combine the result of count() from the subtasks into the final count (which has already been implemented in Stream for us)</p><h3 id="775eac87-d2bd-4191-9aaf-c58657a8f03c" class="">What to parallelize?</h3><ol type="1" id="3a192c8c-2a86-4efb-931f-5ed54f04ff90" class="numbered-list" start="1"><li>Interference<p id="259d99bc-5fac-44c4-a03f-1778f750baa9" class="">One of the stream operations modifies the source of the stream during the execution of the terminal operation. The following example would cause <code>ConcurrentModificationException</code> to be thrown. Note that this non-interference rule applies even if we are using <code>stream()</code> instead of <code>parallelStream()</code>.</p><pre id="49c95503-2cd8-46fe-acba-fdec0bc50fe1" class="code code-wrap"><code>List&lt;String&gt; list = new ArrayList&lt;&gt;(List.of(&quot;Luke&quot;, &quot;Leia&quot;, &quot;Han&quot;));
+list.stream()
+    .peek(name -&gt; {
+         if (name.equals(&quot;Han&quot;)) {
+           list.add(&quot;Chewie&quot;); // they belong together
+         }
+      })
+    .forEach(i -&gt; {});</code></pre></li></ol><ol type="1" id="cb51398e-58b7-4356-9023-4382d51ad144" class="numbered-list" start="2"><li>Stateless vs Stateful<p id="5bdb6e9c-065c-4941-802a-96dd07289dd0" class="">Stateful: A stateful lambda is one where the result depends on any state that might change during the execution of the stream.</p><pre id="49d802c0-45f3-4d5f-8b35-8bf9bdeb5340" class="code code-wrap"><code>Stream.generate(scanner::nextInt)
+    .map(i -&gt; i + scanner.nextInt())
+    .forEach(System.out::println)</code></pre><p id="6d5df4f7-0226-4699-bc3b-6d9f232d2b20" class="">For instance, the <code>generate</code> and <code>map</code> operations below are stateful, since they depend on the state of the standard input. Parallelizing this may lead to incorrect output. To ensure that the output is correct, additional work needs to be done to ensure that state updates are visible to all parallel subtasks</p></li></ol><ol type="1" id="5160c142-bc0d-4332-8dfa-39b5121e20d1" class="numbered-list" start="3"><li>Side effects<p id="1c1eb3b0-75bf-4718-b12f-244077e29055" class="">Side-effects can lead to incorrect results in parallel execution</p><pre id="5e8b4b36-9f1c-474b-9c02-3e98bfb4c8b8" class="code code-wrap"><code>List&lt;Integer&gt; list = new ArrayList&lt;&gt;(
+    Arrays.asList(1,3,5,7,9,11,13,15,17,19));
+List&lt;Integer&gt; result = new ArrayList&lt;&gt;();
+list.parallelStream()
+    .filter(x -&gt; isPrime(x))
+    .forEach(x -&gt; result.add(x));</code></pre><p id="c483639d-2f4d-44f1-8041-b49036dd29c6" class="">The <code>forEach</code> lambda generates a side effect -- it modifies  <code>result</code>.  <code>ArrayList</code> is what we call a non-thread-safe data structure. If two threads manipulate it at the same time, an incorrect result may result. To overcome this. we can use the <code>toList()</code> method</p></li></ol><ol type="1" id="7a1c7a1d-5079-4848-8342-2d08f8a21d2a" class="numbered-list" start="4"><li>Associativity<p id="a5c899f4-da93-49f4-bfad-b5f9cdcaf696" class="">The <code>reduce</code> operation is inherently parallelizable, as we can easily reduce each sub-stream and then use the <code>combiner</code> to combine the results</p><p id="beba868b-7112-4f24-963a-939d3f87dbd8" class="">To allow us to run <code>reduce</code> in parallel, however, there are several rules that the <code>identity</code>, the <code>accumulator</code>, and the <code>combiner</code> must follow:</p><ul id="d06ff1e0-040f-495e-a26e-8906ef97cb2a" class="bulleted-list"><li style="list-style-type:disc"><code>combiner.apply(identity, i)</code> must be equal to <code>i</code>.</li></ul><ul id="a06ffc3f-3f79-4f8f-8877-ba1c9a874209" class="bulleted-list"><li style="list-style-type:disc">The <code>combiner</code> and the <code>accumulator</code> must be associative -- the order of applying must not matter.</li></ul><ul id="aa77ce36-3c8d-4c31-8366-1bab217c2034" class="bulleted-list"><li style="list-style-type:disc">The <code>combiner</code> and the <code>accumulator</code> must be compatible -- <code>combiner.apply(u, accumulator.apply(identity, t))</code> must equal to <code>accumulator.apply(u, t)</code></li></ul><p id="39ab62df-387f-4de9-9e23-2af1a50ff488" class="">The multiplication example above meetings the three rules:</p><ul id="2208ca9b-bd34-46e3-a1a0-0fc5cc770310" class="bulleted-list"><li style="list-style-type:disc"><code>i * 1</code> equals <code>i</code></li></ul><ul id="5e473774-9586-4351-a71c-ffee3f63ccda" class="bulleted-list"><li style="list-style-type:disc"><code>(x * y) * z</code> equals <code>x * (y * z)</code></li></ul><ul id="d79dbd4a-2668-46ec-9489-731a7fe0a092" class="bulleted-list"><li style="list-style-type:disc"><code>u * (1 * t)</code> equals <code>u * t</code></li></ul></li></ol><figure class="block-color-purple_background callout" style="white-space:pre-wrap;display:flex" id="a11e7ab5-45cb-485f-8f43-086b93895a32"><div style="font-size:1.5em"><span class="icon">🐙</span></div><div style="width:100%"><em>Parallelizing a stream does not always improve the performance</em>. Creating a thread to run a task incurs some overhead, and the overhead of creating too many threads might outweigh the benefits of parallelization.<pre id="4d7ac7e4-845f-4312-9c12-018dc11dee3c" class="code code-wrap"><code>Instant start = Instant.now();
+long howMany = IntStream.range(2_000_000, 3_000_000)
+    .filter(x -&gt; isPrime(x))
+    .parallel()
+    .count();
+Instant stop = Instant.now();
+System.out.println(howMany + &quot; &quot; + Duration.between(start,stop).toMillis() + &quot; ms&quot;);</code></pre><pre id="ce135a80-0826-4eaa-8565-c8ce56542608" class="code code-wrap"><code>boolean isPrime(int n) {
+  return IntStream.range(2, (int)Math.sqrt(n) + 1)
+      .parallel()
+      .noneMatch(x -&gt; n % x == 0);
+}</code></pre><p id="714fcd8a-ed4f-4791-a912-69a799cf5df1" class="">The first one becomes faster but the second one is slower</p></div></figure><figure class="block-color-purple_background callout" style="white-space:pre-wrap;display:flex" id="4f214c36-6a69-45c2-9586-44e0b2b2f5c7"><div style="font-size:1.5em"><span class="icon">🐙</span></div><div style="width:100%"><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>ORDERED | UNORDERED SOURCE</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><p id="71d9c01f-acd5-4252-b34c-38f816012d8a" class="">Whether or not the stream elements are <em>ordered</em> or <em>unordered</em>
+ also plays a role in the performance of parallel stream operations. A stream may define an <em>encounter order</em>. Streams created from <code>iterate</code>, ordered collections (e.g., <code>List</code> or arrays), from <code>of</code>, are ordered. Stream created from <code>generate</code> or unordered collections (e.g., <code>Set</code>) are unordered.</p><p id="bbf64c25-513e-4e6c-824c-b47ffca30573" class="">Some stream operations respect the encounter order. For instance, both <code>distinct</code> and <code>sorted</code> preserve the original order of elements (if ordering is preserved, we say that an operation is <em>stable</em>).</p><p id="2f035f9d-0c3c-4504-a72a-f7d1c0b9baac" class="">The parallel version of <code>findFirst</code>, <code>limit</code>, and <code>skip</code> can be expensive on an ordered stream, since it needs to coordinate between the streams to maintain the order.</p><ul id="b6c24743-213b-4818-beb8-bc44caf1940b" class="bulleted-list"><li style="list-style-type:disc">If we have an ordered stream and respecting the original order is not important, we can call <code>unordered()</code> as part of the chain command to make the parallel operations much more efficient.</li></ul></div></figure><hr id="aa12a101-45e9-4b3f-abd5-05f0e8c6a843"/><p id="e88be27c-4a57-4b63-840d-be59ab88c1f2" class="">
+</p><figure id="bbf650ef-ac2b-4f60-b489-893ccd5ae796" class="image"><a href="Streams%203bd8dea6d22647109d3781a2d6dcda93/Untitled%2010.png"><img style="width:803px" src="Streams%203bd8dea6d22647109d3781a2d6dcda93/Untitled%2010.png"/></a></figure><pre id="8327aca9-da7a-47ee-a67f-d81640ad51fd" class="code code-wrap"><code>Stream.of(1,2,3,4)
+.parallel()
+.reduce(0
+, (result, x) -&gt; result * 2 + x);</code></pre><p id="ba04f5c2-83a1-4f74-ba1b-e58592cc60f5" class="">Doing the same thing gives a different output. Why? It is because 2 * result + x is not associative</p><ul id="0761b646-6394-49e7-88a6-40d9ede5d3ab" class="toggle"><li><details open=""><summary>Practice #1</summary><figure id="51dc47f0-ac8e-4df7-be44-dba34edc468a" class="image"><a href="Streams%203bd8dea6d22647109d3781a2d6dcda93/Untitled%2011.png"><img style="width:713px" src="Streams%203bd8dea6d22647109d3781a2d6dcda93/Untitled%2011.png"/></a></figure><figure id="96924341-4e51-4880-844d-4351db81eb95" class="image"><a href="Streams%203bd8dea6d22647109d3781a2d6dcda93/Untitled%2012.png"><img style="width:384px" src="Streams%203bd8dea6d22647109d3781a2d6dcda93/Untitled%2012.png"/></a></figure><pre id="cf459429-b2fb-49bb-95b6-d3918508490b" class="code code-wrap"><code>public static &lt;T,R&gt; Predicate&lt;T&gt; compose(Function&lt;T,R&gt; f, Predicate&lt;R&gt; p)
+    {
+       return new Predicate&lt;T&gt;() {
+	        public boolean test(T r) {
+	           return p.test(f.apply(r));
+				   }
+				};
+	  }
+
+// OR
+public static &lt;T,R&gt; Predicate&lt;T&gt; compose(Function&lt;T,R&gt; f, Predicate&lt;
+R&gt; p)
+   {
+        return (x) -&gt; p.test(f.apply(x));
+   }</code></pre><p id="46fd4499-59f1-4324-99c8-8ea19e757585" class="">
+</p></details></li></ul><ul id="950c5a0a-29f9-4996-bc4b-d76f9371fcb3" class="toggle"><li><details open=""><summary>Practice #2 (Modified)</summary><figure id="94d02b39-8960-473c-87c7-1c24a96df926" class="image"><a href="Streams%203bd8dea6d22647109d3781a2d6dcda93/Untitled%2013.png"><img style="width:888px" src="Streams%203bd8dea6d22647109d3781a2d6dcda93/Untitled%2013.png"/></a></figure><pre id="85aaae99-58b3-4473-8df2-21800abdda9f" class="code code-wrap"><code>class Streamer {
+  static &lt;T&gt; boolean isSubstream(Supplier&lt;Stream&lt;T&gt;&gt; s, Supplier&lt;Stream&lt;T&gt;&gt; t) {
+      return s.get().allMatch(x -&gt; t.get().anyMatch(y -&gt; x == y));
+  }
+
+}</code></pre><figure id="c50dbcfa-4ffc-4e1d-b226-5477f70c0ba2" class="image"><a href="Streams%203bd8dea6d22647109d3781a2d6dcda93/Untitled%2014.png"><img style="width:931px" src="Streams%203bd8dea6d22647109d3781a2d6dcda93/Untitled%2014.png"/></a></figure><p id="f4c4108d-c494-4eef-8158-478c01eeb757" class="">
+</p></details></li></ul><ul id="7c09331d-c79d-469d-92a0-c46e592e1b22" class="toggle"><li><details open=""><summary>Practice #3</summary><p id="cd33caaa-29c2-40fd-8148-cf10df1616c0" class="">What is the returned value for each of the pipelines below?</p><figure id="dc17bb94-6860-406a-b3f5-d3befc19c0c0" class="image"><a href="Streams%203bd8dea6d22647109d3781a2d6dcda93/Untitled%2015.png"><img style="width:480px" src="Streams%203bd8dea6d22647109d3781a2d6dcda93/Untitled%2015.png"/></a></figure><p id="849c5703-02e1-4d93-8cb8-18303d080779" class="">Replace the accumulator and combiner with the two lambdas below:</p><pre id="c6dea601-4edf-4113-8e8f-24bdda3fcb52" class="code code-wrap"><code>BiFunction&lt;Integer, Integer, Integer&gt; accumulator = (a, x) -&gt; {
+System.out.println(&quot;accumulating: (2 * &quot; + a + &quot;) + &quot; + x);
+return 2*a + x;
+}
+
+BinaryOperator&lt;Integer&gt; combiner = (a1, a2) -&gt; {
+System.out.println(&quot;combining: &quot; + a1 + &quot; + &quot; + a2);
+return a1 + a2;
+}</code></pre><p id="89b14be4-9389-49fd-9e49-8cebc216137a" class="">and use your observation to explain the difference in the results above.</p><p id="0ec15a52-a422-4d68-86f5-31fe449df6e3" class=""><strong><strong><strong>Answer: </strong></strong></strong></p><pre id="9bae38d5-dd8c-457a-9567-888e7992aa5b" class="code code-wrap"><code>jshell&gt; Stream.of(1, 2, 3, 4)
+   ...&gt;   .parallel()
+   ...&gt;   .reduce(0, accumulator, combiner);
+accumulating: (2 * 0) + 3
+accumulating: (2 * 0) + 4
+accumulating: (2 * 0) + 2
+accumulating: (2 * 0) + 1
+combining: 3 + 4
+combining: 1 + 2
+combining: 3 + 7
+$13 ==&gt; 10</code></pre><p id="b11baf15-43a2-4d33-b427-ef3600ed482f" class=""><strong><strong><strong>The accumulator is assumed to be associative but 2a +x is not. Parallelizing the stream causes the order of the evaluation to be different. Parallel reduction only works if the accumulator and combiner are chosen carefully,</strong></strong></strong></p><p id="345854a3-456c-42f0-b444-a87be77584c6" class="">In this case the accumulator is <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mi>y</mi><mo stretchy="false">)</mo><mo>=</mo><mn>2</mn><mi>x</mi><mo>+</mo><mi>y</mi></mrow><annotation encoding="application/x-tex">a(x,y) = 2x + y</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">a</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">2</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span></span></span></span><span>﻿</span></span> and the combiner is <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mi>y</mi><mo stretchy="false">)</mo><mo>=</mo><mi>x</mi><mo>+</mo><mi>y</mi></mrow><annotation encoding="application/x-tex">c(x,y) = x +y</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span></span></span></span><span>﻿</span></span> so by the identity law: <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mi>a</mi><mo stretchy="false">(</mo><mn>0</mn><mo separator="true">,</mo><mi>y</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo><mo>=</mo><mo>=</mo><mi>a</mi><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mi>y</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">c(x, a(0,y)) == a(x,y)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal">a</span><span class="mopen">(</span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mclose">))</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">==</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">a</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mclose">)</span></span></span></span></span><span>﻿</span></span></p><p id="01832fde-0602-40d1-9a8f-b5de718349e2" class=""><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mi>a</mi><mo stretchy="false">(</mo><mn>0</mn><mo separator="true">,</mo><mi>y</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo><mo>=</mo><mi>c</mi><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mi>y</mi><mo stretchy="false">)</mo><mo>=</mo><mi>x</mi><mo>+</mo><mi>y</mi><mtext> </mtext><mo>−</mo><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">c(x, a(0,y)) = c(x, y) = x + y  \ -(1)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal">a</span><span class="mopen">(</span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mclose">))</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.7777700000000001em;vertical-align:-0.19444em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mspace"> </span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span></span><span>﻿</span></span></p><p id="8f331571-1059-4f05-95cf-8a3dc7081ec9" class=""><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mi>y</mi><mo stretchy="false">)</mo><mo>=</mo><mn>2</mn><mi>x</mi><mo>+</mo><mi>y</mi><mtext> </mtext><mo>−</mo><mo stretchy="false">(</mo><mn>2</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">a(x,y) = 2x + y \ -(2)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">a</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">2</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.7777700000000001em;vertical-align:-0.19444em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mspace"> </span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">2</span><span class="mclose">)</span></span></span></span></span><span>﻿</span></span></p><p id="57b4aaf0-6506-4707-b7de-5572f4f168e4" class="">so <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo><mo>=</mo><mo>=</mo><mo stretchy="false">(</mo><mn>2</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(1) == (2)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">==</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">2</span><span class="mclose">)</span></span></span></span></span><span>﻿</span></span> so they are not the same</p><p id="1872adaf-1913-42f6-9398-0ee7fad93bcf" class="">
+</p></details></li></ul><ul id="b89c3c2d-0461-472e-913d-4705b3f76953" class="toggle"><li><details open=""><summary>Practice #4</summary><pre id="31a3d458-32b1-4250-a9f5-9f057ce659c3" class="code code-wrap"><code>public static double estimatePi(int numOfPoints, int seed) {
+		RandomPoint.setSeed(seed);
+		Circle c = new Circle(new Point(0.5, 0.5), 0.5);
+		int n = 0;
+		for (int i = 0; i &lt; numOfPoints; i++) {
+				Point p = new RandomPoint(0, 1, 0, 1);
+				if (c.contains(p)) {
+						System.out.println(p);
+						n++;
+				}
+		}
+		return 4.0 * n / numOfPoints;
+}</code></pre><p id="e6abcc54-7cfa-438d-814c-49198941d780" class="">Rewrite the method using parallel stream so that we estimate the value of π by checking if each point is contained in the given circle in parallel.</p><pre id="b58e714e-575b-4643-8e27-ab5318357a8f" class="code code-wrap"><code>public static double estimatePi(int numOfPoints, int seed) {
+		RandomPoint.setSeed(seed);
+		Circle c = new Circle(new Point(0.5, 0.5), 0.5);
+		long n = Stream.generate(() -&gt; new RandomPoint(0,1,0,1))
+			.limit(numOfPoints)
+			.filter(x -&gt; c.contains(x))
+			.parallel()
+			.count();
+		return  4.0 * n / numOfPoints;
+}</code></pre></details></li></ul><ul id="56565cc6-f758-40c2-b73f-4ccb36e3ef69" class="toggle"><li><details open=""><summary>Practice #5</summary><div id="0fa2e7c3-5677-4f87-8bc6-fd9105ff122d" class="column-list"><div id="ae7226ef-ba02-4347-8f6e-705d4f600d2d" style="width:50%" class="column"><figure id="afc845b8-354a-4e25-a110-4ffdd0035f86" class="image"><a href="Streams%203bd8dea6d22647109d3781a2d6dcda93/Untitled%2016.png"><img style="width:423px" src="Streams%203bd8dea6d22647109d3781a2d6dcda93/Untitled%2016.png"/></a></figure></div><div id="db2178d0-125c-4e5e-aac6-220e7fdc89af" style="width:50%" class="column"><p id="0ef3cf9e-5774-4a3c-9981-0e9c8f5dce28" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Answer explanation: </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></p><p id="eb3e62f7-f077-4743-a551-35d61c51a4a8" class=""><code>.parallel()</code> causes the order of the evaluation to be different hence the results are also different. <code>r.nextInt()</code> depends on the previous computation</p></div></div></details></li></ul><ul id="48eb2714-669d-4c15-bf1b-e97c4a79a310" class="toggle"><li><details open=""><summary>Practice #6</summary><p id="5fb66294-b6c5-43a6-8fc6-33c9f80c1786" class="">In order to guarantee that a stream pipeline can be correctly parallelized, the pipeline should not have</p><p id="3e8bef66-9795-4df5-8c13-0f16d5fb561b" class="">✅ an operation with a side effect.</p><p id="54e9280b-357e-417e-bde9-230954ca1caf" class="">✅ an operation that interferes with the data source.</p><p id="4e0febe4-f185-4783-9852-3d736d9630aa" class="">❌ a data source that is ordered.</p><p id="2a9722c7-2c17-4c9e-9441-0822378d5378" class="">✅ an operation that is stateful.</p></details></li></ul><ul id="11a6c3ea-e274-4f5c-a367-d34c60e694fe" class="toggle"><li><details open=""><summary>Practice #7</summary><p id="342dbdfb-f968-4714-af2d-4c81f6f20e3e" class="">Which of the following factors would likely contribute to improved speed up of a parallel stream pipeline?</p><p id="fd6f3c21-605c-43aa-8594-ade4c6b563e6" class="">✅ Executing the pipeline on a computer with more cores/processors.</p><p id="6259de33-16c9-4e90-8110-02bb6bf5e0ff" class="">✅ Changing the stream pipeline from ordered to unordered.</p><p id="c6b90946-58c2-471d-945d-63bf8a6fe1d0" class="">❌ Lowering the running time of individual operations.</p><p id="cafe3a16-e6c9-415d-bc8f-88559517b316" class="">❌ Call parallel() multiple times on the same pipeline.</p></details></li></ul><ul id="b23bcbf7-0d07-4037-aa8a-ced79019f184" class="toggle"><li><details open=""><summary>Practice #8</summary><p id="0d8e3af8-bc55-494e-a1ea-239fe2d1dacc" class="">Suppose we have the following method that computes <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mi>y</mi></msup></mrow><annotation encoding="application/x-tex">x^y</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.664392em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.664392em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">y</span></span></span></span></span></span></span></span></span></span></span></span><span>﻿</span></span></p><pre id="399df347-8de0-423f-8248-0c3f055596b0" class="code code-wrap"><code>long power(long x, long y) {
+  long result = 1;
+  for (long i = 0; i &lt; y; i += 1) {
+    result = result * x;
+  }
+  return result;
+}
+</code></pre><p id="bc3b1dc2-b748-40bc-92c8-7740938caa82" class="">Suppose we have the following combiner:</p><pre id="266526ab-03c6-4228-8335-a1ec59555f6c" class="code code-wrap"><code>(y, x) -&gt; power(x, y)</code></pre><p id="4c44dd63-32e3-4bcc-a9ab-e415325f7fcc" class="">What is the identity of the combiner above?</p><p id="2a5b6681-fa94-4e93-87e3-44ec15e5058e" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong>Answer: 1</strong></strong></strong></strong></strong></strong></strong></strong></strong>, since the <code>result</code> is the identity which is 1</p><p id="2af9b25b-5d1c-498f-ba52-3c0a69ee2f3b" class="">
+</p></details></li></ul><ul id="a9867930-af67-4413-8d42-7ace9107c6b2" class="toggle"><li><details open=""><summary>Practice #9</summary><p id="59f991e7-f4b1-4aad-a58a-d01e13aaf1cc" class="">Which of the following combiners is/are associative?</p><p id="0754624e-ef7c-44bb-82ff-860c5f55d959" class="">❌ <code>(x, y) -&gt; x - y;</code> <div class="indented"><p id="8212a990-f86a-4369-b458-87a6a66c863b" class=""><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mi>c</mi><mo stretchy="false">(</mo><mi>y</mi><mo separator="true">,</mo><mi>z</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo><mo>=</mo><mi>x</mi><mo>−</mo><mo stretchy="false">(</mo><mi>y</mi><mo>−</mo><mi>z</mi><mo stretchy="false">)</mo><mo>=</mo><mi>x</mi><mo>−</mo><mi>y</mi><mo>+</mo><mi>z</mi></mrow><annotation encoding="application/x-tex">c(x, c(y,z)) = x-(y-z) = x-y+z</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mclose">))</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.7777700000000001em;vertical-align:-0.19444em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span></span></span></span></span><span>﻿</span></span></p><p id="931e3114-87e3-46a8-960a-3afcd7890567" class=""><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo stretchy="false">(</mo><mi>c</mi><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mi>y</mi><mo stretchy="false">)</mo><mo separator="true">,</mo><mi>z</mi><mo stretchy="false">)</mo><mo>=</mo><mo stretchy="false">(</mo><mi>x</mi><mo>−</mo><mi>y</mi><mo stretchy="false">)</mo><mo>−</mo><mi>z</mi><mo>=</mo><mi>x</mi><mo>−</mo><mi>y</mi><mo>−</mo><mi>z</mi></mrow><annotation encoding="application/x-tex">c(c(x,y),z) = (x-y)-z=x-y-z</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mclose">)</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.7777700000000001em;vertical-align:-0.19444em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span></span></span></span></span><span>﻿</span></span></p><p id="02d7e9d2-6465-46f0-bc51-2bedcf6b914e" class=""><strong>They are not the same so it is not associative</strong></p></div></p><p id="a0c2cb51-b7ab-4d6e-8a91-7d3f06085056" class="">❌ <code>(x, y) -&gt; power(x, y)</code>where <code>power</code> is the method defined in the question above.<div class="indented"><p id="7fa1c305-ec16-45d4-9559-e079b8fe5d36" class=""><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mi>c</mi><mo stretchy="false">(</mo><mi>y</mi><mo separator="true">,</mo><mi>z</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo><mo>=</mo><mi>c</mi><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><msup><mi>y</mi><mi>z</mi></msup><mo stretchy="false">)</mo><mo>=</mo><msup><mi>x</mi><mrow><mo stretchy="false">(</mo><msup><mi>y</mi><mi>z</mi></msup><mo stretchy="false">)</mo></mrow></msup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">c(x,c(y,z)) = c(x,y^z) =x^{(y^z)})</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mclose">))</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.664392em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.04398em;">z</span></span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.138em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8879999999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mopen mtight">(</span><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7385428571428572em;"><span style="top:-2.931em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight" style="margin-right:0.04398em;">z</span></span></span></span></span></span></span></span><span class="mclose mtight">)</span></span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span><span>﻿</span></span></p><p id="ae3f03d8-b45a-40ab-ad92-69a7aad19abe" class=""><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo stretchy="false">(</mo><mi>c</mi><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mi>y</mi><mo stretchy="false">)</mo><mo separator="true">,</mo><mi>z</mi><mo stretchy="false">)</mo><mo>=</mo><mi>c</mi><mo stretchy="false">(</mo><msup><mi>x</mi><mi>y</mi></msup><mo separator="true">,</mo><mi>z</mi><mo stretchy="false">)</mo><mo>=</mo><mo stretchy="false">(</mo><msup><mi>x</mi><mi>y</mi></msup><msup><mo stretchy="false">)</mo><mi>z</mi></msup><mo>=</mo><msup><mi>x</mi><mrow><mi>y</mi><mi>z</mi></mrow></msup></mrow><annotation encoding="application/x-tex">c(c(x,y),z) = c(x^y, z) =(x^y)^z = x^{yz}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mclose">)</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.664392em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">y</span></span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.664392em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">y</span></span></span></span></span></span></span></span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.664392em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.04398em;">z</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.664392em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.664392em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.04398em;">yz</span></span></span></span></span></span></span></span></span></span></span></span></span><span>﻿</span></span></p><p id="945fcb15-109f-4b32-8bd6-592943adae0d" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>They are not the same so it is not associative</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></p></div></p><p id="4f629651-d25f-4f0d-bed7-a4d628d6bf77" class="">✅ <code>(x, y) -&gt; x + y + 1</code><div class="indented"><p id="d6945212-594f-4caf-90f2-200f594d0747" class=""><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mi>c</mi><mo stretchy="false">(</mo><mi>y</mi><mo separator="true">,</mo><mi>z</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo><mo>=</mo><mi>c</mi><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mo stretchy="false">(</mo><mi>y</mi><mo>+</mo><mi>z</mi><mo>+</mo><mn>1</mn><mo stretchy="false">)</mo><mo stretchy="false">)</mo><mo>=</mo><mi>x</mi><mo>+</mo><mi>y</mi><mo>+</mo><mi>z</mi><mo>+</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">c(x,c(y,z)) = c(x, (y +z+1)) = x+y+z+2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mclose">))</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">))</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.7777700000000001em;vertical-align:-0.19444em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">2</span></span></span></span></span><span>﻿</span></span></p><p id="634dd69e-fed0-4315-baeb-0f509b424eb6" class=""><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo stretchy="false">(</mo><mi>c</mi><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mi>y</mi><mo stretchy="false">)</mo><mo separator="true">,</mo><mi>z</mi><mo stretchy="false">)</mo><mo>=</mo><mo stretchy="false">(</mo><mi>x</mi><mo>+</mo><mi>y</mi><mo>+</mo><mn>1</mn><mo stretchy="false">)</mo><mo>+</mo><mi>z</mi><mo>+</mo><mn>1</mn><mo>=</mo><mi>x</mi><mo>+</mo><mi>y</mi><mo>+</mo><mi>z</mi><mo>+</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">c(c(x,y),z) = (x+y+1) + z + 1 = x+y+z+2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mclose">)</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.7777700000000001em;vertical-align:-0.19444em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.7777700000000001em;vertical-align:-0.19444em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">2</span></span></span></span></span><span>﻿</span></span></p><p id="f7dcf0f6-281c-4300-8dc3-75c8265078a1" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>They are the same so it is associative</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></p></div></p><p id="2cc0c9e6-ddc1-427f-8d34-8b2cea0e348a" class="">❌ None of the above.</p></details></li></ul><ul id="489b6b4b-c9b8-4a79-9166-5c2dab779540" class="toggle"><li><details open=""><summary>Practice #10</summary><p id="8384d225-f455-4e95-8a49-43ae71071f33" class="">Which of the following combiners is/are compatible with the accumulator if identity is 1?</p><pre id="49d015a0-150e-4a37-9896-a6a30c2be16c" class="code code-wrap"><code>(x, y) -&gt; x * y * 2;</code></pre><p id="9be1f0b2-4a9d-4ed1-9ef5-dd0379ac487d" class="">❌ <code>(x, y) -&gt; x * y * 2;</code> <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mi>a</mi><mo stretchy="false">(</mo><mn>1</mn><mo separator="true">,</mo><mi>y</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo><mo>=</mo><mi>c</mi><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mn>2</mn><mi>y</mi><mo stretchy="false">)</mo><mo>=</mo><mn>4</mn><mi>x</mi><mi>y</mi><mo mathvariant="normal">≠</mo><mn>2</mn><mi>x</mi><mi>y</mi></mrow><annotation encoding="application/x-tex">c(x,a(1,y)) = c(x, 2y) = 4xy \neq 2xy </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal">a</span><span class="mopen">(</span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mclose">))</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">2</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord">4</span><span class="mord mathnormal">x</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel"><span class="mrel"><span class="mord vbox"><span class="thinbox"><span class="rlap"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="inner"><span class="mord"><span class="mrel"></span></span></span><span class="fix"></span></span></span></span></span><span class="mrel">=</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8388800000000001em;vertical-align:-0.19444em;"></span><span class="mord">2</span><span class="mord mathnormal">x</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span></span></span></span><span>﻿</span></span></p><p id="eb354a04-c14b-4efd-89f1-c6d33c5f12c9" class="">✅ <code>(x, y) -&gt; x * y;</code> <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mi>a</mi><mo stretchy="false">(</mo><mn>1</mn><mo separator="true">,</mo><mi>y</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo><mo>=</mo><mi>c</mi><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mn>2</mn><mi>y</mi><mo stretchy="false">)</mo><mo>=</mo><mn>2</mn><mi>x</mi><mi>y</mi><mo>=</mo><mn>2</mn><mi>x</mi><mi>y</mi></mrow><annotation encoding="application/x-tex">c(x,a(1,y)) = c(x, 2y) = 2xy = 2xy </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal">a</span><span class="mopen">(</span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mclose">))</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">2</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8388800000000001em;vertical-align:-0.19444em;"></span><span class="mord">2</span><span class="mord mathnormal">x</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8388800000000001em;vertical-align:-0.19444em;"></span><span class="mord">2</span><span class="mord mathnormal">x</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span></span></span></span><span>﻿</span></span></p><p id="b675cd94-46de-4bfe-952e-21bb42dbaeb2" class="">❌ <code>(x, y) -&gt; x + y;</code> <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mo stretchy="false">(</mo><mi>a</mi><mo stretchy="false">(</mo><mn>1</mn><mo separator="true">,</mo><mi>y</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo><mo>=</mo><mi>c</mi><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mn>2</mn><mi>y</mi><mo stretchy="false">)</mo><mo>=</mo><mi>x</mi><mo>+</mo><mn>2</mn><mi>y</mi><mo mathvariant="normal">≠</mo><mn>2</mn><mi>x</mi><mi>y</mi></mrow><annotation encoding="application/x-tex">c(x,(a(1,y)) = c(x,2y) = x + 2y \neq 2xy </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mopen">(</span><span class="mord mathnormal">a</span><span class="mopen">(</span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mclose">))</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">2</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord">2</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel"><span class="mrel"><span class="mord vbox"><span class="thinbox"><span class="rlap"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="inner"><span class="mord"><span class="mrel"></span></span></span><span class="fix"></span></span></span></span></span><span class="mrel">=</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8388800000000001em;vertical-align:-0.19444em;"></span><span class="mord">2</span><span class="mord mathnormal">x</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span></span></span></span><span>﻿</span></span></p><p id="1cdcff56-6568-452d-996e-1914b26a9768" class="">❌ <code>(x, y) -&gt; x * y / 2;</code><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mi>a</mi><mo stretchy="false">(</mo><mn>1</mn><mo separator="true">,</mo><mi>y</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo><mo>=</mo><mi>c</mi><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mn>2</mn><mi>y</mi><mo stretchy="false">)</mo><mo>=</mo><mi>x</mi><mi>y</mi><mo mathvariant="normal">≠</mo><mn>2</mn><mi>x</mi><mi>y</mi></mrow><annotation encoding="application/x-tex">c(x,a(1,y)) = c(x, 2y) = xy \neq  2xy </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal">a</span><span class="mopen">(</span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mclose">))</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">2</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord mathnormal">x</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel"><span class="mrel"><span class="mord vbox"><span class="thinbox"><span class="rlap"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="inner"><span class="mord"><span class="mrel"></span></span></span><span class="fix"></span></span></span></span></span><span class="mrel">=</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8388800000000001em;vertical-align:-0.19444em;"></span><span class="mord">2</span><span class="mord mathnormal">x</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span></span></span></span><span>﻿</span></span></p><p id="5fd09db0-29fa-4511-9643-34d8e51dc882" class="">
+</p></details></li></ul><ul id="59fb3070-a965-409f-89d2-16d2da1d1483" class="toggle"><li><details open=""><summary>Practice #11</summary><p id="8581778b-af49-424f-8eec-8786afe1123e" class="">Consider the <code>reduce</code> operation below on a stream:</p><pre id="06f67d51-6101-49a8-977b-51639aae9f73" class="code code-wrap"><code>stream.reduce(0, (x, y) -&gt; x + 1, (x, y) -&gt; x + y)</code></pre><p id="8f747a2a-2bc0-492e-9767-305975d17aff" class="">Can the operation be parallelized?  If not, why?</p><p id="32fc1252-c3c1-401c-8028-fc27b06c0ce4" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Answer : yes, </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong>identity here is 0</p><p id="0d01fbb5-454c-47b4-a7bd-70e1d0f9fc12" class=""><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo stretchy="false">(</mo><mn>0</mn><mo separator="true">,</mo><mi>y</mi><mo stretchy="false">)</mo><mo>=</mo><mi>y</mi><mo>=</mo><mo>=</mo><mi>y</mi></mrow><annotation encoding="application/x-tex">c(0,y) = y == y</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">==</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span></span></span></span><span>﻿</span></span></p><p id="75a50c6a-680e-488e-9df9-6870be725543" class=""><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mi>a</mi><mo stretchy="false">(</mo><mn>0</mn><mo separator="true">,</mo><mi>y</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo><mo>=</mo><mi>c</mi><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mn>1</mn><mo stretchy="false">)</mo><mo>=</mo><mi>x</mi><mo>+</mo><mn>1</mn><mo>=</mo><mo>=</mo><mi>a</mi><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mi>y</mi><mo stretchy="false">)</mo><mo>=</mo><mi>x</mi><mo>+</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">c(x, a(0, y)) = c(x,1) = x +1 == a(x,y) = x + 1 </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal">a</span><span class="mopen">(</span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mclose">))</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">1</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">==</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">a</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span></span><span>﻿</span></span></p><p id="1ef6ef87-c335-47b5-bb86-3c67b855d0f3" class=""><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mi>c</mi><mo stretchy="false">(</mo><mi>y</mi><mo separator="true">,</mo><mi>z</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo><mo>=</mo><mi>c</mi><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mi>y</mi><mo>+</mo><mi>z</mi><mo stretchy="false">)</mo><mo>=</mo><mi>x</mi><mo>+</mo><mi>y</mi><mo>+</mo><mi>z</mi><mo>=</mo><mo>=</mo><mi>c</mi><mo stretchy="false">(</mo><mi>c</mi><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mi>y</mi><mo stretchy="false">)</mo><mo separator="true">,</mo><mi>z</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">c(x,c(y,z)) = c(x,y+z) = x + y +z == c(c(x,y),z)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mclose">))</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.7777700000000001em;vertical-align:-0.19444em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">==</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mclose">)</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mclose">)</span></span></span></span></span><span>﻿</span></span></p></details></li></ul></div></article></body></html>

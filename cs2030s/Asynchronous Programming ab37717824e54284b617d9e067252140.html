@@ -1,0 +1,907 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Asynchronous Programming</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-interactiveBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-translucentGray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="ab377178-24e5-4284-b617-d9e067252140" class="page sans"><header><div class="page-header-icon undefined"><span class="icon">🎓</span></div><h1 class="page-title">Asynchronous Programming</h1><p class="page-description"></p></header><div class="page-body"><h2 id="a6100fdd-1b7b-4195-aff9-2a183e86cf31" class="">Dependency Management</h2><p id="ef748415-a24f-457e-90fa-011818f0911c" class="">Consideration:</p><ul id="f5df8c23-bf88-49e9-95d1-1beea31b9821" class="bulleted-list"><li style="list-style-type:disc">We want tasks that we wish to execute concurrently and organize it to run based on a certain structure</li></ul><figure id="2e886f52-0d5d-4232-89b8-3bfb543b8f90" class="image"><a href="Asynchronous%20Programming%20ab37717824e54284b617d9e067252140/Untitled.png"><img style="width:307px" src="Asynchronous%20Programming%20ab37717824e54284b617d9e067252140/Untitled.png"/></a></figure><ul id="2acf8ea2-9faa-4200-b049-c416df56fdb4" class="bulleted-list"><li style="list-style-type:disc">We might also want to handle exceptions so if one of the tasks encounters an exception, the other tasks not dependent on it should still be completed.</li></ul><figure class="block-color-yellow_background callout" style="white-space:pre-wrap;display:flex" id="d2a81948-0511-49b8-8109-55654e130ff4"><div style="font-size:1.5em"><span class="icon">📎</span></div><div style="width:100%">Implementing the above using <code>Thread </code>requires careful coordination. Firstly, there are no methods in <code>Thread</code> that return a value. We need the threads to communicate through shared variables. Secondly, there is no mechanism to specify the execution order and dependencies among them -- which thread to start after another thread completes. Finally, we have to consider the possibility of exceptions in each of our tasks.</div></figure><figure class="block-color-yellow_background callout" style="white-space:pre-wrap;display:flex" id="28114403-9cf4-4e1d-9350-007d095ef1e2"><div style="font-size:1.5em"><span class="icon">📎</span></div><div style="width:100%">Another problem is also overhead since the <code>Thread </code> instances takes up some resources so instead we should reuse the instances instead to run multiple tasks</div></figure><h3 id="01444825-fa03-4745-af59-229478dcea61" class=""><code>CompletableFuture</code> Monad</h3><pre id="c03e4ea2-3e7a-4565-9eaf-8d492ce5c35b" class="code code-wrap"><code>CompletableFuture&lt;Integer&gt; foo(int x) {
+  CompletableFuture&lt;Integer&gt; a = CompletableFuture.completedFuture(taskA(x));
+  CompletableFuture&lt;Integer&gt; b = a.thenComposeAsync(i -&gt; taskB(i));
+  CompletableFuture&lt;Integer&gt; c = a.thenComposeAsync(i -&gt; taskC(i));
+  CompletableFuture&lt;Integer&gt; d = a.thenComposeAsync(i -&gt; taskD(i));
+  CompletableFuture&lt;Integer&gt; e = b.thenCombineAsync(c, (i, j) -&gt; taskE(i, j));
+  return e;
+}</code></pre><p id="dff7e2e1-ed72-4768-8f7c-a473b57e328f" class="">If we run <code>foo(x).get()</code> to wait for all the concurrent tasks to complete and return a value</p><p id="28654f1b-d240-4599-93f2-d7163e6af889" class=""><code>CompletableFuture&lt;T&gt;</code> is a monad that encapsulates a value that is either there or not there <em>yet</em>. A key property of <code>CompletableFuture </code>is whether the value it promises is ready -- i.e., the tasks that it encapsulates has <em>completed</em> or not.</p><ul id="bbe29454-78dc-4334-ae1f-23dd712ce13a" class="bulleted-list"><li style="list-style-type:disc"><code>completedFuture</code> ⇒ The method is to create a task that is already completed and return a value. We call this the<code> of </code>method in the context of Stream and Optional, but in<code> CompletableFuture,</code> it is called <code>completedFuture</code>. This method creates a <code>CompletableFuture</code> that is completed. <ul id="73511ccd-18b0-42d2-9b04-0722ebdab876" class="bulleted-list"><li style="list-style-type:circle"><code>static  CompletableFuture completedFuture(U value)</code> ⇒ returns a new <code>CompletableFuture</code> that is already completed with the given value</li></ul></li></ul><ul id="baa0a2cc-1e1f-4bcd-8df5-4c14cd4b87bb" class="bulleted-list"><li style="list-style-type:disc"><code>runAsync </code>method that takes in a <code>Runnable</code>lambda expression. <code>runAsync </code>has the return type of <code>CompletableFuture&lt;Void&gt;</code>. The returned à <code>CompletableFuture</code> instance completes when the given lambda expression finishes.</li></ul><ul id="b289e4db-d4ba-4c38-a8d2-e872b39c70f5" class="bulleted-list"><li style="list-style-type:disc"><code>supplyAsync</code> method that takes in a <code>Supplier&lt;T&gt;</code> lambda expression. <code>supplyAsync</code> has the return type of <code>CompletableFuture&lt;T&gt;</code>. The returned <code>CompletableFuture</code> instance completes when the given lambda expression finishes.</li></ul><ul id="8405c2d8-8040-43a9-a590-a7031faae31b" class="bulleted-list"><li style="list-style-type:disc"><code>allOf</code> ⇒ A new <code>CompletableFuture</code> created with <code>allOf</code> is completed only when all the given <code>CompletableFuture</code> completes.</li></ul><ul id="0b645b12-bc46-42c1-917c-bd29291110e1" class="bulleted-list"><li style="list-style-type:disc"><code>anyOf</code> ⇒ a new <code>CompletableFuture</code>created with <code>anyOf</code>is completed when any one of the given <code>CompletableFuture</code> completes.<pre id="4258eb0e-7883-4924-a90e-c9599b9ff0ff" class="code code-wrap"><code>CompletableFuture.anyOf(
+ CompletableFuture.runAsync(() -&gt; a()),
+ CompletableFuture.runAsync(() -&gt; b()))
+ .thenRun(() -&gt; c());</code></pre><ul id="ddd305da-c2ee-4f25-aa0c-b9d961fe79c0" class="bulleted-list"><li style="list-style-type:circle"><code>a(), b(), c()</code> are three methods that takes in no arguments and returns <code>void</code> . We will be running <code>a()</code> and <code>b()</code> first in any order but <code>c()</code> can only run after either one completes</li></ul></li></ul><ul id="1f963fc5-24a4-48b6-9fe4-934ce90020a4" class="bulleted-list"><li style="list-style-type:disc"><code>thenApply</code>, which is analogous to <code>map</code></li></ul><ul id="e90def5e-661b-4dfb-8ac2-7c477e12a92a" class="bulleted-list"><li style="list-style-type:disc"><code>thenCompose</code>, which is analogous to <code>flatMap</code></li></ul><ul id="ae5beec7-5445-4d7c-9744-542dcc7ce779" class="bulleted-list"><li style="list-style-type:disc"><code>thenCombine</code>, which is analogous to <code>combine</code></li></ul><ul id="21828efc-8b98-4a03-9f09-2d6b28ee6068" class="bulleted-list"><li style="list-style-type:disc"><code>thenApplyAsync</code>, <code>thenComposeAsync</code>, <code>thenCombineAsync</code>, which may cause the given lambda expression to run in a different thread (thus more concurrency).</li></ul><ul id="b68d6be5-6e3b-499c-aae7-4413a49ea61a" class="bulleted-list"><li style="list-style-type:disc"><code>thenRun</code> takes in a <code>Runnable</code>. It executes the <code>Runnable</code> after the current stage is completed.</li></ul><ul id="b4314a55-b7dc-40bc-8a21-47f139aa7444" class="bulleted-list"><li style="list-style-type:disc"><code>runAfterBoth</code> takes in another <code>CompletableFuture</code> and a <code>Runnable</code>. It executes the <code>Runnable</code> after the current stage completes and the input <code>CompletableFuture</code> are completed.</li></ul><ul id="0920f9f4-8552-49d4-a94f-b740c405e416" class="bulleted-list"><li style="list-style-type:disc"><code>get()</code> to get the result but it is a synchronous call so it blocks until the <code>CompletableFuture</code><strong><code> </code></strong><strong><strong><strong> </strong></strong></strong>completes so better use it at the end of the step</li></ul><ul id="498e0a51-e6fe-4168-8434-5326007c8756" class="bulleted-list"><li style="list-style-type:disc"><code>join()</code> similar to get but there is no checked exception thrown</li></ul><ul id="ca081b9a-3471-43ca-aed6-b28579979ca9" class="bulleted-list"><li style="list-style-type:disc"><code>runAfterEither</code> takes in another <code>CompletableFuture</code> and a <code>Runnable</code>. It executes the <code>Runnable</code> after the current stage completes or the input <code>CompletableFuture</code> are completed.</li></ul><figure class="block-color-brown_background callout" style="white-space:pre-wrap;display:flex" id="e7de1556-ef8a-48f9-b367-da972977aed3"><div style="font-size:1.5em"><span class="icon">💡</span></div><div style="width:100%"><code>.thenCombine()</code> is a nonblocking so we can do other task first. Only when we really need the value, we can call the <code>join()</code> which blocks. <code>cf1</code> has to finish before <code>op</code> is called not before <code>.thenCompose()</code> and <code>.thenCombine()</code> . The op is the one that has to wait. <code>.thenCombine()</code> and <code>.thenCompose()</code>will be return immediately so it does not wait but it ensures that the op is ordered<figure id="d57ec3be-8ffc-46f1-ba50-bef4b347036a" class="image"><a href="Asynchronous%20Programming%20ab37717824e54284b617d9e067252140/Untitled%201.png"><img style="width:384px" src="Asynchronous%20Programming%20ab37717824e54284b617d9e067252140/Untitled%201.png"/></a></figure></div></figure><figure class="block-color-blue_background callout" style="white-space:pre-wrap;display:flex" id="8493a163-bfbb-46c0-9f5e-9ad68c2d01fd"><div style="font-size:1.5em"><span class="icon">💡</span></div><div style="width:100%">The method <code>CompletableFuture::get</code>throws a couple of checked exceptions: <code>InterruptedException</code> and <code>ExecutionException</code>, which we need to catch and handle. The former refers to the exception that the thread has been interrupted, while the latter refers to errors/exceptions during execution</div></figure><table id="718ed50c-c8e8-467d-95c3-625139c434a4" class="simple-table"><thead class="simple-table-header"><tr id="6a70acac-078f-48de-b7a2-9524543b9088"><th id="i|As" class="block-color-teal_background simple-table-header" style="width:192px"><code>Promise</code></th><th id="@&gt;Wm" class="block-color-teal_background simple-table-header"><code>CompletableFuture</code></th></tr></thead><tbody><tr id="22ab9877-3b3f-4611-a0c4-ea50e19531cc"><td id="i|As" class="" style="width:192px"><code>of</code></td><td id="@&gt;Wm" class=""><code>completedFuture</code>, <code>supplyAsync</code></td></tr><tr id="c6a9e001-6c9c-4088-903f-5b441b143f30"><td id="i|As" class="" style="width:192px"><code>flatMap</code></td><td id="@&gt;Wm" class=""><code>thenCompose</code></td></tr><tr id="42c05e32-b8f6-4d33-a54d-caade79e2a9f"><td id="i|As" class="" style="width:192px"><code>map</code></td><td id="@&gt;Wm" class=""><code>thenApply</code></td></tr></tbody></table><table id="a009f3eb-2d8e-4f09-ad5e-cdfd10093fb9" class="simple-table"><thead class="simple-table-header"><tr id="8fdd3f07-e06a-4f51-8d3b-b81794ba751d"><th id="i|As" class="block-color-teal_background simple-table-header">What</th><th id="@&gt;Wm" class="block-color-teal_background simple-table-header">How</th></tr></thead><tbody><tr id="5798ddc2-4172-451a-b78b-28d0503d7ce3"><td id="i|As" class="">Wait for a CF to complete</td><td id="@&gt;Wm" class=""><code>get, getNow, join</code></td></tr><tr id="1aa34540-5c04-468f-b8b3-29c569ebbd2c"><td id="i|As" class="">Check if a CF is complete</td><td id="@&gt;Wm" class=""><code>complete</code></td></tr><tr id="cd2e53f9-ad64-441e-8d5f-a4d9f8436630"><td id="i|As" class="">Do something when a CF completes</td><td id="@&gt;Wm" class=""><code>thenRun</code></td></tr><tr id="188123f3-e07a-400b-aca0-e1679bf4f247"><td id="i|As" class="">Do something when multiple other CFs complete</td><td id="@&gt;Wm" class=""><code>thenCombine, allOf, anyOf</code></td></tr><tr id="7b58a656-5a77-491c-bed0-7068a5f9574a"><td id="i|As" class="">Handle errors</td><td id="@&gt;Wm" class=""><code>handle, exceptionally</code></td></tr><tr id="fa352f26-a8fd-4480-9875-4752c43290b2"><td id="i|As" class="">Use another thread</td><td id="@&gt;Wm" class=""><code>_Async</code></td></tr></tbody></table><pre id="7eeb7f47-996a-4c69-9f41-0db51b437283" class="code code-wrap"><code>import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
+
+class WithCF {
+    public static int findIthPrime(int i) {
+        return Stream
+                .iterate(2, x -&gt; x + 1)
+                .filter(x -&gt; isPrime(x))
+                .limit(i)
+                .reduce((x, y) -&gt; y)
+                .orElse(0);
+    }
+
+    public static void main(String[] args) {
+        int i = 200_000;
+        int j = 100_000;
+        CompletableFuture&lt;Integer&gt; ithPrime =
+                CompletableFuture.supplyAsync(() -&gt; findIthPrime(i));
+        CompletableFuture&lt;Integer&gt; jthPrime =
+                CompletableFuture.supplyAsync(() -&gt; findIthPrime(j));
+        CompletableFuture&lt;Integer&gt;  diff =
+                ithPrime.thenCombine(jthPrime, (x,y) -&gt; x - y);
+        System.out.println(diff.join());
+    }
+}</code></pre><p id="87266862-c19a-4678-9320-be5bbe333769" class="">This will launch two concurrent threads to find i-th and j-th primes so the <code>supplyAsync</code> will return immediately without waiting for the method to finish</p><p id="906cd270-e70f-4ad6-a622-06e47f66b7d5" class="">After it is finish, then the value computed will go through the <code>thenCombine</code> method to find the difference between the two values which means <strong><strong><strong><strong><strong><strong><strong>another</strong></strong></strong></strong></strong></strong></strong> <code>CompletableFuture</code> will run asynchronously to compute the difference. <span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid">Then we can run other tasks</span></span></span></span></span></span></span></span></span></span></span> until the result is ready will the system print out the result from <code>diff.join()</code></p><h3 id="b146c809-f9f1-423f-a2d4-664b3caeb731" class="">Properties of <code>CompletableFuture&lt;T&gt;</code></h3><ul id="373a59fd-a0c7-4f40-9007-8f8e902f2395" class="bulleted-list"><li style="list-style-type:disc"><code>CompletableFuture&lt;T&gt;</code> is a <strong><strong><strong><strong><strong>monad. </strong></strong></strong></strong></strong>If you can chain monad, you can chain <code>CompletableFuture</code></li></ul><ul id="a12cedfa-dd11-41e7-8294-bf4521a71822" class="bulleted-list"><li style="list-style-type:disc">Some methods in <code>CompletableFuture </code>returns <code>CompletionStage</code></li></ul><ul id="255d15bc-d56b-4dbc-a680-6f459a24ffe2" class="bulleted-list"><li style="list-style-type:disc">We can reduce overhead of thread using <code>ForkJoinPool</code> which allows thread to be reused when not used instead of creating a new thread every time</li></ul><ul id="df351f1e-d663-4ba8-94ae-cbd665a6274f" class="bulleted-list"><li style="list-style-type:disc">Handle exceptions using the <code>handle</code> method</li></ul><h3 id="76a4bcdc-d2e3-4eab-b0b9-e9d50bd9fdbf" class="">Difference between<code> Lazy&lt;T&gt;</code> and <code>CompletableFuture&lt;T&gt;</code></h3><figure id="5eae9a67-5e01-445d-9c85-ff18ad353d0f" class="image"><a href="Asynchronous%20Programming%20ab37717824e54284b617d9e067252140/Untitled%202.png"><img style="width:708px" src="Asynchronous%20Programming%20ab37717824e54284b617d9e067252140/Untitled%202.png"/></a></figure><h3 id="eb647837-4335-401b-914d-8ce772f76f6b" class="">Handling exceptions</h3><p id="9051a596-8abd-4f00-bc8d-9607126a4a6b" class=""><code>CompletableFuture&lt;T&gt; </code>has three methods that deal with exceptions: <code>exceptionally</code>,  <code>whenComplete</code>, and <code>handle</code></p><p id="15d28cc4-c5c7-4a8d-86a1-40667a034462" class=""><code>CompletableFuture&lt;T&gt; </code>that might throw an exception. Since the computation is asynchronous and could run in a different thread, the question of which thread should catch and handle the exception arises. <code>CompletableFuture&lt;T&gt; </code> keeps things simpler by storing the exception and passing it down the chain of calls, until <code>join()</code> is called. <code>join()</code> might throw <code>CompletionException </code>and whoever calls <code>join()</code>will be responsible for handling this exception.</p><p id="ebda5e57-8330-49fc-a4eb-f97eca51a3b1" class=""><code>CompletionException </code>contains information on the original exception. Example is below</p><pre id="9e72f618-a76f-495d-8fde-a198c0f9199b" class="code code-wrap"><code>CompletableFuture.&lt;Integer&gt;supplyAsync(() -&gt; null)
+                 .thenApply(x -&gt; x + 1)
+                 .join();</code></pre><p id="979f9727-858c-460b-88bf-4aa073de4b29" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>To chain tasks despite exceptions</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong>: use the <code>handle</code> method takes in a <code>BiFunction</code>
+ (similar to <code>cs2030s.fp.Combiner</code>). The first parameter to the <code>BiFunction</code>is the value, the second is the exception, the third is the return value</p><figure class="block-color-pink_background callout" style="white-space:pre-wrap;display:flex" id="8537b253-2288-4110-8120-0d959c6f862f"><div style="font-size:1.5em"><span class="icon">❗</span></div><div style="width:100%">Only one of the first two parameters is not <code>null</code>. If the value is <code>null</code>, this means that an exception has been thrown. Otherwise, the exception is <code>null.</code> Example is below<pre id="497a6ff7-5750-41ec-88c9-8f9cd440ffb5" class="code code-wrap"><code>cf.thenApply(x -&gt; x + 1)
+  .handle((t, e) -&gt; (e == null) ? t : 0)
+  .join();</code></pre></div></figure><figure class="block-color-pink_background callout" style="white-space:pre-wrap;display:flex" id="30dd1195-c702-4d22-9417-807e588ace83"><div style="font-size:1.5em"><span class="icon">❗</span></div><div style="width:100%"><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Remember! </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code>supplyAsync</code> is used when you want the return to be of type <code>CompletableFuture</code> but if we want to return <code>void</code> then use <code>runAsync</code></div></figure><p id="5946d259-3447-4c0f-bd30-cd1e35530784" class="">
+</p><ul id="ee168bf5-70ac-4e85-9a3f-03ffdf023047" class="toggle"><li><details open=""><summary>Practice #1</summary><p id="42d8e034-c58b-4bc0-bbc4-f0207bf202cd" class="">Consider the following snippet:</p><pre id="e88355a9-5a13-476d-9c81-45a704b73dd7" class="code code-wrap"><code>Supplier&lt;Integer&gt; s = () -&gt; fib(100);
+CompletableFuture cf = CompletableFuture.supplyAsync(s);</code></pre><p id="59337581-d6cc-4ade-9c53-6fb387ccd31c" class="">When is the <code>CompletableFuture</code> <code>cf</code> considered as complete?</p><p id="f80e127c-8666-41a8-b190-c4702b805f8d" class=""><strong>Answer : After the method call </strong><strong><code>s.get()</code></strong><strong> returns</strong></p><p id="20e844ca-dd39-4fa6-af17-f4f1382c9c26" class="">
+</p></details></li></ul><ul id="39592b91-ec72-433d-939c-94afe22983c4" class="toggle"><li><details open=""><summary>Practice #2</summary><p id="0a8219bc-59c6-42c3-8831-3a250a1e3d6b" class="">Consider the following snippet:</p><pre id="a712e374-e03e-4786-8e2d-fbd89bb615b8" class="code code-wrap"><code>CompletableFuture&lt;Integer&gt; cf = CompletableFuture.completedFuture(fib(100));</code></pre><p id="fa91e9d9-8162-4180-91cd-0c0db66bcfc0" class="">When is the <code>CompletableFuture</code> <code>cf</code> considered as complete?</p><p id="c919127e-0a3f-483a-a363-36967dfd7da7" class=""><strong>Answer : </strong>After the method call <code>CompletableFuture::completedFuture</code> returns. Remember the definition of <code>completedFuture</code> is to return a task that is <strong><strong><strong><strong><strong><strong><strong>already completed</strong></strong></strong></strong></strong></strong></strong></p><p id="6144b14f-860d-4765-a4e1-39d6fea639f2" class="">
+</p></details></li></ul><ul id="abb71c92-9af4-438d-ae2d-4f2b6af51aee" class="toggle"><li><details open=""><summary>Practice #3</summary><p id="9efe2dea-4a18-4345-87c5-f27d7073a310" class="">Consider the function below:</p><pre id="f5e8e96b-a886-427b-b831-076661321df4" class="code code-wrap"><code>CompletableFuture&lt;Integer&gt; createAsync() {
+  Supplier s1 = () -&gt; fib(100);
+  return CompletableFuture.supplyAsync(s1); // Line A
+}
+</code></pre><p id="6f4c4107-11ff-4700-8471-b3aaaf510e91" class="">and the following invocation:</p><pre id="cbefffa7-2b2c-4d4c-a1d5-101f161f1e84" class="code code-wrap"><code>Supplier&lt;CompletableFuture&lt;Integer&gt;&gt; s2 = () -&gt; createAsync();
+CompletableFuture&lt;CompletableFuture&lt;Integer&gt;&gt; cf = CompletableFuture.supplyAsync(s2); // Line B
+</code></pre><p id="43870d35-ce46-4cfb-b20c-0e001edeb4ae" class="">When is the <code>CompletableFuture cf</code> considered as complete?</p><p id="7b823993-584c-4441-9c5f-25ee792373be" class=""><strong>Answer : </strong>After the method call <code>s2.get() </code>returns. <code>supplyAsync</code> is completed only when the lambda expression is completed</p><p id="24afa73a-4962-48d2-8f66-77082aab7d36" class="">
+</p></details></li></ul><ul id="8d059d2e-15d6-4d4f-9411-cc784cd25349" class="toggle"><li><details open=""><summary>Practice #4</summary><p id="fc7c03b2-3108-40b5-8130-8771f16cb19c" class="">
+</p><figure id="331c75e4-b4cc-42a1-b423-e7ec080b6f09" class="image"><a href="Asynchronous%20Programming%20ab37717824e54284b617d9e067252140/Untitled%203.png"><img style="width:384px" src="Asynchronous%20Programming%20ab37717824e54284b617d9e067252140/Untitled%203.png"/></a></figure><p id="195a3334-338c-44c2-ac7f-cb85952121f9" class=""><strong>Answer : </strong>Last answer is false because the lambda expression inside the two <code>cfs</code> will run concurrently so there might be alternate “hello” and “world”</p><p id="8a8721b8-527d-4543-9b5e-546057c3e9dd" class="">
+</p></details></li></ul><ul id="2bbac022-1a39-4ec1-97ab-a54ac6964410" class="toggle"><li><details open=""><summary>Practice #5</summary><div id="b0e742b6-42be-48ac-91d8-e71c874c9dfe" class="column-list"><div id="2b560010-6377-4787-94c5-0ee4c584113b" style="width:118.75%" class="column"><figure id="5d2608a6-4a7e-4d2e-902d-87a19626519a" class="image"><a href="Asynchronous%20Programming%20ab37717824e54284b617d9e067252140/Untitled%204.png"><img style="width:432px" src="Asynchronous%20Programming%20ab37717824e54284b617d9e067252140/Untitled%204.png"/></a></figure><p id="84ac4ac7-d2b9-4118-856e-c387cfa02d30" class="">
+</p></div><div id="c6954804-15ca-4a6d-8334-58ddeb01bfad" style="width:62.500000000000014%" class="column"><p id="32704c0b-7acc-4595-b961-dc3d5221d787" class="">
+</p><p id="5c0e893c-cb27-43dd-9a9b-40071f545593" class=""><strong>Answer : </strong>because there is not join or get() then it s not blocked so it does not have to complete but it needs to run in order because of <code>runasync</code> and<code> thenrunasync</code>?</p><p id="640c95d2-3f65-4c35-beaa-74c60fb0df11" class="">
+</p></div></div><p id="db863279-aac7-4ec3-af45-a559000fcacc" class="">
+</p></details></li></ul><ul id="b9fc2680-6594-4614-b1b4-d882a823e735" class="toggle"><li><details open=""><summary>Practice #6</summary><p id="86320f81-5a32-46c3-8661-de8031db6150" class="">Consider the following program:</p><pre id="9ef23fd1-0fe2-4920-925c-b7e21ff09996" class="code code-wrap"><code>class Main {
+  public static void do(int i) {
+     // doSomething
+     System.out.print(i);
+  }
+
+  public static void main(String[] args) {
+    CompletableFuture.allOf(
+      CompletableFuture.runAsync(() -&gt; do(1)),
+      CompletableFuture.runAsync(() -&gt; do(2)))
+    .thenRun(() -&gt; do(3))
+    .join();
+  }
+}
+</code></pre><p id="0df95e44-feda-48fa-b96f-d4c6c745aad4" class="">Which of the following might be printed? (select all correct answers)</p><p id="4393af00-d3e6-4961-ae19-8ea713263178" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Answer : 123, 213, </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong>the order of 1 and 2 can interchange because it will run concurrently and only these two are completed, then can the lambda function inside <code>thenRun()</code> be run</p></details></li></ul><ul id="7355ac7d-43b9-4d86-b175-6510bafa2e41" class="toggle"><li><details open=""><summary>Practice #7</summary><p id="8752008b-a4f3-452d-9301-83324c2a3f5b" class="">Consider the following program:</p><pre id="501b88ce-0624-49a7-910f-324511991205" class="code code-wrap"><code>class Main {
+  public static void do(int i) {
+     // doSomething
+     System.out.print(i);
+  }
+
+  public static void main(String[] args) {
+    CompletableFuture.anyOf(                       // &lt;- changed
+      CompletableFuture.runAsync(() -&gt; do(1)),
+      CompletableFuture.runAsync(() -&gt; do(2)))
+    .thenRun(() -&gt; do(3))
+    .join();
+  }
+}
+</code></pre><p id="e5f884b3-7f2b-41ef-9b64-3c3ff06cd2f8" class="">Which of the following might be printed?</p><p id="dd97ed74-6f9c-4fd5-a1a9-d14b5e693ace" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Answer : 123, 213, 132, 231, 13 </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong>the order of 1 and 2 can interchange and only one of them is sufficient to run the next operation inside <code>thenRun()</code> </p></details></li></ul><ul id="ccf52d19-b228-46af-af24-9791a62a8649" class="toggle"><li><details open=""><summary>Practice 8A</summary><pre id="65c3531d-e033-47fe-afe7-4649204e23c6" class="code code-wrap"><code>static A foo(A a) {
+		return a.incr().decr();
+}</code></pre><ol type="1" id="5bafe4bc-b0ac-4a2d-b400-dbec2fef5df1" class="numbered-list" start="1"><li>Write the async version so that it returns <code>CompletableFuture&lt;A&gt;</code> and the body is run asynchronously with both <code>incr</code> and <code>decr</code> running in the same thread<pre id="cc883572-ce41-47f0-bcf6-cf06a466ad67" class="code code-wrap"><code>// version 1
+static CompletableFuture&lt;A&gt; fooAsync(A a) {
+		return CompletableFuture
+				.supplyAsync(() -&gt; a.incr().decr());
+}
+// version 2
+static CompletableFuture&lt;A&gt; foo(A a) {
+		return CompletableFuture
+				.supplyAsync(() -&gt; a.incr())
+				.thenApply(x -&gt; x.decr());
+}</code></pre></li></ol><ol type="1" id="a0655d0b-934e-46aa-86ad-56c8149ec8d9" class="numbered-list" start="2"><li>Now if we can to let it run in two separate threads. <em><em><em><em><em><em><em><em><em><em><em><em>We can use two </em></em></em></em></em></em></em></em></em></em></em></em><code><em><em><em><em><em><em><em><em><em><em><em><em>thenApply</em></em></em></em></em></em></em></em></em></em></em></em></code><em><em><em><em><em><em><em><em><em><em><em><em> in two different </em></em></em></em></em></em></em></em></em></em></em></em><code><em><em><em><em><em><em><em><em><em><em><em><em>CompletableFuture</em></em></em></em></em></em></em></em></em></em></em></em></code><em><em><em><em><em><em><em><em><em><em><em><em> </em></em></em></em></em></em></em></em></em></em></em></em><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="6efe2f46-d3a2-46c2-a3a0-c7fed6342661"><div style="font-size:1.5em"><span class="icon">❗</span></div><div style="width:100%">If we chain the <code>thenApply</code>, it will not lead to faster completion like above because <code>decr()</code> will still run after <code>incr()</code>. </div></figure><pre id="ec6f69bb-ed28-4f52-aa36-72031fd1c646" class="code code-wrap"><code>CompletableFuture&lt;A&gt; cf = CompletableFuture.supplyAsync(() -&gt; a.incr());
+
+CompletableFuture&lt;A&gt; cf1 =
+  cf.thenApplyAsync(x -&gt; x.decr());
+CompletableFuture&lt;A&gt; cf2 =
+  cf.thenApplyAsync(x -&gt; x.incr());
+cf1.join(); // returns a
+cf2.join(); // returns a + 2</code></pre></li></ol><p id="abf94f59-30a2-4c6c-8a1d-ade8049a235e" class="">
+</p></details></li></ul><ul id="ea110ae3-281b-4db1-b7ca-64d00fc8d26a" class="toggle"><li><details open=""><summary>Practice 8B</summary><p id="916935df-7dce-4ec2-ad67-5d66fd00fbd3" class="">Suppose we have another method bar :</p><pre id="bb4e01dd-cf52-45c4-82f3-c6613fa7ed2e" class="code code-wrap"><code>static A bar(A a) {
+return a.incr();
+}</code></pre><p id="eb19b6c2-2d38-4d54-adb2-f63975eb6e7c" class="">which we would like to invoke using bar(foo(new A(0))) . Write the asynchronous version of the method bar (call it barAsync ) so that it returns <code>CompletableFuture</code> and the body of the method is executed asynchronously. What is the asynchronous equivalent of the invocation <code>bar(foo(new A(0))) </code>?</p><pre id="89cdf434-2490-439c-a477-8f34b1e31774" class="code code-wrap"><code>static CompletableFuture&lt;A&gt; barAsync(A a) {
+		return CompletableFuture
+		.supplyAsync(() -&gt; a.incr());
+}
+CompletableFuture&lt;A&gt; b = fooAsync(new A()).thenCompose(x -&gt; barAsync(x));</code></pre><p id="b04bd088-96f2-4165-b4e7-76fdf6d81eb8" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Basically, if want to chain multiple </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>completableFuture</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>, we use </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>thenCompose</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>, so in here, the result from the computation of </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>fooAsync</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong> will be passed as the argument x in the </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>thenCompose()</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code></p></details></li></ul><ul id="54ae6901-d137-44c8-90f5-2eabcad4a875" class="toggle"><li><details open=""><summary>Practice 8C</summary><pre id="7cf5ab4b-4a92-4fc1-ba3a-5a0c3338923b" class="code code-wrap"><code>static A baz(A a, int x) {
+		if (x == 0) {
+					return new A();
+		}
+		return a.incr().decr();
+}</code></pre><p id="5c4dc2fc-35f3-47da-8d25-4ec9405e3c11" class="">Write the asynchronous version of <code>baz</code> called<code> bazAsync</code> so that it returns <code>CompletableFuture </code>and the body of the method is executed asynchronously.</p><pre id="1091605a-00b9-42b4-afc8-e2f18dea367e" class="code code-wrap"><code>static CompletableFuture&lt;A&gt; bazAsync(A a, int x) {
+	if (x == 0) {
+		return CompletableFuture.completedFuture(new A(0));
+	} else {
+		return CompletableFuture.supplyAsync(() -&gt; a.incr().decr());
+	}
+}</code></pre></details></li></ul><ul id="3395f9fd-a3cc-4921-b8b0-0c5611c3218e" class="toggle"><li><details open=""><summary>Practice 8D</summary><pre id="64b1c926-7836-4d6c-877a-85c3ee19fbff" class="code code-wrap"><code>A qux(A a) {
+		try {
+				a = a.decr();
+				a = a.decr();
+		} catch (IllegalStateException e) {
+				System.out.println(&quot;error&quot;);
+				a = new A(10);
+		}
+		return a.incr();
+}</code></pre><p id="b7515c84-87ae-46cf-a522-c055649056ad" class="">Write the async version</p><pre id="e30ef964-cd36-47cc-9789-a01cd4881117" class="code code-wrap"><code>CompletableFuture&lt;A&gt; quxAsync(A a) {
+  return CompletableFuture
+    .supplyAsync(() -&gt; a.decr())
+    .thenApply(x -&gt; x.decr())
+    .handle((x, e) -&gt; {
+      if (x == null) {
+        System.out.println(&quot;error&quot;);
+        return new A(10);
+      } else {
+        return x;
+      }
+    })
+    .thenApply(x -&gt; x.incr());
+}
+
+CompletableFuture&lt;A&gt; quxAsync(A a) {
+  return CompletableFuture
+    .supplyAsync(() -&gt; a.decr())
+    .thenApply(x -&gt; x.decr())
+    .exceptionally(e -&gt; {
+        System.out.println(&quot;error&quot;);
+        return new A(10);
+    })
+    .thenApply(x -&gt; x.incr());
+}</code></pre><p id="3e8c7860-29d8-4e5b-aaad-a960c2c1ddff" class="">
+</p></details></li></ul><ul id="4a6cb376-46b9-4eb2-b380-5fe90a9eac10" class="toggle"><li><details open=""><summary>Practice 8E</summary><p id="7e9cc6ec-0a4e-4e36-9be6-f5cc05b76623" class="">Consider the snippet below:</p><pre id="f865798c-e378-4a05-86f6-85bf4d6ae6c8" class="code code-wrap"><code>fooAsync(new A());
+barAsync(new A());
+bazAsync(new A(), 1);
+System.out.println(&quot;done.&quot;);</code></pre><p id="cc4a65ae-8247-4303-a931-995c54d1b1de" class="">Since the first three method calls are asynchronous, the string &quot;done.&quot; is printed almost immediately, before the methods <code>fooAsync , barAsync </code>and <code>bazAsync </code>complete execution. Revise the code so that &quot;done.&quot; is printed only after all three methods are complete</p><pre id="9394effd-abf3-463b-9ba3-10350a8b134a" class="code code-wrap"><code>CompletableFuture&lt;Void&gt; all =
+  CompletableFuture.allOf(
+    fooAsync(new A()),
+    barAsync(new A()),
+    bazAsync(new A(), 1));
+all.join();
+System.out.println(&quot;done.&quot;);</code></pre></details></li></ul><ul id="7cce92e4-1216-4e01-a846-a3bf7b828780" class="toggle"><li><details open=""><summary>Practice 9</summary><pre id="08a3b474-2bf3-4bdd-b4d2-937d36faaeb0" class="code code-wrap"><code>class CF {
+	static CompletableFuture&lt;Void&gt; printAsync(int i) {
+		return CompletableFuture.runAsync(() -&gt; {
+				doSomething();
+				System.out.print(i);
+		});
+	}
+	public static void main(String[] args) {
+		printAsync(1);
+		CompletableFuture.allOf(printAsync(2), printAsync(3)).join();
+	}
+}</code></pre><p id="93423191-c3f4-480c-bf1a-81632ad124cd" class="">Which of the following are possible output printed by the program if main runs to completion normally?
+(i) 123
+(ii) 213
+(iii) 1
+(iv) 32
+A. Only (i)
+B. Only (i) and (ii)
+C. Only (ii)
+<strong>D. Only (i), (ii) and (iv)</strong>
+E. Only (iii) and (iv)
+Write X in the answer box if none of the combinations are correct</p><p id="305520ca-402e-4c72-8e41-fe7731d4ce3e" class=""><strong><strong><strong><strong><strong><strong><strong><strong>Answer: </strong></strong></strong></strong></strong></strong></strong></strong><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>printAsync(1)</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>is not synchronized so it can get printed anytime or even not printed </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>at all before the program exits</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></span></span></span></span><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>. But for the </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>allOf</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong> , there is a call to </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>join()</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong> which blocks and waits for </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>printAsync(2)</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong> and </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>printAsync(3)</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>. So we know that as long as ‘2’ and ‘3’ are printed but it can be any order</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></p></details></li></ul><ul id="f1e57854-d004-404d-9ac1-b735b2738d54" class="toggle"><li><details open=""><summary>Practice Finals 19/20 Q5</summary><figure id="97a36438-d172-4973-9eca-0804de370553" class="image"><a href="Asynchronous%20Programming%20ab37717824e54284b617d9e067252140/Untitled%205.png"><img style="width:730px" src="Asynchronous%20Programming%20ab37717824e54284b617d9e067252140/Untitled%205.png"/></a></figure><p id="91bb58ef-ba03-4406-91f0-cc3f69548132" class="">(a) 1 (b) 2 (c) 3 (d) 4 (e) 12 (f) 14 (g) 23 (h) 24 (i) 124 (j) 134 (k) 243 (l) 234 (m) 213 (n) 1324 (o) 4321</p><p id="d870bcc0-3492-45b4-af44-ba557d28f1ca" class=""><strong><strong><strong><strong><strong><strong><strong><strong>Answer: 1, 12, 1324</strong></strong></strong></strong></strong></strong></strong></strong></p><p id="cae19783-20e8-4286-92aa-1a51d75df046" class="">Since <code>printAsync(1)</code> has a <code>.join()</code> in it therefore 1 will always be printed <strong><strong><strong><strong><strong>FIRST</strong></strong></strong></strong></strong></p><p id="517855a2-4541-4211-8eca-ba8dd643f847" class=""><code>.allOf()</code> has 2 and 3 and so it might be printed as well and a possibility for 4 to be printed afterwards (prerequisite is that 2 and 3 must be printed first if 4 gets printed)</p><figure id="2a4b1062-027d-4a73-bf48-3df539d3e436" class="image"><a href="Asynchronous%20Programming%20ab37717824e54284b617d9e067252140/Untitled%206.png"><img style="width:761px" src="Asynchronous%20Programming%20ab37717824e54284b617d9e067252140/Untitled%206.png"/></a></figure><p id="15cd1e57-f565-417e-baf5-47cc8f13dd6f" class=""><strong><strong><strong><strong><strong><strong><strong>Answer: 23, 24, 124, 134, 243, 234, 1324 </strong></strong></strong></strong></strong></strong></strong></p><p id="310835cf-3924-4660-b475-000024f80aac" class="">In here, <code>printAsync(1)</code>does not have the <code>.join()</code> so it can be or need not be printed.</p><p id="66fee82b-bdb6-40df-bf07-d33f3bb196f0" class=""><code>.anyOf()</code> means that either 2 or 3 is printed or both f<span style="border-bottom:0.05em solid"><strong>ollowed by</strong></span> 4 that MUST be printed due to the presence of <code>.join()</code></p><figure id="279d5f53-5f55-43eb-9914-954e1241e603" class="image"><a href="Asynchronous%20Programming%20ab37717824e54284b617d9e067252140/Untitled%207.png"><img style="width:774px" src="Asynchronous%20Programming%20ab37717824e54284b617d9e067252140/Untitled%207.png"/></a></figure><p id="33cdda76-3452-46bc-b99b-862f5b4f5017" class=""><strong><strong><strong><strong><strong><strong><strong>Answer: 1, 3, 12, 124, 134, 234, 1324</strong></strong></strong></strong></strong></strong></strong></p><p id="eae6b9d0-db78-4057-9aef-37bd78db6c83" class="">there is no .<code>.join()</code> here so nothing is a must</p><p id="dc6c90b8-2f21-47e3-89b5-5b8dbc2fc716" class=""><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>printAsync(1)</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong> </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong>means 1 can be printed alone, but if 2 is printed then 1 must appear before it</p><p id="13067256-bbdf-48d9-b704-00d60e4fce34" class=""><code>printAsync(3)</code> can be printed </p><p id="c8380dd2-097d-4d60-b55e-8965c9534af2" class=""><code>printAsync(4)</code> can also be printed on the condition that either ‘12’ or ‘3’ is already printed</p></details></li></ul><ul id="44f41f0e-7fad-456e-878b-c8f32f925e89" class="toggle"><li><details open=""><summary>Practice Finals 22/23 S1 Q17</summary><pre id="04b45107-49db-4c00-91e8-8603cdf08b4e" class="code code-wrap"><code>CompletableFuture&lt;Void&gt; a = CompletableFuture.runAsync(() -&gt; {
+        sleep();
+        System.out.print(&quot;A&quot;);
+        });
+CompletableFuture&lt;Void&gt; b = a.thenRun(() -&gt; {
+			sleep();
+			System.out.print(&quot;B&quot;);
+			});
+CompletableFuture&lt;Void&gt; c = b.thenRun(() -&gt; {
+			sleep();
+			System.out.print(&quot;C&quot;);
+			});
+CompletableFuture&lt;Void&gt; d = c.thenRun(() -&gt; {
+			sleep();
+			System.out.print(&quot;D&quot;);
+});</code></pre><p id="bfc1a6cf-9a96-4202-8eb7-3e6654b46375" class="">Recap that <code>System.out.print</code> does not print a newline character. Select ALL the possible print output assuming that sleep() may put the thread to sleep for an arbitrary amount of time.</p><p id="022f8202-e2d5-4f7c-8a86-cdc623d0f58d" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Answer: ABCD</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong> , the letters must come out in order due to the <code>.thenRun()</code></p><pre id="b04afae3-903a-408a-a16a-d1acf94c725c" class="code code-wrap"><code>CompletableFuture&lt;Void&gt; a = CompletableFuture.runAsync(() -&gt; {
+        sleep();
+        System.out.print(&quot;A&quot;);
+        });
+        CompletableFuture&lt;Void&gt; b = a.thenRun(() -&gt; {
+        sleep();
+        System.out.print(&quot;B&quot;);
+        });
+        CompletableFuture&lt;Void&gt; c = a.thenRun(() -&gt; {
+        sleep();
+        System.out.print(&quot;C&quot;);
+        });
+        CompletableFuture&lt;Void&gt; d = a.thenRun(() -&gt; {
+        sleep();
+        System.out.print(&quot;D&quot;);
+        });</code></pre><p id="4b6b2939-1a5c-4cfa-9cfa-0a2a2ae766f0" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Answer: ABCD, ABDC, ACBD, ACDB, ADBC, ADCB</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong> as long as A appears first</p><pre id="b4284bfe-d797-4721-981f-875f55fb14f0" class="code code-wrap"><code>CompletableFuture&lt;Void&gt; a = CompletableFuture.runAsync(() -&gt; {
+sleep();
+System.out.print(&quot;A&quot;);
+});
+CompletableFuture&lt;Void&gt; b = a.thenRun(() -&gt; {
+sleep();
+System.out.print(&quot;B&quot;);
+});
+CompletableFuture&lt;Void&gt; c = a.thenRun(() -&gt; {
+sleep();
+System.out.print(&quot;C&quot;);
+});
+CompletableFuture&lt;Void&gt; d = c.runAfterBoth(b, () -&gt; {
+sleep();
+System.out.print(&quot;D&quot;);
+});</code></pre><p id="67ae4f32-730f-48b5-896d-2fa6e91e2350" class=""><strong><strong><strong><strong><strong>Answer : ABCD, ACBD</strong></strong></strong></strong></strong> as long as A starts first and D ends last</p></details></li></ul><ul id="a071a461-5b15-43f3-b501-6e0246ed22a7" class="toggle"><li><details open=""><summary>Practice</summary><figure id="45f19785-513e-4f80-b3f1-f4f320a3bc9c" class="image"><a href="Asynchronous%20Programming%20ab37717824e54284b617d9e067252140/Untitled%208.png"><img style="width:703px" src="Asynchronous%20Programming%20ab37717824e54284b617d9e067252140/Untitled%208.png"/></a></figure></details></li></ul><ul id="a885cf41-f062-4656-9618-ebb7eb6eccef" class="toggle"><li><details open=""><summary>Practice Finals 21/22</summary><figure id="a1ed643c-3f91-4c32-bcf7-ce5e68cc450b" class="image"><a href="Asynchronous%20Programming%20ab37717824e54284b617d9e067252140/Untitled%209.png"><img style="width:680px" src="Asynchronous%20Programming%20ab37717824e54284b617d9e067252140/Untitled%209.png"/></a></figure><p id="c6c528d8-1124-45fb-8e42-b8b74df3e4fa" class=""><strong><strong><strong><strong><strong><strong><strong><strong>Answer: </strong></strong></strong></strong></strong></strong></strong></strong></p><figure id="c9138cb6-6f19-4ca3-9cfd-32256c45b1bf" class="image"><a href="Asynchronous%20Programming%20ab37717824e54284b617d9e067252140/Untitled%2010.png"><img style="width:660px" src="Asynchronous%20Programming%20ab37717824e54284b617d9e067252140/Untitled%2010.png"/></a></figure><figure id="7b321693-35ce-4571-9520-461233f4a7b8" class="image"><a href="Asynchronous%20Programming%20ab37717824e54284b617d9e067252140/Untitled%2011.png"><img style="width:660px" src="Asynchronous%20Programming%20ab37717824e54284b617d9e067252140/Untitled%2011.png"/></a></figure><p id="c4867cee-b61c-46de-8859-7a9198941687" class="">
+</p></details></li></ul></div></article></body></html>

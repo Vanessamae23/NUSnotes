@@ -1,0 +1,852 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Fork And Join</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-interactiveBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-translucentGray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="cb4af96c-0fe6-4943-b650-b64da2caac5b" class="page sans"><header><div class="page-header-icon undefined"><span class="icon">🍴</span></div><h1 class="page-title">Fork And Join</h1><p class="page-description"></p></header><div class="page-body"><h3 id="77aa6dbd-bb70-497c-a7d4-68acecd6062b" class="">Thread Pool</h3><ul id="854b1d1d-9e3e-4703-978b-b748ea8e1527" class="bulleted-list"><li style="list-style-type:disc">Consists of a collection of threads, each waiting for a task to execute</li></ul><ul id="f0f73cc4-7553-4241-8e0e-a1790a87bad9" class="bulleted-list"><li style="list-style-type:disc">A collection of tasks to be executed. The tasks are put in a <em><em><em><em><em><em><em><em><em><em><em><em>shared queue</em></em></em></em></em></em></em></em></em></em></em></em> and idle thread picks up a task from the queue to execute</li></ul><figure class="block-color-brown_background callout" style="white-space:pre-wrap;display:flex" id="6ebb8868-1295-424d-b9d2-6f4f591aea42"><div style="font-size:1.5em"><span class="icon">💡</span></div><div style="width:100%">The Fork-join model is essentially a parallel divide-and-conquer model of computation.<ul id="c27aa6cf-433a-4197-83f1-118c5903511e" class="bulleted-list"><li style="list-style-type:disc">Break up the problem into identical problems but with smaller size (fork) and then solve the smaller version of the problem recursively before combining the result</li></ul><ul id="573fc1a3-cb94-40be-8758-5be1a4baedde" class="bulleted-list"><li style="list-style-type:disc">This repeats recursively until the problem size is small enough -- we have reached the base case and so we just solve the problem sequentially without further parallelization.</li></ul><ul id="b7fa1f09-3f1c-4d12-90f3-f1465a3391dd" class="bulleted-list"><li style="list-style-type:disc">We can fork and join as an instance of an abstract class <code>RecursiveTask&lt;T&gt;</code> which supports the method <code>fork()</code> to submit a smaller version of the task for execution and <code>join()</code> which waits for the smaller task to complete and return </li></ul><ul id="853b3bcb-0b1d-4bd7-bb5a-030586d1dbc8" class="bulleted-list"><li style="list-style-type:disc"><code>RecursiveTask&lt;T&gt;</code> has an abstract method called <code>compute()</code>  which we need to define to specify what computation</li></ul><ul id="6506875c-b60c-49b5-9248-9ec116852e0a" class="bulleted-list"><li style="list-style-type:disc"><code>fork()</code> divides the problem | <code>join()</code> combines the result</li></ul><figure id="179efad1-ab27-40b5-bda5-d982324f29be" class="image"><a href="Fork%20And%20Join%20cb4af96c0fe64943b650b64da2caac5b/Untitled.png"><img style="width:376px" src="Fork%20And%20Join%20cb4af96c0fe64943b650b64da2caac5b/Untitled.png"/></a></figure></div></figure><pre id="a11b218f-c592-4ba6-a7e7-5ce7445303c5" class="code code-wrap"><code>Queue&lt;Runnable&gt; queue = new LinkedList&lt;&gt;();
+Thread newThread = new Thread(() -&gt; {
+  while (true) {
+    if (!queue.isEmpty()) {
+      Runnable r = queue.remove();
+      r.run();
+    }
+  }
+});
+
+for (int i = 0; i &lt; 100; i++) {
+  int count = i;
+  queue.add(() -&gt; System.out.println(count));
+}</code></pre><pre id="b97e3617-648e-41c8-bd5d-ebc617e11c0d" class="code code-wrap"><code>class Summer extends RecursiveTask&lt;Integer&gt; {
+  private static final int FORK_THRESHOLD = 2;
+  private int low;
+  private int high;
+  private int[] array;
+
+  public Summer(int low, int high, int[] array) {
+    this.low = low;
+    this.high = high;
+    this.array = array;
+  }
+
+  @Override
+  protected Integer compute() {
+    // stop splitting into subtask if array is already small.
+    if (high - low &lt; FORK_THRESHOLD) {
+      int sum = 0;
+      for (int i = low; i &lt; high; i++) {
+        sum += array[i];
+      }
+      return sum;
+    }
+
+    int middle = (low + high) / 2;
+    Summer left = new Summer(low, middle, array);
+    Summer right = new Summer(middle, high, array);
+    left.fork();
+    return right.compute() + left.join();
+  }
+}
+
+// run this
+Summer task = new Summer(0, array.length, array);
+int sum = task.compute();</code></pre><ul id="67fe527b-469e-41fa-8374-66982eea16ac" class="bulleted-list"><li style="list-style-type:disc">To invoke, <code>task.compute()</code> which will then create two new instances <code>left</code> and <code>right</code> </li></ul><ul id="6cbbb2ee-f119-489b-8388-43c131ec38a3" class="bulleted-list"><li style="list-style-type:disc">We then call <code>left.fork()</code> to add the tasks to a thread pool so that one of the threads can call <code>compute()</code> . </li></ul><ul id="6c7d076b-633a-42c6-b3fb-e2a33a3313a2" class="bulleted-list"><li style="list-style-type:disc">Then we call <code>right.compute()</code> which is just a normal method call</li></ul><ul id="f79eadb2-131a-436f-8b07-e138a7d4eb1a" class="bulleted-list"><li style="list-style-type:disc">Then we call <code>left.join()</code> which <strong><strong><strong><strong><strong><strong>blocks</strong></strong></strong></strong></strong></strong> the computation until it is completed and returned </li></ul><ul id="c9dff1de-4959-432c-b4dd-fc1dc6808376" class="bulleted-list"><li style="list-style-type:disc">Add the result of <code>left</code> and <code>right</code> and then return the sum</li></ul><figure class="block-color-purple_background callout" style="white-space:pre-wrap;display:flex" id="5152bd8b-a40b-4cfe-b9b6-bf87733bbe0e"><div style="font-size:1.5em"><span class="icon">🐙</span></div><div style="width:100%"><code>left.join()</code> should be after <code>left.fork()</code> because calling it before would cause the task to be blocked</div></figure><figure class="block-color-purple_background callout" style="white-space:pre-wrap;display:flex" id="1ee16e6a-c1b8-4bab-8da9-e9d194f9c250"><div style="font-size:1.5em"><span class="icon">🐙</span></div><div style="width:100%">Using <code>left.compute()</code> compared to <code>left.join()</code> and <code>left.fork()</code> might be better because it might reduce the overhead of interacting with <code>ForkJoinPool</code> and therefore will be likely faster</div></figure><figure id="e12ba80d-36b0-481f-8e3b-ae9fee707fda" class="image"><a href="Fork%20And%20Join%20cb4af96c0fe64943b650b64da2caac5b/Untitled%201.png"><img style="width:699px" src="Fork%20And%20Join%20cb4af96c0fe64943b650b64da2caac5b/Untitled%201.png"/></a></figure><figure id="b603d151-a49a-496c-b17f-d734af455dd5" class="image"><a href="Fork%20And%20Join%20cb4af96c0fe64943b650b64da2caac5b/Untitled%202.png"><img style="width:485px" src="Fork%20And%20Join%20cb4af96c0fe64943b650b64da2caac5b/Untitled%202.png"/></a></figure><figure id="ecf335be-21ce-4446-91ff-6a307f58ecdf" class="image"><a href="Fork%20And%20Join%20cb4af96c0fe64943b650b64da2caac5b/Untitled%203.png"><img style="width:492px" src="Fork%20And%20Join%20cb4af96c0fe64943b650b64da2caac5b/Untitled%203.png"/></a></figure><h3 id="7660a1f6-dc8b-4091-8d2a-6c609983b1b0" class="">ForkJoinPool</h3><ul id="2eef7816-1e15-482b-8aa7-fedbe91bf828" class="bulleted-list"><li style="list-style-type:disc">Each thread has a deque of tasks</li></ul><ul id="5250102d-07df-4593-a870-96eec1a02002" class="bulleted-list"><li style="list-style-type:disc">When the thread is idle, it checks the deque of tasks. If it is not empty, then it will take up the tasks at the <strong><strong><strong><strong><strong>head </strong></strong></strong></strong></strong>of the deque to <code>compute()</code> </li></ul><ul id="3156d18b-a3b0-4ec8-9607-24c3042ffbb1" class="bulleted-list"><li style="list-style-type:disc"><code>fork()</code> and <code>join()</code> is recursive so it will split the stream into two subtasks and into further substreams</li></ul><ul id="7737d01a-b739-49dc-9f50-10bbb1277561" class="bulleted-list"><li style="list-style-type:disc"><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Work stealing : </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong>If it is empty, then it will take up task from the tail of of the deque of <span style="border-bottom:0.05em solid">another </span> thread to run</li></ul><p id="27f86572-fd76-499d-a954-9d9901f7d7cd" class="">Subtasks that are created later are pushed to the head of the queue. (Think of it
+as a stack). If the tasks are joined from the tail, we will have the bigger tasks in
+front and smaller tasks behind. So we should put the bigger tasks at the back
+and complete the smaller tasks first as bigger tasks often wait for smaller tasks
+to finish. But work stealing occurs from the tail, as the tasks at the tail are bigger</p><ul id="4f654032-a221-4898-accc-d997e2f26148" class="bulleted-list"><li style="list-style-type:disc">When <code>fork()</code>  is called, the caller adds itself to the <em>head </em> of the deque of the executing thread. This is done so that the most recently forked task gets executed next, similar to how normal recursive calls</li></ul><ul id="4e26fd6f-9f51-43e0-851f-5a2972018f4f" class="bulleted-list"><li style="list-style-type:disc">When <code>join()</code> is called, several cases might happen. <ul id="d57c06db-20d9-4f27-8144-5b782fb7ee21" class="bulleted-list"><li style="list-style-type:circle">If the subtask to be joined hasn&#x27;t been executed, its <code>compute()</code> method is called and the subtask is executed. </li></ul><ul id="9cc82474-7476-4935-8e9d-80e1ba41f0e2" class="bulleted-list"><li style="list-style-type:circle">If the subtask to be joined has been completed (some other thread has stolen this and completed it), then the result is read, and <code>join()</code> returns.</li></ul><ul id="cabb129e-fcbd-4db5-b274-54046f86e22b" class="bulleted-list"><li style="list-style-type:circle">If the subtask to be joined has been stolen and is being executed by another thread, then the current thread finds some other tasks to work on either in its local deque or steal another task from another deque</li></ul></li></ul><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="74efa5f3-ad16-42fc-9155-f69ce9d18fba"><div style="font-size:1.5em"><span class="icon">❗</span></div><div style="width:100%"><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Overhead ⇒ </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong>The smaller the fork threshold, the more tasks we create and the smaller each task becomes. If the task to parallelize is too simple, it is not worth due to the overhead cost. So TLDR, this method is only useful if the task is simple</div></figure><h3 id="4dde2903-c3f8-47da-914b-04461dd9ccca" class="">Order of fork and join</h3><p id="862e0676-d305-486a-8ada-4d85dfb12f83" class="">the most recently forked task is likely to be executed next, we should <code>join()</code>the most recent <code>fork()</code>task first. <strong>In other words, the order of forking should be the reverse of the order of joining.</strong></p><figure id="f449f863-812b-4106-8e6f-e04f69150459" class="image"><a href="Fork%20And%20Join%20cb4af96c0fe64943b650b64da2caac5b/Untitled%204.png"><img style="width:315px" src="Fork%20And%20Join%20cb4af96c0fe64943b650b64da2caac5b/Untitled%204.png"/></a></figure><div id="3efae1bb-1405-4608-aabd-e923e22c3544" class="column-list"><div id="5944c46b-2bcc-4bf0-8c92-f2db089f9c6e" style="width:100%" class="column"><figure id="1cc2955c-7bc5-4c8c-89cc-27e3091c8d49" class="image"><a href="Fork%20And%20Join%20cb4af96c0fe64943b650b64da2caac5b/Untitled%205.png"><img style="width:240px" src="Fork%20And%20Join%20cb4af96c0fe64943b650b64da2caac5b/Untitled%205.png"/></a><figcaption>More efficient </figcaption></figure></div><div id="ba2fa07a-2fa9-40cf-9571-7fbc4771544f" style="width:100%" class="column"><figure id="f084567e-4ac6-4fcc-b562-f390e4558935" class="image"><a href="Fork%20And%20Join%20cb4af96c0fe64943b650b64da2caac5b/Untitled%206.png"><img style="width:367px" src="Fork%20And%20Join%20cb4af96c0fe64943b650b64da2caac5b/Untitled%206.png"/></a><figcaption>Less Efficient</figcaption></figure></div></div><p id="426fc9b1-3634-4036-a60e-40980e47d4a0" class=""><code>fork()</code>, <code>compute()</code>, <code>join()</code>order should form a <a href="https://en.wikipedia.org/wiki/Palindrome"><em>palindrome</em></a><em> </em>and there should be no crossing. Additionally, there should only be at most a single  <code>compute</code>  and it should be in the middle of the palindrome.</p><ul id="d858f52f-5363-4bc3-868b-55d660b1e5fa" class="toggle"><li><details open=""><summary>Practice #1</summary><p id="948d7c45-3b17-4f51-bb6c-db54d4ee8174" class="">The next 4 questions concern the <code>RecursiveTask </code>below:</p><pre id="86de287a-d0db-4785-8e53-40f106249ced" class="code code-wrap"><code>class Task extends RecursiveTask&lt;Integer&gt; {
+  private int x;
+
+  Task(int x) {
+    this.x = x;
+  }
+
+  @Override
+  protected Integer compute() {
+    if (x &gt;= 4) {
+      return x;
+    }
+    Task t1 = new Task(2 * x);
+    Task t2 = new Task(2 * x + 1);
+    t1.fork();
+    t2.fork();
+    return t2.join() + t1.join();
+  }
+}</code></pre><p id="359e3852-9170-4b08-b07c-69f6b73366cc" class="">When we call <code>new Task(1).compute()</code>, it creates two subtasks, denoted as Task(2) and Task(3). Task(2) creates two more subtasks Task(4) and Task(5); while Task(3) creates two more subtasks Task(6) and Task(7)</p><ul id="43ab553b-3017-4699-aad8-1fd1e0af38ed" class="toggle"><li><details open=""><summary>Q1</summary><p id="2cafe6f8-ec04-4b70-83f7-650583952047" class="">Suppose there is only one worker thread and it runs</p><pre id="5a42b35f-cf9f-4bd0-9c3c-76bed66652b4" class="code code-wrap"><code>new Task(1).compute()</code></pre><p id="4d8bfd4b-4204-4428-b135-5b2d08ca432e" class="">After Task(3) is forked, what is the content of the deque for this worker thread? (The content is listed from head to tail, with the head first and the tail last).</p><p id="cc725947-0971-495f-b427-ce9100045081" class=""><strong><strong><strong><strong><strong><strong><strong><strong>Answer: </strong></strong></strong></strong></strong></strong></strong></strong>since the Task(3) is called after Task(2) so the head will be the most “recent” one which is “3”</p></details></li></ul><ul id="b94c2a93-d05a-4591-a2ab-928a4e01baac" class="toggle"><li><details open=""><summary>Q2</summary><p id="f3c93f1b-b968-4fb5-a4ef-b1813b5e3dce" class="">After the <code>join</code> for Task(3) is invoked, what is the content of the deque for this worker thread?  (The content is listed from head to tail, with the head first and the tail last).</p><p id="13cb5eb9-ce9a-4fb4-96d3-4e6bb413490d" class=""><strong>Answer: 7 6 2 </strong>because task(3) is in the order Task(7) → Task(6) while there is still Task(2) on hold at the tail</p></details></li></ul><ul id="67e48cb9-e5d9-447a-97a0-b23b3771f2a6" class="toggle"><li><details open=""><summary>Q3</summary><p id="869826c9-d679-4789-9987-afe621385445" class="">After the <code>join</code> for Task(2) is invoked, what is the content of the deque for this worker thread?  (The content is listed from head to tail, with the head first and the tail last).</p><p id="48f0a882-daaa-495b-ace6-0c7edc3668c8" class=""><strong>Answer: 5 4 </strong>because when Task(2) is invoked the only left is just Task(5)  and Task(4) so the Task(5) will be at the head since it is called second after Task(4)</p></details></li></ul><ul id="aec6d2b2-5a97-4673-a937-9d96278bc795" class="toggle"><li><details open=""><summary>Q4</summary><p id="97e0bb67-895f-4b0b-94e6-2fa40822f775" class="">Suppose that there is a second worker thread who tries to steal from the first worker thread, while it is running Task(3). Which task would it steal?</p><p id="04c19faf-7411-4e58-a6d7-78ce56c47160" class=""><strong><strong><strong><strong><strong><strong><strong><strong>Answer: </strong></strong></strong></strong></strong></strong></strong></strong>Because it will be Task(3) → Task(2) so the head of first worker thread is Task(3) so it is right for second worker to steal Task(2)</p></details></li></ul><ul id="22038729-9410-4a30-bdcf-b86f3595d860" class="toggle"><li><details open=""><summary>Q5</summary><p id="5772ef41-5bdc-450b-9b1a-e733ade16c98" class="">Suppose the task above is the only task stole by the second worker thread from the first worker thread. The first worker thread completes all of its tasks in its deque and wishes to steal some work from the second worker thread. Which of the following task is likely to be stolen by the first worker thread?</p><p id="6a90f271-5839-4b31-88bc-f4cb45dc8297" class=""><strong>Answer: Task(4) </strong>because now the second worker is working on Task(4) and Task(5) but the head is Task(5) → Task(4) so it is right for second worker to steal Task(4)</p></details></li></ul></details></li></ul><ul id="22c38e4b-ca3d-4c09-ac60-bf679273f0e8" class="toggle"><li><details open=""><summary>Practice #2</summary><pre id="60a2af07-e928-4989-ab4d-1e3822b94d52" class="code code-wrap"><code>class B {
+	static class Task extends RecursiveTask&lt;Integer&gt; {
+			int count;
+			Task(int count) {
+					this.count = count;
+			}
+			public Integer compute() {
+					System.out.println(Thread.currentThread().getName()
+					+ &quot; &quot; + this.count);
+					// Base case
+					if (this.count == 4) {
+							return this.count;
+					}
+					// Create new subtask
+					Task t = new Task(this.count + 1);
+					// Run subtask count+1 concurrently
+					t.fork();
+					return t.join();
+			}
+	}
+	public static void main(String[] args) {
+			// Create a pool with two threads at most
+			new ForkJoinPool(2).invoke(new Task(0));
+	}
+}</code></pre><p id="9f0e6dd3-6ae4-42a4-80e9-c6c49ff2d168" class="">Run the program several times and observe what happens. Trace through the events as the code executes: What tasks get added to the deque? Which worker executes which task? Which worker steals which task? What happens when a worker waits on a join operation?</p><pre id="020b2600-8de3-4c9e-badb-82e817d9d67f" class="code code-wrap"><code>ForkJoinPool-1-worker-1 0
+ForkJoinPool-1-worker-1 1 // W1 forks T2
+ForkJoinPool-1-worker-2 2 // W2 steals T2, W1 joins T1
+ForkJoinPool-1-worker-1 3 // W2 joins T3, then W1 steals it
+ForkJoinPool-1-worker-3 4
+ForkJoinPool-1-worker-1 after join 3 // reverse
+ForkJoinPool-1-worker-2 after join 2
+ForkJoinPool-1-worker-1 after join 1
+ForkJoinPool-1-worker-1 after join 0</code></pre><p id="8cf8bc4a-e74e-46ef-b6e9-c70932155cd9" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Answer: if Task </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><em><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>j</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></em><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong> &gt; Task </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><em><em><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>i,</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></em></em><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong> then when a worker is running Task </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><em><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>i</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></em><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>, it will also pick up Task j. But since Task j has to be done first, Task i blocks at </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>join()</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong> which means that the worker waiting for Task i to complete picks up another task into the queue to execute. </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></p><p id="c34f3cb7-b70e-4c79-a4b6-a845e76a4359" class="">If you observe, the joining is done in reverse and has to be in that order</p><p id="3072c4f1-8fcc-4391-a2df-ebb1ba75b49c" class="">
+</p></details></li></ul><ul id="3a9e9ef6-f516-4705-8a5f-2c82d1e65343" class="toggle"><li><details open=""><summary>Practice #3</summary><pre id="95bfc1bf-941f-4c0a-b86d-f0668467b3fd" class="code code-wrap"><code>class Fibonacci extends RecursiveTask&lt;Integer&gt; {
+	private final int x;
+	Fibonacci(int x) {
+		this.x = x;
+	}
+	@Override
+	protected Integer compute() {
+		if (this.x &lt;= 1) {
+			return 1;
+		}
+		Fibonacci f1 = new Fibonacci(this.x - 1);
+		Fibonacci f2 = new Fibonacci(this.x - 2);
+		// fork, join, and return
+	}
+}</code></pre><p id="64f284e1-2041-4fc3-b98d-447a159c5426" class="">Compare the different ways things are executed</p><p id="f4ac6bba-669a-44d8-82be-6adf393f1b25" class="">a. <code>f1</code> is forked and the current worker continues with <code>f2</code> . Basically, if a worker picks up the task, the same worker must be the one <code>compute()</code> so it will complete <code>f2</code> by itself in the meantime. But if we say something is <code>forked</code> then it is added to the deque and there is a possibility for another worker to do the task since it can be stolen</p><pre id="bade93ef-792c-453b-b031-2897ca4e6bc0" class="code code-wrap"><code>f1.fork();
+int a = f2.compute();
+int b = f1.join();
+return a + b;</code></pre><p id="9476c6e7-36fb-4346-8a10-391da5994375" class="">b.  <code>f1</code> is forked and waited on. then can <code>f2</code> be computed. There will be no parallelism but there may still be concurrency. The task forks <code>f1</code> for another worker to complete and waits for it to be completed before it completes <code>f2</code> by itself.</p><pre id="4677311a-d4a5-4666-a216-c671c66ba56c" class="code code-wrap"><code>f1.fork();
+int a = f1.join();
+int b = f2.compute();
+return a + b;</code></pre><p id="d41b83f2-8505-427c-812f-9c1e5463b732" class="">c. There is no forking so everything will be done sequentially</p><pre id="148ee623-ddde-48f8-be14-ed4872a007da" class="code code-wrap"><code>int a = f1.compute();
+int b = f2.compute();
+return a + b;</code></pre><p id="515bc482-35ee-4147-9d30-227eec3a5e3d" class="">d. <code>f1</code> and <code>f2</code> are forked to be run in parallel, then both will be joined together</p><pre id="44b6ccdc-5ba8-4345-bead-477df35566e3" class="code code-wrap"><code>f1.fork();
+f2.fork();
+int a = f2.join();
+int b = f1.join();
+return a + b;</code></pre><p id="61a2d41d-e029-4bc5-b977-0933271be4bd" class="">e. Same as before but more efficient due to no &quot;crossing&quot;.</p><pre id="95ede847-ab4b-4e5c-bd28-43ec65bda685" class="code code-wrap"><code>f1.fork();
+f2.fork();
+int a = f1.join();
+int b = f2.join();
+return a + b;Same as before but more efficient due to no &quot;crossing&quot;.</code></pre></details></li></ul><ul id="0aaab54b-2c51-4eac-bb35-570cf90a2ff8" class="toggle"><li><details open=""><summary>Practice #4</summary><ol type="a" id="61b2c157-b476-46e3-a5e4-6a77f4dfd82f" class="numbered-list" start="1"><li>Just chain the methods using <code>supplyAsync</code> and <code>thenApply</code></li></ol><pre id="4183b0a8-f6c1-45de-a608-62d43d5f240a" class="code code-wrap"><code>A a = new A();
+B b = f(a);
+C c = g(b);
+D d = h(c);</code></pre><pre id="eb7ba7e6-32b7-4099-8924-019a56e46be1" class="code code-wrap"><code>CompletableFuture&lt;D&gt; cf = CompletableFuture
+		.supplyAsync(() -&gt; f(a))
+		.thenApply(b -&gt; g(b))
+		.thenApply(c -&gt; h(c));
+D d = cf.join();</code></pre><p id="8de8f31e-83b9-4e46-8b22-4a46560c3d37" class="">b. </p><pre id="ad1cba3a-fff5-434a-b514-c1f93972065a" class="code code-wrap"><code>B b = f(a);
+C c = g(b);
+h(c); // no return value</code></pre><pre id="9c18f5d5-7187-4e41-b373-d7d0d7af30ce" class="code code-wrap"><code>CompletableFuture&lt;Void&gt; cf = CompletableFuture
+		.supplyAsync(() -&gt; f(a))
+		.thenApply(b -&gt; g(b))
+		.thenAccept(c -&gt; h(c));
+cf.join();</code></pre><p id="a9fb0022-9d82-4d62-924a-7039e3728778" class="">c. </p><pre id="c138b892-30a5-4f37-a43d-966a176bc115" class="code code-wrap"><code>B b = f(a);
+C c = g(b);
+D d = h(b);
+E e = i(c, d);</code></pre><pre id="a1d7611a-c84f-45e8-97ec-236f08f66a4b" class="code code-wrap"><code>CompletableFuture&lt;B&gt; cfb = CompletableFuture
+	.supplyAsync(() -&gt; f(a));
+CompletableFuture&lt;C&gt; cfc = cfb
+	.thenApply(b -&gt; g(b));
+CompletableFuture&lt;D&gt; cfd = cfb
+	.thenApply(b -&gt; h(b));
+CompletableFuture&lt;E&gt; cfe = cfc
+	.thenCombine(cfd, (c, d) -&gt; i(c, d));
+cfe.join();</code></pre></details></li></ul><ul id="c7f7308f-393e-4fc8-a825-10a4cb9b4f74" class="toggle"><li><details open=""><summary>Practice #5</summary><p id="7384d657-a4fc-40e1-b153-c22c9d0a696b" class="">Consider the same incomplete code to compute Fibonacci number in the previous question.
+Again, we want to complete the method compute by inserting one line of code. Which of the following
+lines of code, when inserted, would compile without error and lead to correct and efficient parallelization of the calculation of Fibonacci number for 10 when <code>ForkJoinPool.commonPool().invoke(new
+Fib(10))</code> is called?</p><pre id="f4285bad-b8b4-4845-b0a2-2242f96e6249" class="code code-wrap"><code>class Fib extends RecursiveTask&lt;Integer&gt; {
+final int n;
+Fib(int n) { this.n = n; }
+Integer compute() {
+if (n &lt;= 1)
+return n;
+Fib f1 = new Fib(n - 1);
+Fib f2 = new Fib(n - 2);
+// insert code here
+}
+}</code></pre><p id="fe51450e-2da8-4ad2-84c1-c18ec4eab85e" class="">A. f1.fork(); f2.fork(); return f1.join() + f2.join();
+B. f1.fork(); f2.fork(); return f2.join() + f1.join();
+C. f1.fork(); return f1.join() + f2.compute();
+D. f1.fork(); return f2.compute() + f1.join();
+E. return f1.compute() + f2.compute();</p><p id="6afc6f42-d616-4d28-8d40-107954686521" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Answer: D, </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong>A and B is the same since it will give up the current thread and launch two new tasks, C will run sequentially so it is not that effective but E is least efficient. D is the most efficient since it will put <code>f1</code> to the deque while the worker will continue with <code>f2.compute()</code></p><p id="dfcef06f-d12a-435c-88f3-d8d9ecfcbc5c" class="">
+</p><p id="2bd3d0d2-ddde-4384-8327-b36956ae6e6a" class="">
+</p><p id="0175fa79-b696-434e-8dd9-43a0b0361ec8" class="">
+</p><p id="edc5ea4c-c32d-4df2-ba1a-989a67aa6bea" class="">
+</p></details></li></ul></div></article></body></html>

@@ -1,0 +1,905 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Lazy Evaluation</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-interactiveBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-translucentGray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="be9f01c1-e22f-48ae-acf4-11982e065686" class="page sans"><header><div class="page-header-icon undefined"><span class="icon">🛌🏼</span></div><h1 class="page-title">Lazy Evaluation</h1><p class="page-description"></p></header><div class="page-body"><p id="b457c379-bb9b-4144-a73a-45037e4ff2d9" class=""><code>Transformer&lt;Integer, Integer&gt; f = x -&gt; x + 1;</code> ⇒ this will mean that we need the <code>transform()</code> to be able to invoke the argument with some x </p><pre id="aab9adc2-737d-4aed-9baf-cf877beffbbc" class="code code-wrap"><code>@FunctionalInterface
+interface Producer&lt;T&gt; {
+  T produce();
+}
+
+@FunctionalInterface
+interface Task {
+  void run();
+}
+
+// if we do this in the main function
+i = 4;
+Task print = () -&gt; System.out.println(i);
+Producer&lt;String&gt; toStr = () -&gt; Integer.toString(i);</code></pre><figure class="block-color-yellow_background callout" style="white-space:pre-wrap;display:flex" id="0e06434f-6027-4adf-aa36-76e927d84e8e"><div style="font-size:1.5em"><span class="icon">⚙</span></div><div style="width:100%"><mark class="highlight-red"><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>REMEMBER: </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></mark><mark class="highlight-red">Lambda expressions mean we are not executing them just by </mark><mark class="highlight-red"><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>declaring them</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></mark><mark class="highlight-red"> </mark><mark class="highlight-red"><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong>but we can save them to be executed later
+</strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></mark><mark class="highlight-red"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid">
+</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></mark><mark class="highlight-red"><strong><strong>PURPOSE: </strong></strong></mark><mark class="highlight-red">this allows us to </mark><strong><strong><strong><strong><strong><mark class="highlight-red">delay</mark></strong></strong></strong></strong></strong><mark class="highlight-red"> the computation and saving it until we need it thus allowing what we want </mark><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><mark class="highlight-red">lazy evaluation</mark></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></div></figure><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="f2b6b318-b051-4c86-b7a5-4cbd79190ad4"><div style="font-size:1.5em"><span class="icon">❗</span></div><div style="width:100%">Our <code>Lazy&lt;T&gt;</code> class does computation at the last minute, it will never repeat the computation to obtain a value and it also prevents error from happening if the content is never computed</div></figure><pre id="ab9f769b-3da0-40c5-9070-06c94e161468" class="code code-wrap"><code>// Version 0.1 (eager evaluation)
+
+class Logger {
+  enum LogLevel { INFO, WARNING, ERROR };
+
+  public static LogLevel currLogLevel = LogLevel.WARNING;
+
+  static void log(LogLevel level, String msg) {
+    if (level.compareTo(Logger.currLogLevel) &gt;= 0) {
+      System.out.println(&quot; [&quot; + level + &quot;] &quot; + msg);
+    }
+  }
+}
+
+// if we do this
+Logger.log(Logger.LogLevel.INFO, 
+    &quot;User &quot; + System.getProperty(&quot;user.name&quot;) + &quot; has logged in&quot;);</code></pre><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="91dd3ccc-149d-447d-970d-d44b3be06ca5"><div style="font-size:1.5em"><span class="icon">❗</span></div><div style="width:100%">The problem with the above code is that even though it is <strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>not printed</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong> because INFO is lower than WARNING, the code <code>System.getProperty()</code> will be invoked nevertheless, this is not efficient</div></figure><p id="cca25652-57ba-4469-9ccf-2fc7039b915b" class="">A better design for this case is to wrap the message <code>msg</code> within a lambda expression, so that it does not get evaluated eagerly when we pass it in as a parameter. We can wrap the message with a <code>Producer&lt;String&gt;</code>.</p><pre id="a53d4e20-4f68-4683-91a6-b94839f91335" class="code code-wrap"><code>// Version 0.2 (with Producer)
+
+class Logger {
+  enum LogLevel { INFO, WARNING, ERROR };
+
+  public static LogLevel currLogLevel = LogLevel.WARNING;
+
+  static void lazyLog(LogLevel level, Producer&lt;String&gt; msg) {
+    if (level.compareTo(Logger.currLogLevel) &gt;= 0) {
+      System.out.println(&quot; [&quot; + level + &quot;] &quot; + msg.produce());
+    }
+  }
+}
+
+Logger.lazyLog(Logger.LogLevel.INFO, 
+    () -&gt; &quot;User &quot; + System.getProperty(&quot;user.name&quot;) + &quot; has logged in&quot;);</code></pre><p id="6ab9feed-ae73-4099-94eb-a21089793785" class="">The method <code>System.getProperty(&quot;user.name&quot;)</code>is now lazily called, only if the message is going to be printed.</p><p id="44991506-25d7-45ad-83b1-dc6c3c54c04a" class="">
+</p><h3 id="246afec2-ad5c-46ec-a698-571dda788ced" class="">Memoization</h3><p id="296cb9dd-b69f-40af-9b4e-c7861b6875a7" class="">Another way of being lazy is not to repeat ourselves. If we have computed the value of a function before, we can cache (or memoize) the value, keep it somewhere, so that we don&#x27;t need to compute it again. This is useful, of course, only if the function is pure -- regardless of how many times we invoke the function, it always returns the same value, and invoking it has no side effects on the execution of the program.</p><p id="548c8fc4-7388-4e60-bcc5-a17b04f095c1" class="">
+</p><pre id="e09e39a3-15e0-49c1-a0a4-7d28e675f06a" class="code code-wrap"><code>package cs2030s.fp;
+
+public class Lazy&lt;T&gt; {
+
+  private Producer&lt;? extends T&gt; producer;
+  private Maybe&lt;T&gt; value;
+
+	// constructor that gets a value v so the v here is ALREADY evaluated
+  private Lazy(T v) {
+    this.value = Maybe.some(v);
+    this.producer = () -&gt; v;
+  }
+
+	// constructor that will initially set the value to Maybe.none so it is not evaluated yet
+  private Lazy(Producer&lt;? extends T&gt; producer) {
+    this.producer = producer;
+    this.value = Maybe.of(null);
+  }
+
+	// this is a FACTORY OF method to create a new lazy so it is immutable class
+  public static &lt;T&gt; Lazy&lt;T&gt; of(T v) {
+    return new Lazy&lt;T&gt;(v);
+  }
+
+  public static &lt;T&gt; Lazy&lt;T&gt; of(Producer&lt;? extends T&gt; producer) {
+    return new Lazy&lt;T&gt;(producer);
+  }
+
+  public T get() {
+    T val = this.value.orElseGet(this.producer); // so we check if value is None or Some
+		// if Maybe.NONE, then it will evaluate the producer
+		// if Maybe.SOME, then it will just basically return the value in there so it will not evaluate producer anymore
+    this.value = Maybe.some(val); // this should be some not of since val can have valid null
+    return val;
+  }
+
+  public &lt;S, R&gt; Lazy&lt;R&gt; combine(Lazy&lt;S&gt; lazy, 
+      Combiner&lt;? super T, ? super S, ? extends R&gt; combiner) {
+    Producer&lt;? extends R&gt; newProducer = () -&gt; combiner
+                  .combine(this.get(), lazy.get());
+    return Lazy.of(newProducer);
+  }
+
+  public &lt;S&gt; Lazy&lt;S&gt; map(Transformer&lt;? super T, ? extends S&gt; transformer) {
+    Producer&lt;? extends S&gt; newProducer = () -&gt; transformer.transform(this.get());
+    return Lazy.&lt;S&gt;of(newProducer);
+  }
+
+  public &lt;S&gt; Lazy&lt;S&gt; flatMap(Transformer&lt;? super T, ? extends Lazy&lt;? extends S&gt;&gt; transformer) {
+    Producer&lt;? extends S&gt; newProducer = () -&gt; transformer.transform(this.get()).get();
+    return Lazy.&lt;S&gt;of(newProducer);
+  }
+
+  public Lazy&lt;Boolean&gt; filter(BooleanCondition&lt;? super T&gt; bool) {
+    return Lazy.&lt;Boolean&gt;of(() -&gt; bool.test(this.get()) ? true : false);
+  }
+
+  @Override 
+  public String toString() {
+    Transformer&lt;T, String&gt; transformer = x -&gt; String.valueOf(x);
+    return this.value.map(transformer).orElse(&quot;?&quot;).toString();
+  }
+
+  @Override 
+  public boolean equals(Object obj) {
+    if (!(obj instanceof Lazy)) {
+      return false;
+    }
+
+    if (obj == this) {
+      return true;
+    }
+
+    if (obj instanceof Lazy&lt;?&gt;) {
+      Lazy&lt;?&gt; temp = (Lazy&lt;?&gt;) obj;
+      return this.get().equals(temp.get());
+    }
+
+    return false;
+
+
+  }
+}
+
+// version 0.3 (with Lazy)
+
+class Logger {
+  enum LogLevel { INFO, WARNING, ERROR };
+
+  public static LogLevel currLogLevel = LogLevel.WARNING;
+
+  static void lazyLog(LogLevel level, Lazy&lt;String&gt; msg) {
+    if (level.compareTo(Logger.currLogLevel) &gt;= 0) {
+      System.out.println(&quot; [&quot; + level + &quot;] &quot; + msg.get());
+    }
+  }
+}
+
+Lazy&lt;String&gt; loginMessage = new Lazy(
+    () -&gt; &quot;User &quot; + System.getProperty(&quot;user.name&quot;) + &quot; has logged in&quot;);
+Logger.lazyLog(Logger.LogLevel.INFO, loginMessage);</code></pre><figure class="block-color-brown_background callout" style="white-space:pre-wrap;display:flex" id="8e7f4d73-604b-4b1e-8c3b-73900937146d"><div style="font-size:1.5em"><span class="icon">⚙</span></div><div style="width:100%"><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>How to use </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>combine()</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code><p id="ce36d1e3-40c1-4706-85ea-53667dca000c" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>
+</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>S</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong> - the type of the first input value</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></p><p id="d0456d2f-a9d7-4fa5-95a5-589df3d25edd" class=""><code>T</code> - the type of the second input value</p><p id="0aef6e29-b2e2-486b-839c-25e7cc18c41b" class=""><code>R</code> - the type of the <span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid">return</span></span></span></span></span></span> value<strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>
+</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></p><ul id="1e14f809-9afd-449a-b8c3-154074afe8f3" class="bulleted-list"><li style="list-style-type:disc">You need to declare two things when using <code>S</code> and <code>T</code></li></ul><p id="0236efb5-beec-441a-baad-f9adb1a4169d" class=""><code>Lazy&lt;S&gt;</code> - the first input to the method where it is the <strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>second lazy</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong> that you want to combine with</p><p id="08544cba-789c-4f60-a308-ab951305ffb5" class=""><code>.combine()</code> takes the <strong><strong><strong><strong><strong>VALUE</strong></strong></strong></strong></strong> of the lazy so we do <code>.get()</code> </p><p id="c73cb1dd-2881-4ad2-8eab-662b150f1382" class=""><code>? super T</code> and <code>? super S</code> because it <em><em><em><em><em><em><em><em>consumes </em></em></em></em></em></em></em></em>both Lazy object</p><p id="31889db8-fbb9-49fe-b34f-fee003c6989f" class=""><code>? extends R</code> because it produces / returns that value PECS</p><p id="19dc19c5-7119-473a-a54c-e376fac06d60" class="">Why wrap in a <code>newProducer</code> because you don’t want the new returned <code>Lazy&lt;R&gt;</code> to have already been evaluated, we want it to be lazy</p><pre id="d0bbe240-503d-471d-aee9-03a92549f192" class="code code-wrap"><code>public &lt;S, R&gt; Lazy&lt;R&gt; combine(Lazy&lt;S&gt; lazy, 
+      Combiner&lt;? super T, ? super S, ? extends R&gt; combiner) {
+    Producer&lt;? extends R&gt; newProducer = () -&gt; combiner
+                  .combine(this.get(), lazy.get());
+    return Lazy.of(newProducer);
+  }
+
+// Combining different types
+Combiner&lt;Integer,Double,String&gt; f = (x, y) -&gt; Integer.toString(x) + &quot; &quot; + Double.toString(y)
+
+</code></pre></div></figure><figure class="block-color-brown_background callout" style="white-space:pre-wrap;display:flex" id="0dad5c25-5ec0-46b2-adf6-4b9514523647"><div style="font-size:1.5em"><span class="icon">⚙</span></div><div style="width:100%"><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>How to use </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>map()</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code><p id="45a87300-b78d-416d-89a6-5e578e811efd" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>
+</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>S</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong> - the return type of the evaluation from </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>map()</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong> so the take note that the </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Transformer</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong> must also return something that can be converted to </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>S</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>
+</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></p><pre id="191ffbc8-f641-4453-8930-d83b7c3c576f" class="code code-wrap"><code> public &lt;S&gt; Lazy&lt;S&gt; map(Transformer&lt;? super T, ? extends S&gt; transformer) {
+  Producer&lt;? extends S&gt; newProducer = () -&gt; transformer.transform(this.get());
+  return Lazy.&lt;S&gt;of(newProducer);
+  }
+
+Transformer&lt;Object, Integer&gt; hash = x -&gt; x.hashCode();
+Lazy&lt;Number&gt; lazy = Lazy.&lt;String&gt;of(&quot;sunday&quot;).map(hash);</code></pre><ul id="d59ebca3-d2fa-4e90-95c5-908c3b06d266" class="bulleted-list"><li style="list-style-type:disc">You need to declare one thing when using <code>S</code> </li></ul><p id="cfc76041-f941-46d5-9975-0df688c9d4f3" class=""><code>Lazy&lt;S&gt;</code> - the first input to the method where it is the <strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>second lazy</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong> that you want to combine with</p><p id="fed9a48c-2e75-4c27-832c-ba355d10b2b5" class=""><code>.transform()</code> takes the <strong><strong><strong><strong><strong>VALUE</strong></strong></strong></strong></strong> of the lazy so we do <code>.get()</code> </p><p id="2b0ad243-9b5f-40c7-a104-5ae81ce51703" class=""><code>? super T</code>  because it <em><em><em><em><em><em><em><em>consumes </em></em></em></em></em></em></em></em>both Lazy object of the <code>this</code> object | <code>String &lt;: Object</code></p><p id="ab0b7203-2324-4029-84b3-5550caa51067" class=""><code>? extends S</code> because it produces / returns that value PECS | <code>Lazy&lt;String&gt;of(&quot;sunday&quot;).map(hash);</code>  - this will essentially return <code>Lazy&lt;Number&gt; </code> since we did some narrowing type conversion <code>Integer &lt;: S</code> and <code>S &lt;: Number</code> so <code>S</code> will be of type <code>Integer</code></p><p id="0e4236d6-fcd5-46e1-baef-178672816617" class="">Why wrap in a <code>newProducer</code> because you don’t want the new returned <code>Lazy&lt;S&gt;</code> to have already been evaluated, we want it to be lazy</p></div></figure><figure class="block-color-brown_background callout" style="white-space:pre-wrap;display:flex" id="5087ab41-9c47-4c67-88ae-da003aea6031"><div style="font-size:1.5em"><span class="icon">⚙</span></div><div style="width:100%"><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>How to use </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>flatMap()</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code><p id="b2a4ceca-a55a-4db0-ad4b-7e7fccda80ec" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>
+</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>S</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong> - the return type of the evaluation from </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>map()</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong> so the take note that the </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Transformer</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong> must also return something that can be converted to </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Lazy&lt;S&gt;</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>
+</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></p><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="f65e22fe-4e56-4f2b-ab00-53f9e613c9dc"><div style="font-size:1.5em"><span class="icon">❗</span></div><div style="width:100%"><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>REMEMBER: </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong>for flatmap, we need to have the <code>Transformer</code> to return the <code>Lazy</code> itself</div></figure><pre id="659c48b1-f755-4fe8-8dee-3ed50744d75c" class="code code-wrap"><code>  public &lt;S&gt; Lazy&lt;S&gt; flatMap(Transformer&lt;? super T, ? extends Lazy&lt;? extends S&gt;&gt; transformer) {
+    Producer&lt;? extends S&gt; newProducer = () -&gt; transformer.transform(this.get()).get();
+    return Lazy.&lt;S&gt;of(newProducer);
+  }
+
+Transformer&lt;Object, Lazy&lt;Integer&gt;&gt; hash = x -&gt; Lazy.&lt;Integer&gt;of(x.hashCode());
+Lazy&lt;Number&gt; lazy = Lazy.&lt;String&gt;of(&quot;sunday&quot;).flatMap(hash)</code></pre><ul id="71828303-1916-4364-b841-a8cc332e789d" class="bulleted-list"><li style="list-style-type:disc">You need to declare one thing when using <code>S</code> </li></ul><p id="ca1efe87-1388-4d55-821c-773ad6d56b69" class=""><code>Lazy&lt;S&gt;</code> - the return type of the method</p><p id="7c30ef7c-fe8f-41ba-b725-b23c0147e265" class=""><code>.transform()</code> takes the <strong><strong><strong><strong><strong>VALUE</strong></strong></strong></strong></strong> of the lazy so we do <code>.get()</code> </p><p id="1663ecee-e6f3-4f1b-90c4-7c8b223fecda" class=""><code>.transform(this.get()).get();</code> the outer <code>get()</code> is since we are getting <code>Lazy</code> from the result of transformation so to get the value of Lazy, we do <code>.get()</code> again</p><p id="6dd066b1-9bda-4af8-86ef-ec508f7b9d90" class=""><code>? super T</code>  because it <em><em><em><em><em><em><em><em>consumes </em></em></em></em></em></em></em></em>both Lazy object of the <code>this</code> object | <code>String &lt;: Object</code></p><p id="1b9462fd-19cd-4de9-a426-af646a53330d" class=""><code>? extends S</code> because it produces / returns that value PECS (see <code>map()</code>)</p><p id="06d2a023-b4a4-416b-8ed4-47c3fe12db4d" class=""><code>? extends Lazy&lt;? extends S&gt;</code> - because we might want to return something more specific than Lazy itself, perhaps in the case of <code>Maybe</code> we have something more specific like <code>None</code> and <code>Some</code> which <code>extends</code> from <code>Maybe</code></p><p id="4e2ecfd0-20bf-46cf-ad1b-b4395030fffa" class="">Why wrap in a <code>newProducer</code> because you don’t want the new returned <code>Lazy&lt;S&gt;</code> to have already been evaluated, we want it to be lazy</p></div></figure><p id="642e7bda-4a7a-4be4-b852-8d20b66a8b72" class="">
+</p><ul id="bd935457-d8d9-40a5-99e7-97e5dd3ce315" class="toggle"><li><details open=""><summary>Practice #1</summary><p id="8a8594eb-89f5-42a2-a010-83b4c2d6f5a0" class="">Consider the class <code>Lazy&lt;T&gt;</code> given in the notes:</p><pre id="607d66d8-5a27-4398-88c1-03f899bf349c" class="code code-wrap"><code>class Lazy&lt;T&gt; {
+  private T value;
+  private boolean evaluated;
+  private Producer&lt;T&gt; producer;
+
+  public Lazy(Producer&lt;T&gt; producer) {
+    evaluated = false;
+    value = null;
+    this.producer = producer;
+  }
+
+  public T get() {
+    if (!evaluated) {
+      value = producer.produce();
+      evaluated = true;
+    }
+    return value;
+  }
+}</code></pre><p id="1351056b-e76f-41b9-b233-0f328142e5d1" class="">The class is used in the following way:</p><pre id="ccf660d4-cdb5-4540-9d5a-4f880d6cc4e6" class="code code-wrap"><code>int x = 0;
+Lazy&lt;Integer&gt; i = new Lazy(() -&gt; x + 1);
+i.get();
+i.get(); // Line A
+</code></pre><p id="889c3a07-95c6-4dc8-b90f-a95da094d2a2" class="">What does Line A return?</p><p id="f54cc11c-4a9c-43d5-9628-537167e2977a" class=""><strong><strong><strong><strong><strong><strong><strong>Answer: 1</strong></strong></strong></strong></strong></strong></strong>, because the <code>.get()</code> is only called once</p><p id="b0543c30-6d3d-4b22-b1dc-e6e5194cf0bd" class="">
+</p></details></li></ul><ul id="64e82945-3d63-4d8b-9bbe-da1723e05cd4" class="toggle"><li><details open=""><summary>Practice #2</summary><p id="3a704ede-a075-44cd-80cc-e581723d0f92" class="">Consider the same <code>Lazy&lt;T&gt;</code> class in the previous question.</p><p id="582c13bf-7469-445b-b5c4-9db3e0f059c4" class="">The class is used in the following way:</p><pre id="a4d97269-a54b-4053-902a-783d9799a57c" class="code code-wrap"><code>Random rng = new Random();
+Lazy&lt;Integer&gt; i = new Lazy(() -&gt; rng.nextInt());
+i.get(); // Line A
+i.get(); // Line B
+</code></pre><p id="7b4f81aa-8bbf-4e33-9afe-17c72a6cc310" class="">Suppose that Line A returns 6752378, what would Line B return?</p><p id="a22530ec-b5fb-4352-8b2d-c3ae1fbe55c7" class=""><strong><strong><strong><strong><strong><strong><strong><strong>Answer: </strong></strong></strong></strong></strong></strong></strong></strong>6752378, it will be the same thing since <code>.get()</code> is only called once</p></details></li></ul><ul id="79e70330-fc0d-47ae-84f2-dc2c85d56726" class="toggle"><li><details open=""><summary>Practice #3</summary><p id="87dec181-3a14-4d5a-b6b3-785601ef9c4a" class="">Consider a simpler implementation of <code>Lazy&lt;T&gt;</code> below</p><pre id="7974fdaa-ae14-41a2-93b1-f5304ecc48fb" class="code code-wrap"><code>class Lazy&lt;T&gt; {
+  private T value;
+
+  public Lazy(Producer&lt;T&gt; producer) {
+    value = producer.produce();
+  }
+
+  public T get() {
+    return value;
+  }
+}
+</code></pre><p id="5087675f-2cfb-48fa-a2e9-8f2483cfdf25" class="">The class is used in the following way:</p><pre id="92d4f643-34b3-4a53-a52c-68720b21ed51" class="code code-wrap"><code>Lazy&lt;Integer&gt; i = new Lazy&lt;&gt;(() -&gt; someFunction());
+i.get();
+</code></pre><p id="822f2741-f1a7-416e-a56d-8c2c3da75a03" class="">where <code>someFunction</code> is some pre-existing method defined elsewhere. Which of the following statements are true about this version of <code>Lazy&lt;T&gt;</code>?</p><p id="8ae77629-f4f0-4593-8908-3b3b23969ab1" class="">✅ T<strong>he method </strong><strong><code>someFunction</code></strong><strong>will be called only once. </strong>Whenever we do <code>.get()</code> the value is already cached so <code>someFunction()</code> will not be called again</p><p id="c7b4333b-1700-438c-a755-f1b2c8cfe08a" class=""><strong>✅ The value returned by </strong><strong><code>someFunction</code></strong><strong>is cached.</strong> It is saved in the variable <code>value</code></p><p id="67260d56-559e-47d2-99b4-8e7a7152304f" class=""><strong>❌ The method </strong><strong><code>someFunction</code></strong><strong> is lazily evaluated</strong>. It is not lazily evaluated because when a new Lazy is created the producer is directly evaluated in <code>producer.produce()</code></p></details></li></ul><ul id="306dfdf7-9977-41fd-a4cf-0ed38509e7c3" class="toggle"><li><details open=""><summary>Practice #4</summary><p id="1995a7c4-5a59-4793-86d8-2b8ffd13e6e1" class="">Consider another simpler implementation of Lazy&lt;T&gt; below.</p><pre id="53bab623-be83-4437-86fd-9f392b003d8e" class="code code-wrap"><code>class Lazy&lt;T&gt; {
+  private Producer&lt;T&gt; producer;
+
+  public Lazy(Producer&lt;T&gt; producer) {
+    this.producer = producer;
+  }
+
+  public T get() {
+    return this.producer.produce();
+  }
+}</code></pre><p id="ca6e1213-b79e-48a8-a18b-a0beb562f6b4" class="">As before, the class is used in the following way:</p><pre id="e8c77dd2-df18-441a-bfc4-16cad6cdfa33" class="code code-wrap"><code>Lazy&lt;Integer&gt; i = new Lazy&lt;&gt;(() -&gt; someFunction());
+i.get();</code></pre><p id="bd76f8d8-3665-4c64-b64b-94806f55f200" class="">where <code>someFunction</code> is again some pre-existing method defined elsewhere. Which of the following statements are true about this version of <code>Lazy&lt;T&gt;</code>?</p><p id="a6b6ccb4-c3ea-48e4-9deb-b214a94b2e4b" class="">❌ T<strong>he method </strong><strong><code>someFunction</code></strong><strong>will be called only once. </strong>Whenever we do <code>.get()</code> the <code>producer</code> is being evaluated again and again</p><p id="2caad60d-7411-4f8b-874b-9d7a53b823cf" class="">❌ <strong>The value returned by </strong><strong><code>someFunction</code></strong><strong>is cached.</strong> It is not stored in any variable</p><p id="113072fa-e492-4171-aa31-5c22355fd3f6" class="">✅ <strong>The method </strong><strong><code>someFunction</code></strong><strong> is lazily evaluated</strong>. It is lazily evaluated because when a new Lazy is created, the <code>producer</code> will be stored and will only be evaluated using <code>.produce()</code> when <code>.get()</code> is called</p><p id="930befa2-5e83-421c-a581-cd83711f1f84" class="">
+</p></details></li></ul></div></article></body></html>

@@ -1,0 +1,874 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Generics</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-interactiveBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-translucentGray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="ce8f347f-815b-4527-aae3-06dc574c2ec1" class="page sans"><header><div class="page-header-icon undefined"><span class="icon">🤬</span></div><h1 class="page-title">Generics</h1><p class="page-description"></p></header><div class="page-body"><p id="a02ff848-b401-4b5e-a06a-39b7dbd84728" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Function: </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong>Generics allow classes / methods that use any reference type to be defined without resorting to the Object type</p><p id="268f6ec6-f57a-433d-81b4-6d411eef021f" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Function: </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong>It enforces type safety by binding the generic type to a specific given type argument at compile time. Attempt to pass in an incompatible type would lead to compilation error</p><pre id="8c6483ac-c32f-41ff-857c-ec4020e83aea" class="code"><code>class Queue&lt;T&gt; {
+	...
+} 
+Queue&lt;Point&gt; q = new Queue&lt;&gt;(4);</code></pre><ul id="1fb91688-92f5-451c-80a2-1f8cd2c55161" class="bulleted-list"><li style="list-style-type:disc"><code>Queue&lt;T&gt; </code> is the generic class</li></ul><ul id="edfc6d0e-d2c7-47dd-a755-4bf09fecad29" class="bulleted-list"><li style="list-style-type:disc"><code>Queue&lt;Point&gt;</code> is the parameterized type</li></ul><ul id="c8a0dc07-42db-4117-bc0a-dbaee211dfd6" class="bulleted-list"><li style="list-style-type:disc"><code>T</code> is the type parameter</li></ul><ul id="dbd027c7-563d-4c99-b1b2-7ae0a09a0707" class="bulleted-list"><li style="list-style-type:disc"><code>Point </code>is the type argument</li></ul><div id="4add6c71-7bdc-40c2-8638-cb3d2d1477a8" class="column-list"><div id="e8092df2-01c4-48a5-9611-59a62e2e4fa5" style="width:100%" class="column"><pre id="e5e5df33-790f-4333-98d2-9e3262ca000e" class="code"><code>class Pair {
+  private Object first;
+  private Object second;
+
+  public Pair(Object first, Object second) {
+      this.first = first;
+      this.second = second;
+  }
+
+  Object getFirst() {
+      return this.first;
+  }
+
+  Object getSecond() {
+      return this.second;
+  }
+}</code></pre></div><div id="5a88d23a-a147-4117-9e50-983c97e80ba1" style="width:100%" class="column"><p id="aafba665-4873-46e8-8aa7-ba47dcb87a20" class=""><code>Pair p = new Pair(&quot;Hey&quot;, 4)</code>;</p><p id="e7ddb4bc-8200-4d23-ae0c-3c94c11f5e4e" class=""><code>Integer i = p.getFirst();</code> This will lead to narrowing type conversion because <code>p.getFirst()</code> will be of type Object so we need to cast it like below</p><p id="33240470-d5ea-4a9e-ac8b-c06a452dc4f7" class=""><code>Integer i = (Integer) p.getFirst();</code></p><p id="bf314283-f5f5-488d-843c-547f613cfe63" class="">During runtime, type casting is done from String to Integer which is not allowed thus there will be runtime error  <code>ClassCastException</code></p><p id="7d025304-0489-47d2-b137-9cc478f6ac26" class="">The compiler will not be able to detect the type mismatch and stop the program from crashing during run-time.</p><p id="7ebe9dc6-adfa-4d17-85ae-0c94e92cdf7a" class="">
+</p></div></div><div id="4f2cd7fd-eb1a-4c52-9af8-2980451c39cf" class="column-list"><div id="f027c520-8468-420d-a8b0-091247f9c465" style="width:100%" class="column"><pre id="8eccbebf-e8e7-4579-828b-f27a9191c4c8" class="code"><code>class Pair&lt;S,T&gt; {
+  private S first;
+  private T second;
+
+  public Pair(S first, T second) {
+      this.first = first;
+      this.second = second;
+  }
+
+  S getFirst() {
+      return this.first;
+  }
+
+  T getSecond() {
+      return this.second;
+  }
+}</code></pre></div><div id="9914519a-ef60-4d2e-9ca6-2a50cb27971a" style="width:100%" class="column"><p id="42ac4591-c3cd-4a26-9bf6-50cdd6e15386" class=""><code>Pair&lt;String,Integer&gt; p = foo();</code></p><p id="e3d463f1-18e5-459a-bbc6-7b9762bfb032" class=""><code>Integer i = (Integer) p.getFirst();</code></p><p id="559b4d27-3f2a-45e2-9a29-a951f3a3699f" class="">Now this will lead to compile time error instead of runtime like above</p><p id="862e40cd-9539-4677-96d1-5c238bbf5834" class="">The compiler now have enough type information to check and give us an error since we try to cast a <code>String</code>
+ to an <code>Integer</code>
+.</p><p id="cac3cf34-4802-4167-82d0-eb9903309317" class="">
+</p></div></div><figure class="block-color-blue_background callout" style="white-space:pre-wrap;display:flex" id="db2d46b4-e5b3-47c4-a667-60f71ad85acb"><div style="font-size:1.5em"><span class="icon">💡</span></div><div style="width:100%"><code>class DictEntry&lt;T&gt; extends Pair&lt;String, T&gt; {}</code>
+We can pass in the type parameter T from <code>DictEntry&lt;T&gt;</code> as the type argument for T in <code>Pair&lt;String, T&gt;</code></div></figure><h3 id="ab96c6ad-cd39-4bcb-9075-da27e622d2bd" class="">Generic Methods</h3><pre id="88df464f-2819-4ab8-9d8e-36f7e16e2411" class="code"><code>class A {
+    // version 0.1 (with polymorphism)
+    public static boolean contains(Object[] array, Object obj) {
+      for (Object curr : array) {
+        if (curr.equals(obj)) {
+          return true;
+        }
+      }
+      return false;
+    }
+}</code></pre><p id="e251b4f3-c7e4-4b02-ac04-96036c532bb9" class=""><code>String[] strArray = new String[] { &quot;hello&quot;, &quot;world&quot; };</code></p><p id="40ca5dc1-b84d-4edc-86d0-c148996e47cc" class=""><code>A.contains(strArray, 123);</code></p><p id="7427a8f3-48d9-443e-a3da-e6f507f70c32" class="">While using this method does not involve narrowing type conversion and type casting, it is a little to general. There is no use finding an Integer in an array of Strings</p><pre id="de594292-5748-4c63-83b5-352414c1cb2c" class="code"><code>class A {
+    // version 0.4 (with generics)
+    public static &lt;T&gt; boolean contains(T[] array, T obj) {
+      for (T curr : array) {
+        if (curr.equals(obj)) {
+          return true;
+        }
+      }
+      return false;
+    }
+}</code></pre><p id="d4d932bd-5b20-491b-8fd2-36f00479197b" class=""><code>String[] strArray = new String[] { &quot;hello&quot;, &quot;world&quot; };</code></p><p id="015b12ec-e94b-4470-913d-4d962307bfca" class=""><code>A.&lt;String&gt;contains(strArray, 123); // type mismatch error</code></p><p id="24bd3511-171c-4a2b-8eb0-004ba259622f" class="">This will generate <strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>compilation error</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></p><figure class="block-color-blue_background callout" style="white-space:pre-wrap;display:flex" id="a70fdee7-19bb-4fc4-ba6c-54938085e0c8"><div style="font-size:1.5em"><span class="icon">💡</span></div><div style="width:100%">The type parameter &lt;T&gt; is added before the return type and after the keyword <code>static</code></div></figure><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="c119d955-ca7b-4786-91eb-a54ea54b6912"><div style="font-size:1.5em"><span class="icon">❗</span></div><div style="width:100%">The parameterized type has to be a <strong>REFERENCE </strong>TYPE but not primitive type. Error : <code>new Pair&lt;int, int&gt;</code></div></figure><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="f3ac3458-adac-4488-9d1a-86b39ad7f2a5"><div style="font-size:1.5em"><span class="icon">❗</span></div><div style="width:100%">Don’t use raw types like <code>Array a </code>but use <code>Array&lt;String&gt; a</code> because the java compiler doesn’t know it is an array of Strings (backward compatibility)</div></figure><pre id="a41264e1-4798-4f1e-9aed-68f7391f0c97" class="code"><code>class A {
+    // version 0.4
+    public static GetAreable findLargest(GetAreable[] array) {
+      double maxArea = 0;
+      GetAreable maxObj = null;
+      for (GetAreable curr : array) {
+        double area = curr.getArea();
+        if (area &gt; maxArea) {
+          maxArea = area;
+          maxObj = curr;
+        }
+      }
+      return maxObj;
+    }
+}</code></pre><p id="640b74ad-d040-40d0-b024-0b0b3096a858" class="">This will require us to perform <em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em>narrowing type conversion</em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em> to cast from <code>GetAreable</code> which may lead to <strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>runtime error</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong>  like the following code</p><pre id="31dd11e4-f7e0-481e-bb2d-c976db378639" class="code code-wrap"><code>GetAreable[] circles = new GetAreable[] {
+  new Circle(new Point(1, 1), 2),
+  new Square(new Point(1, 1), 5)
+};
+
+Circle c2 = (Circle) findLargest(circles);</code></pre><pre id="b3e7dcb0-ed1e-41b3-bff5-5d02e8628ccc" class="code"><code>class A {
+    // version 0.4
+    public static &lt;T&gt; T findLargest(T[] array) {
+        double maxArea = 0;
+        T maxObj = null;
+        for (T curr : array) {
+            double area = curr.getArea();
+            if (area &gt; maxArea) {
+                maxArea = area;
+                maxObj = curr;
+            }
+        }
+        return maxObj;
+    }
+}
+
+class A {
+    // version 0.4 (with generics)
+    public static &lt;T&gt; boolean contains(T[] array, T obj) {
+      for (T curr : array) {
+        if (curr.equals(obj)) {
+          return true;
+        }
+      }
+      return false;
+    }
+}</code></pre><p id="3e131aaf-d6cc-4a0f-9d24-7ecb5dd97574" class="">This will <strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>not compile</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong> because the compiler is not sure that it can find a method called <code>getArea()</code> in type T. But it is fine when we run the method <code>contains()</code> because the Object class has the <code>equals()</code> method so any reference type has that method as well</p><p id="a34c4dea-d043-4543-b65b-b6a3a56b2cc3" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>How to circumvent this: </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong>We must say that the T must be a subtype of <code>GetAreable</code>  so we write <code>&lt;T extends GetAreable&gt;</code></p><p id="290952e1-af39-4850-90f2-849cff5e63ec" class=""><code>class Pair&lt;S extends Comparable&lt;S&gt;,T&gt; implements Comparable&lt;Pair&lt;S,T&gt;&gt; {}</code> ⇒ this one means that the first parameter S must be a subtype of <code>Comparable&lt;S&gt;</code> BUT we want to compare two Pair instances so the <code>Pair</code> itself must also implement <code>Comparable&lt;Pair&lt;S,T&gt;&gt;</code></p><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="b3c784ed-12c3-40c0-9d52-2065b96e0ee0"><div style="font-size:1.5em"><span class="icon">❗</span></div><div style="width:100%">Only <code>extends </code> is allowed in <strong><strong><strong><strong><strong><strong><strong><strong>generic </strong></strong></strong></strong></strong></strong></strong></strong>class definition. <code>extends</code> is also used for interfaces here too</div></figure><h3 id="6881d20d-7ec3-4f03-8fdf-c76fc49e0626" class="">Generics are <span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid">invariant</span></span></span></span></h3><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="b405cd7c-8b7f-47a6-a5c4-6d2477b1e657"><div style="font-size:1.5em"><span class="icon">❗</span></div><div style="width:100%">If <code>B &lt;: A</code>, it does not mean that <code>C&lt;B&gt; &lt;: C&lt;A&gt;</code> so a parameterized type must be used exactly with the same type argument
+<code>Queue&lt;Circle&gt; qc = new Queue&lt;Shape&gt;(); </code>  ❌
+<code>Queue&lt;Shape&gt; qs = new Queue&lt;Circle&gt;();</code>  ❌
+<code>Queue&lt;Shape&gt; qs = (Queue&lt;Shape&gt;) new Queue&lt;Circle&gt;();</code>  ❌
+It will lead to a <strong><strong><strong><strong>compile time error</strong></strong></strong></strong> even if we do narrowing type conversion</div></figure><pre id="7cd62f7b-f92e-4d65-bfff-d6420282eae5" class="code"><code>class A {
+  // version 0.5 (with generic array)
+  public static &lt;T&gt; boolean contains(Array&lt;T&gt; array, T obj) {
+    for (int i = 0; i &lt; array.getLength(); i++) {
+      T curr = array.get(i);
+      if (curr.equals(obj)) {
+        return true;
+      }
+    }
+    return false;
+  }
+}
+
+// Consider the following code
+Array&lt;Shape&gt; shapeArray;
+Array&lt;Circle&gt; circleArray;
+Shape shape;
+Circle circle;</code></pre><table id="c00eb138-c369-4240-8e45-ded215c63856" class="simple-table"><tbody><tr id="97139611-0f25-47c1-9411-e7700cd929a1"><td id="ir;\" class="" style="width:296px">Code</td><td id="G&gt;S;" class="" style="width:70px">Valid</td><td id="ST^b" class="">Reason</td></tr><tr id="6033848d-a309-4022-86a3-8b9782760f0b"><td id="ir;\" class="" style="width:296px"><code>A.&lt;Shape&gt;contains(shapeArray, shape);</code></td><td id="G&gt;S;" class="" style="width:70px">✅</td><td id="ST^b" class=""></td></tr><tr id="2d63dae1-404e-4f28-867d-8134dab8358f"><td id="ir;\" class="" style="width:296px"><code>A.&lt;Circle&gt;contains(circleArray, circle);</code></td><td id="G&gt;S;" class="" style="width:70px">✅</td><td id="ST^b" class=""></td></tr><tr id="f4dc80cc-2aab-4cf3-9f51-e20768342270"><td id="ir;\" class="" style="width:296px"><code>A.&lt;Shape&gt;contains(shapeArray, circle);</code></td><td id="G&gt;S;" class="" style="width:70px">✅</td><td id="ST^b" class=""></td></tr><tr id="09976d37-320f-4dd3-a15c-3727c58ea11a"><td id="ir;\" class="" style="width:296px"><code>A.&lt;Circle&gt;contains(shapeArray, circle);</code></td><td id="G&gt;S;" class="" style="width:70px">❌</td><td id="ST^b" class="">Because <code>Array&lt;Circle&gt;</code> &lt;/: <code>Array&lt;Shape&gt;</code></td></tr><tr id="abfae88d-4512-4716-a31a-73d9b905c136"><td id="ir;\" class="" style="width:296px"><code>A.&lt;Shape&gt;contains(circleArray, shape);</code></td><td id="G&gt;S;" class="" style="width:70px">❌</td><td id="ST^b" class="">Because <code>Array&lt;Circle&gt;</code> &lt;/: <code>Array&lt;Shape&gt;</code></td></tr><tr id="7577c8e8-d6d0-447c-b1e6-185d32c9ed75"><td id="ir;\" class="" style="width:296px"><code>A.&lt;Circle&gt;contains(circleArray, shape);</code></td><td id="G&gt;S;" class="" style="width:70px">❌</td><td id="ST^b" class=""><code>Circle</code> &lt;: <code>Shape</code> not the other way around</td></tr></tbody></table><p id="4928e55c-297b-471f-a167-6c3eb6df8bf2" class="">Consider this instead <code>public static &lt;S, T extends S&gt; boolean contains(Array&lt;T&gt; array, S obj) { .. }</code></p><p id="a9abb2c1-6511-45e2-9efa-24c75928d404" class=""><code>A.&lt;Shape,Circle&gt;contains(circleArray, shape);</code> ✅</p><pre id="79f29bb1-c317-4264-85ce-5e8c6d06ea10" class="code"><code>// version 0.4 (with copy)
+class Array&lt;T&gt; {
+  private T[] array;
+
+  Array(int size) {
+  // The only way we can put an object into the array is through
+  // the method set() and we only put an object of type T inside.
+  // So it is safe to cast `Object[]` to `T[]`.
+  @SuppressWarnings(&quot;unchecked&quot;)
+    T[] a = (T[]) new Object[size];
+  this.array = a;
+  }
+
+  public void set(int index, T item) {
+    this.array[index] = item;
+  }
+
+  public T get(int index) {
+    return this.array[index];
+  }
+
+  public void copyFrom(Array&lt;T&gt; src) {
+    int len = Math.min(this.array.length, src.array.length);
+    for (int i = 0; i &lt; len; i++) {
+        this.set(i, src.get(i));
+    }
+  }
+
+  public void copyTo(Array&lt;T&gt; dest) {
+    int len = Math.min(this.array.length, dest.array.length);
+    for (int i = 0; i &lt; len; i++) {
+        dest.set(i, this.get(i));
+    }
+  }
+}
+
+Array&lt;Circle&gt; circleArray;
+Array&lt;Shape&gt; shapeArray;
+  :
+shapeArray.copyFrom(circleArray); // error
+circleArray.copyTo(shapeArray); // error</code></pre><p id="6b2a9d99-1cbf-4ef8-aa7c-d045b9883504" class="">The upper-bounded wildcard is an example of covariance. The upper-bounded wildcard has the following subtyping relations:</p><ul id="e1c6f794-affe-4494-937f-c87b163f5693" class="bulleted-list"><li style="list-style-type:disc">If <code>S</code> &lt;: <code>T</code>, then <code>A&lt;? extends S&gt;</code> &lt;: <code>A&lt;? extends T&gt;</code> (covariance)</li></ul><ul id="ffb76ee2-2269-424c-a761-868123d72e49" class="bulleted-list"><li style="list-style-type:disc">For any type <code>S</code>, <code>A&lt;S&gt;</code> &lt;: <code>A&lt;? extends S&gt;</code></li></ul><p id="a0818ef6-dcbe-49a7-89ac-0877cd7b78c7" class="">For instance, we have:</p><ul id="b5255ac2-6c32-41de-939f-401f4b99a3b5" class="bulleted-list"><li style="list-style-type:disc"><code>Array&lt;Circle&gt;</code> &lt;: <code>Array&lt;? extends Circle&gt;</code></li></ul><ul id="9604cd74-b8dc-4640-903f-66417fbca6e6" class="bulleted-list"><li style="list-style-type:disc">Since <code>Circle</code> &lt;: <code>Shape</code>, <code>Array&lt;? extends Circle&gt;</code> &lt;: <code>Array&lt;? extends Shape&gt;</code></li></ul><ul id="ac90585e-44f8-4d97-855d-713e97266cc2" class="bulleted-list"><li style="list-style-type:disc">Since subtyping is transitive, we have <code>Array&lt;Circle&gt;</code> &lt;: <code>Array&lt;? extends Shape&gt;</code></li></ul><pre id="944f9a71-6db1-4269-a0f1-8f7a55ecda1a" class="code"><code>public void copyFrom(Array&lt;? extends T&gt; src) {
+    int len = Math.min(this.array.length, src.array.length);
+    for (int i = 0; i &lt; len; i++) {
+        this.set(i, src.get(i));
+    }
+  }</code></pre><p id="836c0fba-a5d6-4ab3-9848-c03f2d60e38a" class=""><code>shapeArray.copyFrom(circleArray); // ok</code> ✅</p><p id="3ac34dd2-cf2d-4647-a6fb-d6c740b0422d" class=""><code>circleArray.copyTo(shapeArray); ❌ </code> This is not allowed because<code> dest.set(…)</code> in <code>copyTo</code> means that array of shapes = something of type Circle so to be type safe that Array of shapes can only be an array that is a supertype of Circle or Circle itself. The <code>copyTo</code>method of <code>Array&lt;Shape&gt;</code>would allow an <code>Array&lt;Circle&gt;</code>as an argument, and we would end up putting instance with compile-time type <code>Shape</code> into <code>Array&lt;Circle&gt;</code>. If all the shapes are circles, we are fine, but there might be other shapes (rectangles, squares) in <code>this</code> instance of <code>Array&lt;Shape&gt;</code>, and we can&#x27;t fit them into <code>Array&lt;Circle&gt;</code> It will generate this error</p><pre id="3efbdf3c-ecf9-4b9a-b60e-51b207a9a90d" class="code"><code>Array.java:32: error: method set in class Array&lt;T&gt; cannot be applied to given types;
+        dest.set(i, this.get(i));
+          ^
+  required: int,CAP#1
+  found: int,T
+  reason: argument mismatch; T cannot be converted to CAP#1
+  where T is a type-variable:
+    T extends Object declared in class Array
+  where CAP#1 is a fresh type-variable:
+    CAP#1 extends T from capture of ? extends T
+1 error</code></pre><p id="3578b665-bdb1-4f75-8800-61644a507e52" class="">Change it to this instead </p><pre id="635ac2df-e5ba-418f-b34d-6f307205dce4" class="code"><code>public void copyTo(Array&lt;? super T&gt; dest) {
+    int len = Math.min(this.array.length, dest.array.length);
+    for (int i = 0; i &lt; len; i++) {
+        dest.set(i, this.get(i));
+    }
+  }</code></pre><p id="209a277b-0df8-4697-ac4b-c9d0e1aa2967" class="">The code would now type-check and compile.</p><p id="d367eb6b-23ce-444c-ab10-ecfe9e66b1e2" class="">The lower-bounded wildcard is an example of contravariance. We have the following subtyping relations:</p><ul id="03116489-bbc1-4cea-be5b-f3a2d6f5354f" class="bulleted-list"><li style="list-style-type:disc">If <code>S</code> &lt;: <code>T</code>, then <code>A&lt;? super T&gt;</code> &lt;: <code>A&lt;? super S&gt;</code> (contravariance)</li></ul><ul id="29b656e1-5694-4aa2-9b52-eb477dac0239" class="bulleted-list"><li style="list-style-type:disc">For any type <code>S</code>, <code>A&lt;S&gt;</code> &lt;: <code>A&lt;? super S&gt;</code></li></ul><p id="99dc7b72-b3fa-4d21-b7c6-3ec4bca27eed" class="">For instance, we have:</p><ul id="96194d87-7fc6-4e45-a7ba-ac5513ebc3d8" class="bulleted-list"><li style="list-style-type:disc"><code>Array&lt;Shape&gt;</code> &lt;: <code>Array&lt;? super Shape&gt;</code></li></ul><ul id="af988698-ef4a-493f-bdf2-9e00197e4648" class="bulleted-list"><li style="list-style-type:disc">Since <code>Circle</code> &lt;: <code>Shape</code>, <code>Array&lt;? super Shape&gt;</code> &lt;: <code>Array&lt;? super Circle&gt;</code></li></ul><ul id="fa27b951-e8fa-49a4-a0e3-6350b70df5b5" class="bulleted-list"><li style="list-style-type:disc">Since subtyping is transitive, we have <code>Array&lt;Shape&gt;</code> &lt;: <code>Array&lt;? super Circle&gt;</code></li></ul><h3 id="224505f1-5557-46ed-a6ff-91b5b807ded8" class="">PECS</h3><p id="c3300cfa-8311-46b7-be9e-cd41ccbad3d8" class="">If the variable is a producer that returns a variable of type <code>T</code>, it should be declared with the wildcard <code>? extends T</code>. Otherwise, if it is a consumer that accepts a variable of type <code>T</code>, it should be declared with the wildcard <code>? super T</code></p><h3 id="a743da32-3828-4ee6-bf91-c7de8a6b64af" class="">Unbounded Wildcards</h3><p id="bab027cb-a47a-4ba1-a41b-a255e0f7503e" class=""><code>Array&lt;?&gt; </code>is the supertype of every parameterized type of <code>Array&lt;T&gt;</code></p><p id="87e0cfc5-8738-4100-ab27-7298d97a6500" class=""><code>Array&lt;?&gt;</code> is useful when you want to write a method that takes in an array of some specific type, and you want the method to be flexible enough to take in an array of any type</p><p id="1f8f20c1-d37e-4afc-a22f-64f1f30cff26" class="">So if we do this <code>void foo(Array&lt;?&gt; arr) {}</code> then we can do</p><pre id="72bc08cf-90fb-4595-96b0-1d26db375670" class="code"><code>Array&lt;Circle&gt; ac;
+Array&lt;String&gt; as;
+foo(ac); // ok
+foo(as); // ok</code></pre><pre id="b53573ee-2d97-467a-9f34-24184ef64e48" class="code"><code>void foo(Array&lt;?&gt; array) {
+   :
+  x = array.get(0);
+  array.set(0, y);
+
+}</code></pre><ul id="5b7bb984-2436-412b-891d-104c2ff87b91" class="bulleted-list"><li style="list-style-type:disc">The return type of<code> x</code> can only be of type <code>Object </code> because it needs to be more general or equal to <code>Object</code></li></ul><ul id="9642dfb1-4f09-48af-8c2e-1d221bdc9905" class="bulleted-list"><li style="list-style-type:disc"><code>y</code> needs to be more specific than all possible types so it is even more restrictive so we can only put <code>null</code> into the <code>array</code></li></ul><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="3fb2fdb2-980f-4567-ad6c-2645600a6f0c"><div style="font-size:1.5em"><span class="icon">❗</span></div><div style="width:100%"><code>Array&lt;Object&gt;</code>is not the supertype of all <code>Array&lt;T&gt;</code> because generics are invariant so this will lead to error <code>Array&lt;Object&gt; a1 = new Array&lt;String&gt;(0);
+</code><strong><strong><strong>BUT </strong></strong></strong>it will compile if we do this instead <code>Array&lt;?&gt; a1 = new Array&lt;String&gt;(0);</code></div></figure><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="6b6a676d-c6bc-425c-9b1b-650514dd149f"><div style="font-size:1.5em"><span class="icon">❗</span></div><div style="width:100%">We can also do <strong><strong><strong><strong><strong><strong><strong><strong><strong>raw types (but not recommended) </strong></strong></strong></strong></strong></strong></strong></strong></strong>like <code>void bark(Array arr) {}</code>  so we can do <code>Array&lt;Circle&gt; ac -&gt; bark(ac)</code>
+Unlike <code>Array&lt;?&gt;</code>, however, the compiler does not have the information about the type of the component of the array, and cannot type check for us. It is up to the programmer to ensure type safety.</div></figure><p id="7941424f-ddef-4fcf-8f25-aafb19028207" class="">In conclusion, we can think of <code>Array&lt;?&gt;</code>, <code>Array&lt;Object&gt;</code>, and <code>Array</code> as follows:</p><ul id="b577c9a1-75b0-4b60-a37c-ad881ddd45e6" class="bulleted-list"><li style="list-style-type:disc"><code>Array&lt;?&gt;</code> is an array of objects of some specific, but unknown type;</li></ul><ul id="f245b82e-1d32-441c-8954-f96a168880f8" class="bulleted-list"><li style="list-style-type:disc"><code>Array&lt;Object&gt;</code> is an array of <code>Object</code> instances, with type checking by the compiler;</li></ul><ul id="7bf5c21d-9b0a-4ff0-9dec-12f908cb827e" class="bulleted-list"><li style="list-style-type:disc"><code>Array</code> is an array of <code>Object</code> instances, without type checking.</li></ul><p id="55322f89-bafe-4218-b438-84962d129e88" class="">
+</p><ul id="5e811904-a2e1-421d-853c-18db38fcb483" class="toggle"><li><details open=""><summary>Practice #1</summary><figure id="321bc46b-bb8a-42fe-b12c-d62e629103bf" class="image"><a href="Generics%20ce8f347f815b4527aae306dc574c2ec1/Untitled.png"><img style="width:691px" src="Generics%20ce8f347f815b4527aae306dc574c2ec1/Untitled.png"/></a></figure><figure id="54a030f3-61fb-4dec-9b5a-292a6c363ca6" class="image"><a href="Generics%20ce8f347f815b4527aae306dc574c2ec1/Untitled%201.png"><img style="width:573px" src="Generics%20ce8f347f815b4527aae306dc574c2ec1/Untitled%201.png"/></a></figure><figure id="50666be7-0615-460b-8018-f3ce44691f5c" class="image"><a href="Generics%20ce8f347f815b4527aae306dc574c2ec1/Untitled%202.png"><img style="width:384px" src="Generics%20ce8f347f815b4527aae306dc574c2ec1/Untitled%202.png"/></a></figure><figure id="093e4244-1a5c-414f-bd8b-24a6cb81af03" class="image"><a href="Generics%20ce8f347f815b4527aae306dc574c2ec1/Untitled%203.png"><img style="width:529px" src="Generics%20ce8f347f815b4527aae306dc574c2ec1/Untitled%203.png"/></a></figure><figure id="32e73a8a-a07b-493b-b897-2f22ebcfce99" class="image"><a href="Generics%20ce8f347f815b4527aae306dc574c2ec1/Untitled%204.png"><img style="width:288px" src="Generics%20ce8f347f815b4527aae306dc574c2ec1/Untitled%204.png"/></a></figure><p id="eafce43c-0429-40c5-b8de-b662a0f740d7" class="">
+</p></details></li></ul><ul id="2135a331-6eba-47c9-93ea-5c625a1740df" class="toggle"><li><details open=""><summary>Practice #2 Finals 19/20 Q3 </summary><figure id="1b446231-c205-48c0-8c6e-547be7361f45" class="image"><a href="Generics%20ce8f347f815b4527aae306dc574c2ec1/Untitled%205.png"><img style="width:480px" src="Generics%20ce8f347f815b4527aae306dc574c2ec1/Untitled%205.png"/></a></figure><ol type="1" id="a2f2f9f1-b105-4b22-984d-f56d98c0d73a" class="numbered-list" start="1"><li><code>Stream&lt;? super A3&gt;</code>,</li></ol><ol type="1" id="c79d1681-003f-4db5-8e8f-a9539e9351f6" class="numbered-list" start="2"><li><code>Stream&lt;? super A4&gt;</code>, </li></ol><ol type="1" id="0eb92da4-6c3d-450f-bf20-e83321fd88d1" class="numbered-list" start="3"><li><code>Stream&lt;? super A5&gt;</code></li></ol><ol type="1" id="1c54a56f-8125-4b5a-83da-682f3aa5a8ec" class="numbered-list" start="4"><li><code>Object</code></li></ol><ol type="1" id="ce144835-9721-4fb0-99c0-0595a1b3f46e" class="numbered-list" start="5"><li><code>Stream&lt;A3&gt;</code></li></ol><ol type="1" id="88bb0b1d-0213-480f-9e1c-916c54376c76" class="numbered-list" start="6"><li><code>Stream&lt;? extends A3&gt;</code></li></ol><ol type="1" id="922709bb-d89f-4185-b742-ad87cea457b6" class="numbered-list" start="7"><li><code>Stream&lt;? extends A1&gt;</code></li></ol><ol type="1" id="6df06a72-7cdc-4281-a7ca-98aae782aed3" class="numbered-list" start="8"><li><code>Stream&lt;? extends A2&gt;</code></li></ol><ol type="1" id="1c257b4b-17a2-4a4e-b79a-44726aa7ebb8" class="numbered-list" start="9"><li><code>Stream&lt;?&gt;</code></li></ol><ol type="1" id="92b8f836-361e-4ee8-bcab-6ff8e9aafe1e" class="numbered-list" start="10"><li><code>Stream&lt;? extends Object&gt;</code></li></ol><p id="0180422d-bb28-4fed-b303-7f7b215ffdfd" class="">The <code>map</code> function will return <code>? extends A3</code> so anything that is more general than <code>A3</code> is allowed</p><figure id="9c087ed0-4a77-4fa5-8081-a3b55d870aac" class="image"><a href="Generics%20ce8f347f815b4527aae306dc574c2ec1/Untitled%206.png"><img style="width:709px" src="Generics%20ce8f347f815b4527aae306dc574c2ec1/Untitled%206.png"/></a></figure><ol type="1" id="fec75edb-9bb6-4164-94d3-581221712037" class="numbered-list" start="1"><li><code>Optional&lt;A1&gt;</code></li></ol><ol type="1" id="5d9acdbe-504a-40f0-9f76-1efede119a7b" class="numbered-list" start="2"><li><code>Optional&lt;A2&gt;</code></li></ol><ol type="1" id="b26b74b0-40d9-46b7-aaf3-b1c29dd5c450" class="numbered-list" start="3"><li><code>Optional&lt;?&gt;</code></li></ol><ol type="1" id="ce2889bc-df7e-4d4f-950c-d9c8eb104731" class="numbered-list" start="4"><li><code>Object</code></li></ol><ol type="1" id="8116dd98-e6e4-4183-ac46-ccd57e0d88c7" class="numbered-list" start="5"><li><code>Optional&lt;? extends A1&gt;</code></li></ol><ol type="1" id="c4e11263-6a8e-4d7c-9af2-bb40ce230a78" class="numbered-list" start="6"><li><code>Optional&lt;? extends A2&gt;</code></li></ol><ol type="1" id="4101f765-98a3-479d-b1f5-6769a1249bf6" class="numbered-list" start="7"><li><code>Optional&lt;? super A2&gt;</code></li></ol><ol type="1" id="69ae8caf-f61f-4864-aba5-6a6be4d652c3" class="numbered-list" start="8"><li><code>Optional&lt;? super A3&gt;</code></li></ol><ol type="1" id="6ca84de5-3210-4f9c-854f-2c6e7c406f0c" class="numbered-list" start="9"><li><code>Optional&lt;? extends I&gt;</code></li></ol><ol type="1" id="a50a2672-ccad-4c6b-b7de-ba62948ff3fe" class="numbered-list" start="10"><li><code>Optional&lt;? extends Object&gt;</code></li></ol></details></li></ul><ul id="0495000d-9c9b-4956-9b36-d8d10debcc19" class="toggle"><li><details open=""><summary>Practice #3 Finals</summary><figure id="9da20228-b2ea-4186-9d4b-1e538c9aa6ec" class="image"><a href="Generics%20ce8f347f815b4527aae306dc574c2ec1/Untitled%207.png"><img style="width:770px" src="Generics%20ce8f347f815b4527aae306dc574c2ec1/Untitled%207.png"/></a></figure><p id="7694dc0d-3883-4d01-86a4-6ba93e09f221" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Answer : Only statement A can compile</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong>. The lambda expression <code>str -&gt; str.length()</code> is passed as a parameter to <code>map</code> so the type inference here will work to infer <code>T</code> as <code>String</code> and <code>R</code> to be of type <code>Integer</code> so the statement A will compile fine. <code>Sure&lt;?&gt;</code> is the supertype of all types including <code>Integer</code> so statement B and C will not compile</p></details></li></ul><ul id="37f9d14f-3659-48a5-974d-e3f95a2d7dc6" class="toggle"><li><details open=""><summary>Practice #4</summary><figure id="d3d28391-2535-4666-b429-4c0ac026626c" class="image"><a href="Generics%20ce8f347f815b4527aae306dc574c2ec1/Untitled%208.png"><img style="width:882px" src="Generics%20ce8f347f815b4527aae306dc574c2ec1/Untitled%208.png"/></a></figure><ul id="698af021-6c74-44ff-8b5e-ecae83bf0392" class="bulleted-list"><li style="list-style-type:disc"><code>Box&lt;? super B2&gt;</code></li></ul><ul id="a0f2be3c-3f4d-4064-b263-99480635ae7a" class="bulleted-list"><li style="list-style-type:disc"><code>Box&lt;B2&gt;</code></li></ul><ul id="260051e8-508b-4532-ac36-b32ec151adc9" class="bulleted-list"><li style="list-style-type:disc"><code>Box&lt;?&gt;</code></li></ul><ul id="5396542d-2023-44ec-b385-40d2283d58f0" class="bulleted-list"><li style="list-style-type:disc"><code>Box&lt;? extends Object&gt;</code></li></ul><ul id="92507c15-cd0d-448d-ab91-7438344fb6cb" class="bulleted-list"><li style="list-style-type:disc"><code>Box&lt;? extends B2&gt;</code></li></ul><ul id="799d5649-fb58-4efd-ba0a-e92bfcb2fa03" class="bulleted-list"><li style="list-style-type:disc"><code>Box&lt;? super B3&gt;</code></li></ul><ul id="1b7a35bd-3622-46f8-8c23-c79fd2583542" class="bulleted-list"><li style="list-style-type:disc"><code>Box&lt;? extends B1&gt;</code></li></ul><ul id="c016147e-0fa8-45fd-9bed-7d036e827b35" class="bulleted-list"><li style="list-style-type:disc"><code>Box&lt;? extends I1&gt;</code></li></ul><ul id="ba1b30a1-82e2-42ed-acee-a55615b9c755" class="bulleted-list"><li style="list-style-type:disc"><code>Object</code></li></ul></details></li></ul></div></article></body></html>

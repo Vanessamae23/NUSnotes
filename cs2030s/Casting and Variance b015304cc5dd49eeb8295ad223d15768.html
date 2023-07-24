@@ -1,0 +1,785 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Casting and Variance</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-interactiveBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-translucentGray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="b015304c-c5dd-49ee-b829-5ad223d15768" class="page sans"><header><img class="page-cover-image" src="https://www.notion.so/images/page-cover/webb2.jpg" style="object-position:center 70%"/><div class="page-header-icon page-header-icon-with-cover"><span class="icon">📒</span></div><h1 class="page-title">Casting and Variance</h1><p class="page-description"></p></header><div class="page-body"><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="d26a41f9-aa9f-442a-982a-bf68ff0147e3"><div style="font-size:1.5em"><span class="icon">❗</span></div><div style="width:100%">After <strong><strong><strong><strong><strong><strong>type erasure, </strong></strong></strong></strong></strong></strong>the <code>Queue&lt;T&gt;</code>  will be erased to <code>Queue</code> and all fields with the generic type <code>T</code> will be erased to <code>Object</code><p id="f84ffc7f-0cab-441b-a5bd-9d3a78b61303" class=""><code>Integer i = new Pair&lt;String, Integer&gt;(&quot;hello&quot;, 4).getSecond();</code></p><p id="ab7a7e1d-0e01-4cab-ad6c-22d271f44db7" class="">will be erased to</p><p id="efb04426-ac95-4ac8-99db-540992470948" class=""><code>Integer i = (Integer) new Pair(&quot;hello&quot;, 4).getSecond();</code></p><p id="5b5db149-ce73-4851-bc12-18f0c9816b0a" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>The above is generated by the compiler after type checking so it ensures that the casting will no lead to </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>ClassCastException</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong> during runtime</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></p></div></figure><pre id="371b012b-f15e-4e86-8b10-3693d262507e" class="code code-wrap"><code>// version 0.4
+GetAreable findLargest(GetAreable[] array) {
+  double maxArea = 0;
+  GetAreable maxObj = null;
+  for (GetAreable curr : array) {
+    double area = curr.getArea();
+    if (area &gt; maxArea) {
+      maxArea = area;
+      maxObj = curr;
+    }
+  }
+  return maxObj;
+}
+
+GetAreable[] circles = new GetAreable[] {
+  new Circle(new Point(1, 1), 2),
+  new Circle(new Point(0, 0), 5)
+};
+
+GetAreable ga = findLargest(circles);  // ok
+Circle c1 = findLargest(circles); // error
+Circle c2 = (Circle) findLargest(circles); // ok</code></pre><ul id="209b5f51-72cb-48fb-8f67-92d8da7cde59" class="bulleted-list"><li style="list-style-type:disc">Return type of <code>findLargest</code> is now <code>GetAreable</code> so if we do <code>GetAreable ga = findLargest(circles); </code> , this will lead to compile time error. </li></ul><ul id="98ca9e64-af15-4dfe-a4a6-3deab18a3242" class="bulleted-list"><li style="list-style-type:disc">But we can typecast it by writing <code>(Circle) findLargest(circles)</code> is alright since it is a way for programmer to ask the compiler to trust </li></ul><ul id="964b80fc-d5fb-4470-ad16-b7245473ef7f" class="bulleted-list"><li style="list-style-type:disc">This is however<strong> </strong><strong><mark class="highlight-red">dangerous, because the following code will compile without any compilation error</mark></strong><pre id="315e09df-6872-4586-bc51-68ea02b37df5" class="code code-wrap"><code>GetAreable[] circles = new GetAreable[] {
+  new Circle(new Point(1, 1), 2),
+  new Square(new Point(1, 1), 5)
+};
+
+Circle c2 = (Circle) findLargest(circles);
+
+GetAreable[] circles = new GetAreable[] {
+  new Circle(new Point(1, 1), 2),
+  new Circle(new Point(1, 1), 5)
+};
+
+Square sq = (Square) findLargest(circles);</code></pre></li></ul><h3 id="4fd20d04-032f-403b-ab05-48081f6c2f85" class="">Variance</h3><pre id="5252d21d-c508-42df-9fd0-ce6bfdec43c5" class="code code-wrap"><code>// version 0.4
+GetAreable findLargest(GetAreable[] array) {
+  double maxArea = 0;
+  GetAreable maxObj = null;
+  for (GetAreable curr : array) {
+    double area = curr.getArea();
+    if (area &gt; maxArea) {
+      maxArea = area;
+      maxObj = curr;
+    }
+  }
+  return maxObj;
+}
+
+// version 0.1 (with polymorphism)
+boolean contains(Object[] array, Object obj) {
+  for (Object curr : array) {
+    if (curr.equals(obj)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+Object[] objArray = new Object[] { new Integer(1), new Integer(2) };
+Integer[] intArray = new Integer[] { new Integer(1), new Integer(2) };
+
+contains(objArray, new Integer(1)); // ok
+contains(intArray, new Integer(1)); // ok</code></pre><ul id="1477f62e-7d01-4a84-9d68-1de6cedc668e" class="bulleted-list"><li style="list-style-type:disc">It is possible to assign an instance with run-time type <code>Integer[]</code> to a variable of compile-time type <code>Object[]</code></li></ul><ul id="acfffa61-9a2d-40a0-babc-229b6fd572d0" class="bulleted-list"><li style="list-style-type:disc">Arrays are covariant so we can do </li></ul><pre id="201c2655-b1d7-48ec-87d7-3ddd51cea06b" class="code code-wrap"><code>Integer[] intArray;
+Object[] objArray;
+objArray = intArray; // ok
+
+Integer[] intArray = new Integer[2] {
+  new Integer(10), new Integer(20)
+};
+Object[] objArray;
+objArray = intArray;
+objArray[0] = &quot;Hello!&quot;; // &lt;- compiles!
+// but at runtime Exception in thread &quot;main&quot; java.lang.ArrayStoreException: java.lang.String</code></pre><ul id="f02fd4cc-9476-41fa-943c-bad4c5f6d23c" class="bulleted-list"><li style="list-style-type:disc">The above is allowed because <code>objArray</code> at CTT will refer to the <code>Object</code> class so the compiler will allow this but it does not know that at runtime, the <code>Object</code> array will refer to an array of <code>Integer</code></li></ul><figure class="block-color-purple_background callout" style="white-space:pre-wrap;display:flex" id="6f0de5ec-2d91-4279-a955-2d32ac73313b"><div style="font-size:1.5em"><span class="icon">🐙</span></div><div style="width:100%">Covariant ⇒ <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>&lt;</mo><mo>:</mo><mi>T</mi><mo>=</mo><mi>C</mi><mo stretchy="false">(</mo><mi>S</mi><mo stretchy="false">)</mo><mo>&lt;</mo><mo>:</mo><mi>C</mi><mo stretchy="false">(</mo><mi>T</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">S &lt;: T = C(S) &lt;: C(T)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72243em;vertical-align:-0.0391em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;:</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;:</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="mclose">)</span></span></span></span></span><span>﻿</span></span><p id="d8ff932d-53b7-40f1-8ae2-c5e4bc08105b" class="">Contravariant ⇒ <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>&lt;</mo><mo>:</mo><mi>T</mi><mo>=</mo><mi>C</mi><mo stretchy="false">(</mo><mi>T</mi><mo stretchy="false">)</mo><mo>&lt;</mo><mo>:</mo><mi>C</mi><mo stretchy="false">(</mo><mi>S</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">S &lt;: T = C(T) &lt;: C(S)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72243em;vertical-align:-0.0391em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;:</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;:</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mclose">)</span></span></span></span></span><span>﻿</span></span></p><p id="c3688f69-d0a4-44ca-95ce-7c5839e677bd" class="">Invariant ⇒ not covariant or contravariant</p></div></figure><ul id="a77b1dc6-a132-46c6-ab94-80d84b990dcd" class="toggle"><li><details open=""><summary>Practice 1</summary><pre id="aa280cb7-8f6a-4481-9712-abc62c8263c9" class="code code-wrap"><code>interface A { }
+abstract class B implements A { }
+interface C { }
+class D extends B implements C { }
+class E implements A { }</code></pre><p id="9a9b2332-7b0d-4d29-b2bc-7480dd6e166d" class="">Which of the following subtype relationships below hold?</p><p id="643e57a9-2515-4110-90c3-e7060e028862" class="">✅ D &lt;: B</p><p id="52a1fa9c-3bf3-45ae-bcea-8ec121054449" class="">✅ D &lt;: C</p><p id="5c2101e1-4205-43ec-af90-4262addb7586" class="">✅ D &lt;: A <em>because D :&lt; B and B:&lt; A</em></p><p id="36bd1ce9-db55-4208-9413-da674e503352" class="">✅ B &lt;: A</p><p id="ad21aa03-e95e-41ad-984d-55b985c4d6e4" class="">❌ B &lt;: D <em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em>no only the other way around works</em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></p><p id="c391b9fe-bbee-40aa-8666-fb4ab49f3b08" class="">❌ C &lt;: A<em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em> there is no subtype relationship here</em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></p></details></li></ul><ul id="8af3bac9-4253-41fc-b8c6-6711e7bbabfe" class="toggle"><li><details open=""><summary>Practice 2</summary><p id="8d11f277-71d3-497e-95ec-65171ef500ab" class="">Consider the following abstract class, concrete class, and interfaces:</p><pre id="6e9bee05-fad5-49a0-81c6-555dc05624b4" class="code code-wrap"><code>interface A { }
+abstract class B implements A { }
+interface C { }
+class D extends B implements C { }
+class E implements A { }
+</code></pre><p id="c481f443-8e58-4500-a336-a03a3d3703ed" class="">and the following declaration:</p><pre id="d22f5c98-8321-4a36-b796-f6f51525b26f" class="code code-wrap"><code>A a = new E();
+B b = new D();
+C c = new D();
+D d = new D();
+E e = new E();
+</code></pre><p id="58e379ca-02ec-4b42-b1ba-d95c76fa1542" class="">Which of the following assignment statements lead to <strong>compile-time error</strong>?</p><p id="1ad5573b-0c98-4f37-bd9c-cf527fb2e1f2" class="">(Select all correct options)</p><p id="54790a10-0c06-4148-80eb-734c07f3c2c7" class="">❌ <code>d = (D) a;</code> this is fine because D :&lt; A so the narrowing type casting is fine</p><p id="de75c36f-d043-4394-9996-6542552ea351" class="">✅  <code>d = (B) a;</code> this will lead to compile time error because although B &lt;: A the explicit type casting is fine but since <code>d</code> is of type <code>D</code> so since D &lt;: B there will be narrowing type casting </p><p id="408f711d-b56b-41ae-9bba-6fba78ea066c" class="">❌ <code>c = (C) b;</code> this will not lead to compile time error because since <code>c</code> is of type <code>C</code> and we know that <code>C</code> is an interface so Java allows this despite no subtyping relationship between <code>B</code> and <code>C</code> , CTT of <code>c</code> is C </p><p id="3fb598e4-9a3c-4588-8a4c-3ceb61f7e30b" class="">❌ <code>a = (A) c;</code> same as above</p><p id="c88287bf-9de2-428f-9393-108b86b1bdd0" class="">❌ <code>c = (C) a;</code> same as above</p><p id="fb9e4ff1-0dce-49f5-90e1-c503e1610cca" class="">❌ None of the above.</p></details></li></ul><ul id="3ca3c9a5-d72f-489f-8c83-177ff9829124" class="toggle"><li><details open=""><summary>Practice 3</summary><p id="e3ceb045-e3c3-441e-958e-e590df849eb9" class="">Consider the following abstract class, concrete class, and interfaces:</p><pre id="11261dfc-fb49-4cbe-a2df-ad202ee704e2" class="code code-wrap"><code>interface A { }
+abstract class B implements A { }
+interface C { }
+class D extends B implements C { }
+class E implements A { }
+</code></pre><p id="d0d67537-3e6e-4f9a-aa36-db2a2f1c6cda" class="">and the following declaration:</p><pre id="b9758e2b-baf4-4c2b-a244-8d20121e2066" class="code code-wrap"><code>
+A a = new E();
+B b = new D();
+C c = new D();
+D d = new D();
+E e = new E();
+</code></pre><p id="181925e3-361e-4f7b-a12f-03adbe0ccc43" class="">Which of the following assignment statements will lead to <strong>run-time error</strong>?</p><p id="404a971f-fd91-417b-b86d-b36bc09e7bf8" class="">✅ <code>b = (B) a;</code> since B :&lt; A so the type casting is okay and the RTT of <code>b</code> is <code>D</code> which is not <code>B</code> so it will result in runtime error since it does not tally</p><p id="cfd93141-7e6c-485d-a667-9896f56397c2" class="">✅ <code>c = (C) a;</code> same as above</p><p id="ec4ddaf4-5fdc-4d12-9eef-349e3b41f2f5" class=""> ❌<code>e = (E) a;</code> this is fine since E :&lt; A and the RTT of <code>e</code> is <code>E</code> so it will not lead to runtime error</p><p id="dad58539-2e9e-457f-b43f-c9c8d85437e5" class="">❌ <code>d = (D) c; </code> this is fine since D &lt;: C and RTT is alright too</p><p id="82ad3460-b80c-4ec7-be10-a2257bb11dd1" class="">❌ <code>b = (B) c;</code> this is fine since </p></details></li></ul><ul id="ca508d47-0f62-418c-900e-06f1f68058a4" class="toggle"><li><details open=""><summary>Practice 4</summary><p id="b00b8044-dc70-4e45-ae18-faa37ac27941" class="">All primitive wrapper class objects are immutable </p><p id="89fea566-e04d-4e36-9c4a-bb7e4cb2e5b4" class=""><strong><strong><strong><strong><strong><strong><strong><strong>Answer: </strong></strong></strong></strong></strong></strong></strong></strong>True</p></details></li></ul><ul id="c9caef83-73a9-4494-abdd-9502fc5a7810" class="toggle"><li><details open=""><summary>Practice 5</summary><p id="24bcc39c-6795-4aef-8b0d-c48dd27df4aa" class="">Consider the following:</p><pre id="682139ae-ef7e-47c9-8efd-b50e45f5c097" class="code code-wrap"><code>class T { }
+class S extends T { }
+
+void foo(T[] ts) {
+}
+
+void bar(S[] ses) {
+}
+</code></pre><p id="49be7bb8-bf2a-4d29-a01b-c07d48805779" class="">Which of the following compiles?</p><p id="f801ae82-5da0-49c2-8365-732e68d0eec8" class="">(Select all correct options)</p><p id="cfd994ac-f578-447f-988c-211dc23cdc44" class="">✅ <code>foo(new T[1]);</code> This is alright</p><p id="21b426d5-f77b-418f-8980-691f10eb4b51" class="">✅ <code>foo(new S[1]);</code>This is also fine because <code>S[]</code> &lt;: <code>T[]</code> </p><p id="9459196d-227c-4a37-99b6-0ed10b87c31f" class="">❌ <code>foo(new Object[1]);</code> this is not fine because  <code>Object</code> :&gt; <code>T</code></p><p id="639503b1-c971-4277-bdd7-a27fb638edb9" class="">❌ <code>bar(new T[1]);</code>, this is not fine because <code>S[]</code> &lt;: <code>T[]</code> </p><p id="18f4537c-5852-4d40-9729-c57b7141cae9" class="">✅ <code>bar(new S[1]);</code></p><p id="dd57bacf-f38d-4610-828b-634e9ea11915" class="">❌ <code>bar(new Object[1]);</code> this is not fine because<code>Object</code> :&gt; <code>S</code></p></details></li></ul><ul id="04b68316-8313-4082-ad96-b76df51b68ea" class="toggle"><li><details open=""><summary>Practice 6</summary><p id="22f2af1f-a316-4a90-8283-d22be4d17311" class="">What is wrong with the following code snippet?</p><pre id="cc95e328-0f61-4eed-99ea-bfb3732b340a" class="code code-wrap"><code>Object[] objs = new String[] { &quot;hello&quot; }; // Line A
+objs[0] = 1;  // Line B
+</code></pre><p id="0b3d754b-0e0d-481b-93ac-828a65aea340" class="">There is nothing wrong.</p><p id="1b0df0e5-8deb-4f8c-a821-2e379ab31181" class="">Line A will cause a compilation error because Java does not allow a <code>String[]</code> to be stored in a reference variable of type <code>Object[]</code>.</p><p id="6c67b1e1-83f2-48ec-b875-d4d0cc110baf" class="">Line A will cause a run-time error since a <code>String</code> instance cannot be stored in an array of <code>Object</code>s.</p><p id="c6defb8b-de89-45f8-bd5e-2b75610eecb2" class="">Line B will cause a compile-time error because an integer cannot be stored in an array of <code>Object</code>s.</p><p id="96fd4242-8db9-4c63-91fa-29dbc2210ce0" class="">✅ Line B will cause a <strong>run-time error</strong> be cause an integer cannot be stored in an array of <code>String</code>s.</p><p id="4324b51f-4183-49f2-ad7a-5aa02bb3edce" class="">
+</p><p id="fbac4a4c-b5b0-4b5f-9f14-59b0ba9d4d37" class="">
+</p><p id="5c63f0af-8e3d-4d70-bee1-2f069b3fdb72" class="">
+</p></details></li></ul></div></article></body></html>

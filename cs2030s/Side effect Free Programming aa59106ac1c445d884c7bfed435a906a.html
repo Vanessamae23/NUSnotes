@@ -1,0 +1,824 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Side effect Free Programming</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-interactiveBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-translucentGray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="aa59106a-c1c4-45d8-84c7-bfed435a906a" class="page sans"><header><img class="page-cover-image" src="https://www.notion.so/images/page-cover/woodcuts_15.jpg" style="object-position:center 30.000000000000004%"/><div class="page-header-icon page-header-icon-with-cover"><span class="icon">⛅</span></div><h1 class="page-title">Side effect Free Programming</h1><p class="page-description"></p></header><div class="page-body"><p id="2d3cc39b-daa0-46ed-82f7-0a41aae38325" class="">Function as <em><em><em><em><em><em><em><em><em>first class citizen </em></em></em></em></em></em></em></em></em> just means that we can assign functions to a variable, passing it as parameters, returning a function from another function</p><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="4d731bc3-3084-4445-9aef-0aff981f7017"><div style="font-size:1.5em"><span class="icon">📌</span></div><div style="width:100%">If our class is <span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid">immutable</span></span></span></span></span></span></span></span></span>, then the methods should not have any <span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid">side effects</span></span></span></span></span></span></span></span></span></span></span></span> and then it is pure</div></figure><table id="88b50f73-404d-4c72-adb7-dfa6e5fcaea0" class="simple-table"><tbody><tr id="4f18e2a9-3eb0-48b8-8fd3-0849b15e09bf"><td id=":;y_" class="block-color-yellow_background" style="width:336.15277099609375px"><strong>Pure Functions</strong></td><td id=";JRW" class="block-color-yellow_background" style="width:313px">Example of Impure functions</td></tr><tr id="810615a6-8983-43e2-8c78-cd929c2bcf90"><td id=":;y_" class="" style="width:336.15277099609375px">Does not print to the screen</td><td id=";JRW" class="" style="width:313px"></td></tr><tr id="4dc4a32a-3d57-46d9-a8b1-361c2e94010f"><td id=":;y_" class="" style="width:336.15277099609375px">Does not write to files</td><td id=";JRW" class="" style="width:313px"></td></tr><tr id="ab2498a3-de21-4361-981d-cfd9855c39b1"><td id=":;y_" class="" style="width:336.15277099609375px">Does not throw exceptions. <strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Overflow is not an error </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></td><td id=";JRW" class="" style="width:313px"><code>return i / j;  // may throw an exception</code></td></tr><tr id="692948c0-9980-48e4-888b-856a029a67ef"><td id=":;y_" class="" style="width:336.15277099609375px">Does not change other variables</td><td id=";JRW" class="" style="width:313px"></td></tr><tr id="141f0c23-c677-4925-8e7a-f2f8f320e7be"><td id=":;y_" class="" style="width:336.15277099609375px"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid">Deterministic</span></span></span></span></span></span></span></span></span></span></span></span></span> so given the same input, it will output the same thing</td><td id=";JRW" class="" style="width:313px"><code>int incrCount(int i) {
+         return this.count + i;
+}</code></td></tr><tr id="62aca488-eb6d-4403-ab84-dd3ce1e1e5cf"><td id=":;y_" class="" style="width:336.15277099609375px">It should not update the fields of an instance or compute using fields of an instance</td><td id=";JRW" class="" style="width:313px"><code>this.count += i; // does not return a value and has side effects on count
+queue.enq(i);  // has side effects on queue</code></td></tr><tr id="b9fd9f28-2e3f-4e1a-9a14-1608183e9059"><td id=":;y_" class="" style="width:336.15277099609375px">It should not modify the arguments that are passed to them</td><td id=";JRW" class="" style="width:313px"></td></tr></tbody></table><h3 id="779b278b-7a2e-4d14-a98f-2bda48c938d0" class=""><code>@FunctionalInterface</code></h3><div id="332d777a-9a21-458f-b4c7-996d75bf7f16" class="column-list"><div id="d55f99c4-8080-41c7-aa27-2e710bcda0c6" style="width:50%" class="column"><pre id="3719f1ef-5b8c-4e7a-9078-a5f90666522d" class="code code-wrap"><code>@FunctionalInterface
+interface Transformer&lt;T, R&gt; {
+  R transform(T t);
+}</code></pre><ul id="79697daf-ecce-4c79-be60-a4d2975500a3" class="bulleted-list"><li style="list-style-type:disc">It can have other default method and fields</li></ul><ul id="0ca7b80f-42f4-47f8-83d5-9354df676dfe" class="bulleted-list"><li style="list-style-type:disc">But it cannot extend another interface because then it means it will have more than one abstract method to be overridden</li></ul></div><div id="2689d030-976d-4952-95fd-e08313e38e98" style="width:50%" class="column"><pre id="fb38facc-ff4d-45d4-9219-b2b19988e397" class="code code-wrap"><code>@FunctionalInterface
+interface DateFunction {
+   int process();
+   static Date now() {
+      return new Date();
+   }
+   default String formatDate(Date date) {
+     return date.toString();
+   }
+   default int sum(int a, int b) {
+      return a + b;
+   }
+}</code></pre></div></div><figure class="block-color-brown_background callout" style="white-space:pre-wrap;display:flex" id="1374e00b-9001-441c-b6ec-e035fb7babef"><div style="font-size:1.5em"><span class="icon">💡</span></div><div style="width:100%">The above is called <strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>functional interface</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong> which is an interface with only one abstract method. Hence, we need to annotate the interface with the <code>@FunctionalInterface</code> annotation<ul id="e946177c-f778-496f-b91d-b3aa210147e7" class="bulleted-list"><li style="list-style-type:disc"><code>@FunctionalInterface</code> annotation is not a must but recommended</li></ul><ul id="949eb075-5f81-46ad-af01-72362664386e" class="bulleted-list"><li style="list-style-type:disc">Since it is an <span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid">interface</span></span></span></span></span></span></span></span></span>, so there is no constructor</li></ul><ul id="32db8b93-177d-44a7-9630-68beb0738c70" class="bulleted-list"><li style="list-style-type:disc">Since there is <span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid">only one abstract method</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span>, don’t need to write <code>@Override public Integer transform(..) { .. }</code></li></ul><ul id="6c66f3da-56a7-4b44-b7d3-943bfc5ca12b" class="bulleted-list"><li style="list-style-type:disc">Since we declared a type eg. <code>Transformer&lt;Integer, String&gt;</code> so we do not have to declare another type parameter <code>Transformer&lt;Integer, Integer&gt; incr = (</code><del><code>Integer</code></del><code> x) -&gt; { return x + 1; };</code></li></ul><ul id="62a6a870-ee1a-4776-9e22-a2fe8b7a0c65" class="bulleted-list"><li style="list-style-type:disc">If there is only one parameter, we can do this <code>Transformer&lt;Integer, String&gt; t = x =&gt; x * x;</code> but if there is two then we need to put in brackets <code>(x, y) -&gt; {}</code></li></ul><ul id="cec48cf5-a35f-4243-8825-44cb96141680" class="bulleted-list"><li style="list-style-type:disc">If there is only <span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid">one return statement</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span>, then we can ignore the return brackets an do this instead <code>Transformer&lt;Integer, String&gt; t = x =&gt; x * x;</code></li></ul></div></figure><h3 id="a858381c-7d92-4b05-a56d-59e6ae0e571f" class="">Method reference</h3><pre id="81c007b7-e28e-4cef-9fdb-210d2e78b484" class="code code-wrap"><code>class Point {
+    :
+
+  public double distanceTo(Point p) {
+      :
+  }
+}</code></pre><pre id="eb2a5175-5dc6-4139-967b-dcc87fcb7a00" class="code code-wrap"><code>Point origin = new Point(0, 0);
+Transformer&lt;Point, Double&gt; dist = new Transformer&lt;&gt;() {
+  @Override
+  public Double transform(Point p) {
+    return origin.distanceTo(p);
+  }
+}</code></pre><p id="b2ecfb4a-55b5-44c4-bee3-45fd46b6e233" class="">We can change the above method to use lambda expression</p><pre id="c288105a-ea56-4c1d-8548-ac853e632aee" class="code code-wrap"><code>Point origin = new Point(0, 0);
+Transformer&lt;Point, Double&gt; dist = p -&gt; origin.distanceTo(p); //-(1)
+Transformer&lt;Point, Double&gt; dist = origin::distanceTo; //-(2)</code></pre><p id="b535fd00-d92f-42e5-860e-ad655fac1d5e" class="">The above is the same (1) and (2) since <code>distanceTo</code> takes in one parameter which suits the transformer</p><table id="d9a1aeea-7d34-4b35-8fd4-2b6125178d0d" class="simple-table"><tbody><tr id="67c1966b-a300-4741-b0fc-42aa0acba61a"><td id="|b~;" class="" style="width:124.91667175292969px">Kind</td><td id="GenE" class="" style="width:197.19444274902344px">Syntax</td><td id="UPq;" class="" style="width:153px">Example</td><td id="hdaT" class="" style="width:164px">Equivalence</td></tr><tr id="5dca39a2-1f93-4d9c-b442-1604885fc68d"><td id="|b~;" class="" style="width:124.91667175292969px">Reference to <strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>static methods</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></td><td id="GenE" class="" style="width:197.19444274902344px"><code>ContainingClass::staticMethod</code></td><td id="UPq;" class="" style="width:153px"><code>Box::of</code></td><td id="hdaT" class="" style="width:164px"><code>x -&gt; Box.of(x)</code>
+</td></tr><tr id="a8e8e090-81f5-4ea5-b5e9-ac44d536027d"><td id="|b~;" class="" style="width:124.91667175292969px">Reference to an <span style="border-bottom:0.05em solid"><strong>instance </strong></span>method of a <strong>particular object</strong></td><td id="GenE" class="" style="width:197.19444274902344px"><code><em>containingObject</em></code><code>::</code><code><em>instanceMethodName</em></code></td><td id="UPq;" class="" style="width:153px"><code>A x = new A();</code>
+<code>x::compareTo</code></td><td id="hdaT" class="" style="width:164px"><code>y -&gt; x.compareTo(y)</code></td></tr><tr id="4234da01-f3df-498c-818b-dccf138bcb3f"><td id="|b~;" class="" style="width:124.91667175292969px">Reference to an instance method of an <strong>arbitrary object</strong> of a particular type</td><td id="GenE" class="" style="width:197.19444274902344px"><code><em>ContainingType</em></code><code>::</code><code><em>methodName</em></code></td><td id="UPq;" class="" style="width:153px"><code>String::concat</code></td><td id="hdaT" class="" style="width:164px"><code>String::concat</code></td></tr><tr id="dd4e424c-20c2-43ab-a959-ce8a0a02afd1"><td id="|b~;" class="" style="width:124.91667175292969px">Reference to a constructor</td><td id="GenE" class="" style="width:197.19444274902344px"><code><em>ClassName</em></code><code>::new</code></td><td id="UPq;" class="" style="width:153px"><code>Box::new</code></td><td id="hdaT" class="" style="width:164px"><code>x -&gt; new Box(x)</code></td></tr></tbody></table><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="9110a484-fdfb-4b69-9886-051960ff16f3"><div style="font-size:1.5em"><span class="icon">❗</span></div><div style="width:100%">When it is <strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>not static ⇒</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong> <code>A::foo</code> is the same as <code>(a, i) -&gt; a.foo(i)
+</code>When it is <strong><strong><strong><strong>static ⇒ </strong></strong></strong></strong><code><strong><strong><strong><strong>A::</strong></strong></strong></strong></code><code>foo</code> is the same as <code>x -&gt; A.foo(x)</code></div></figure><ul id="d30e199c-a677-4702-a38e-db47e688544f" class="toggle"><li><details open=""><summary>Practice #1</summary><p id="bd570685-1274-48ce-820c-1b775ad11978" class="">Suppose we have the following functional interfaces:</p><pre id="a220a49d-4fce-490b-b4f2-388a0d89f472" class="code code-wrap"><code>
+interface F&lt;T&gt; {
+  T run(T t);
+}
+
+interface G&lt;S, T&gt; {
+  T run(S s, T t);
+}
+</code></pre><p id="494b1ee4-8aa0-43e1-b5cc-5a523732b326" class="">and the following class:</p><pre id="bb0b8ce9-a3c4-44b1-b08d-d04de8e10726" class="code code-wrap"><code>
+class A {
+   int foo(int x) {
+     return x + 1;
+   }
+
+   int bar(String s, int i) {
+     return s.length() + i;
+   }
+}
+</code></pre><p id="9bdcf10f-51d7-4a05-b013-877fe7f2ecaf" class="">Which of the following code snippets can be compiled without error?</p><p id="fcf8b6c0-823a-4570-9991-61aaa86ccf4e" class="">(Select all correct options)</p><p id="675bf34d-7d44-4b8b-bbcc-486c0a63fa59" class="">❌ <code>F&lt;Integer&gt; f = A::foo;</code> this will result in compilation error because <code>foo</code> is not static so if we change the method to <code>static int foo(int x)</code> , it will work
+❌<code>G&lt;String, Integer&gt; g = A::bar;</code> same as above</p><p id="288dced9-cf70-417d-a356-94d12549b34e" class="">✅ <code>G&lt;A, Integer&gt; g = A::foo;</code> this will work because<div class="indented"><pre id="4eccdab8-7e60-4cab-abc1-a73e05ce8974" class="code code-wrap"><code>G&lt;X, Integer&gt; g = X::foo;
+  X s = new X();
+  g.run(s,2);
+  // so it will be from X::foo to s.foo(2)</code></pre></div></p><p id="8edeb896-91ea-4294-b00c-d886a6368556" class="">✅ <code>A a = new A(); F&lt;Integer&gt; f = a::foo</code> this will work because <code>f.run(x)</code> will just be <code>a.foo(x)</code></p><p id="bd025b70-f209-4726-9c15-aa12c6122a14" class="">✅ <code>A a = new A();</code> <code>G&lt;String, Integer&gt; g = a::bar</code>; this will also work it tallies to be <code>g.run(&quot;hello&quot;, 2) </code> ⇒ <code>a.bar(&quot;hello&quot;, 2)</code></p><p id="631abd1a-dabb-4306-916d-bcb686e96e81" class="">❌  <code>A a = new A();</code> <code>G&lt;A, Integer&gt; g = a::foo</code> this is wrong because <code>foo</code> expects one parameter and since it is not static <code>A x = new A(); g.run(x, 2)</code> will essentially be <code>x.foo(2)</code> but <code>a::foo</code> is <code>a.foo(2)</code> which does not tally </p><p id="0b085e21-3ed2-43ec-aba6-75b45cd32b34" class="">
+</p></details></li></ul><ul id="2c0caa24-2686-432f-83de-8a5bd476ee90" class="toggle"><li><details open=""><summary>Practice #2</summary><p id="cc187851-0002-4f4e-b5ae-ee36dcdc513e" class="">Consider the following interface:</p><pre id="6f20ca7b-dca3-417d-8388-62db8c547d7f" class="code code-wrap"><code>@FunctionalInterface
+interface Producer&lt;T&gt; {
+    T produce();
+}</code></pre><p id="41420b6d-e251-4bca-98a5-e8799af90920" class="">Now consider the following code excerpt:</p><pre id="d9dcd91e-8043-4282-973e-39736ab6177e" class="code code-wrap"><code>Producer&lt;String&gt; p = () -&gt; { System.out.println(&quot;Hello&quot;); return &quot;World&quot;; }</code></pre><p id="9a4da905-72c4-4c1a-ad4f-679eb21618d7" class="">What will be printed after the line above is executed?</p><p id="3c1b97d4-41a0-41e2-9439-650ee7899c1e" class=""><strong>Answer: Nothing will be printed. </strong>Essentially because <code>produce()</code> is not called</p></details></li></ul><ul id="a58d6799-77b8-4b9d-927f-90ebcad9d407" class="toggle"><li><details open=""><summary>Practice #3</summary><p id="5c99a045-22d2-4e0d-a342-baddfeeb11fc" class="">The question uses the same <code>Producer</code> interface from the previous question. Consider the following code excerpt:</p><pre id="0bb74527-1a65-46da-96d7-88db9c74e000" class="code code-wrap"><code>Producer&lt;Integer&gt; p = () -&gt; { System.out.println(&quot;Returning...&quot;); return 42; }
+Integer i = p.produce();</code></pre><p id="2d01d06e-9be6-4e6c-bad8-6ff957b2af8c" class="">What will be printed after the lines above are executed?</p><p id="70bbc9d1-29c2-411d-9075-634159a83ae6" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Answer: Returning…</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></p><p id="cc5ad0ca-0625-4934-9b23-ba98ab50e73c" class="">
+</p></details></li></ul><ul id="58083a51-a0cb-4fad-be2e-137b4238df52" class="toggle"><li><details open=""><summary>Practice #4</summary><p id="f906b072-8d09-4c93-9ee7-dcd94d09755f" class="">Which of the following functions are pure functions?</p><div id="20e53e38-1bcc-4dae-a478-b236f47d04d2" class="column-list"><div id="02debd9e-046f-451e-9c57-c2e335fcacfa" style="width:100%" class="column"><pre id="28710f00-0aea-4f50-9562-43669c9df0fb" class="code code-wrap"><code>int f(int i) {
+  if (i &lt; 0) {
+    throw new IllegalArgumentException();
+  } else {
+    return i + 1;
+  }
+}</code></pre><p id="d77a9539-f579-4e89-b088-416a6f11869b" class="">❌ This is not a pure function because an error is thrown</p><pre id="af060478-1ddc-4512-8973-8011474e7bb6" class="code code-wrap"><code>public boolean greaterThanThree(int i) {
+   System.out.println(&quot;Checking if &quot; + i + &quot; is great than 3...&quot;);
+   return i &gt; 3;
+}</code></pre><p id="bdd476d0-027e-493a-a4e8-9a4157dd8f31" class="">❌ It is printing something to the console so it is not a pure function</p></div><div id="0838acf5-2895-4e51-ae9c-42678d87fe68" style="width:100%" class="column"><pre id="a1d09f13-c9b5-40fa-ad74-e6b07393dd3f" class="code code-wrap"><code>public double bar(double d) {
+   return Math.sqrt(d);
+}</code></pre><p id="211697b3-b909-4eba-a9b1-7366acd56b8e" class="">✅ The above is a pure function as it satisfies all properties </p><pre id="47e7a25c-3ed7-4bd6-99dd-7b24defb5aee" class="code code-wrap"><code>public long foo() {
+  // Returns the current time in milliseconds. 
+  return System.currentTimeMillis(); 
+}</code></pre><p id="1adad522-aff4-492b-9934-46cb1b920494" class="">❌ this is not a pure function because it is not deterministic</p></div></div><p id="738a91d6-ec74-4d47-b5fa-dc22e83f45de" class="">
+</p></details></li></ul><ul id="2ae6ee70-4847-46e7-96fd-d15024a4cacc" class="toggle"><li><details open=""><summary>Practice #5</summary><p id="3f1884e0-830f-4e62-a5dc-79f5b5f899b5" class="">Which of the following interfaces are functional interfaces?</p><div id="6011a467-f7eb-4de1-82df-cbd856780e81" class="column-list"><div id="e2622711-4c43-4693-a994-4dd3ce2dca3c" style="width:100%" class="column"><pre id="b1390fa7-0212-4c75-802d-1208404df3e6" class="code code-wrap"><code>interface I&lt;T&gt; {
+  void foo(T t);
+}</code></pre><p id="3bd462d3-0a80-447d-a1a9-fb66d1a54b58" class="">✅ one abstract method only </p><pre id="51de2782-b193-4080-a66d-fd82858e61e6" class="code code-wrap"><code>interface J {
+  int SIZE = 0;
+  int bar();
+}</code></pre><p id="763a0969-647a-473a-89a7-e078ce157c38" class="">✅ It is okay to have fields as long as there is only one abstract method</p></div><div id="9e5a1e87-26e7-4958-86a1-089ca2f8056b" style="width:100%" class="column"><pre id="3569fee0-3330-468e-9153-7b56b1d47e6c" class="code code-wrap"><code>interface K&lt;T&gt; {
+  T foo();
+  int bar();
+}</code></pre><p id="18f3c7cc-8783-41b5-8cc8-695c125e8b80" class="">❌ Got two methods so no</p><pre id="2913f98f-da1f-44b8-8fd3-8ad81edee513" class="code code-wrap"><code>interface L extends List&lt;T&gt; {
+  void scramble();
+}</code></pre><p id="6fb3cdd0-f502-4ca4-9b92-77ac09b4a949" class="">❌ No functional interface cannot extend another interface in this case <code>List</code></p></div></div></details></li></ul><ul id="16132128-2736-4896-9b4a-b9e891e52272" class="toggle"><li><details open=""><summary>Practice #6</summary><p id="369ef829-22a0-46fc-b4cf-1e250d436e1e" class="">Consider the following generic interface</p><pre id="78bd8ae0-7f7a-4d94-90a6-14f4df348806" class="code code-wrap"><code>interface A&lt;T, S&gt; {
+  S get(T t);
+}</code></pre><p id="52f95674-9146-4bf7-b56f-42f18b0d9e09" class="">Consider the following anonymous class:</p><pre id="4d7ea1f5-283b-4f14-8b52-4a496f0368d7" class="code code-wrap"><code>A&lt;Integer, String&gt; a = new A&lt;Integer, String&gt;() {
+  public String get(Integer t) {
+    return t.toString();
+  }
+};</code></pre><p id="738857fa-a967-4979-9402-0fb64b65dd20" class="">Which of the following is the equivalent lambda function?</p><p id="78fec766-0af0-40f9-aa26-75b1f6de9310" class="">❌ <code>A&lt;Integer, String&gt; a = (t, s) -&gt; t.toString();</code> this is not right because a expects one argument so cannot have two arguments</p><p id="8417b674-de25-448d-a188-d4922a0a1523" class="">✅ <code>A&lt;Integer, String&gt; a = t -&gt; t.toString();</code> this is right since t is a Integer and a returns a String so it tallies</p><p id="596d89b7-c7a7-49d5-afdb-f91fa02bbd73" class="">❌ <code>A&lt;Integer, String&gt; a = return t -&gt; t.toString();</code> this is not a valid syntax</p><p id="373d1bb8-d1d3-4688-bd98-40713c32ac7f" class="">❌ <code>A&lt;Integer, String&gt; a = t.toString();</code> this is also not valid unless it is like the second option</p></details></li></ul><ul id="27d983de-4e70-4a54-95b4-017cb3d5863a" class="toggle"><li><details open=""><summary>Practice #7</summary><div id="4347c67b-3a5e-4702-b856-2a247929ef49" class="column-list"><div id="27be2045-db56-4efb-85c1-dbe8bfdf973e" style="width:50%" class="column"><p id="8ebec1ad-bd6c-464b-8df3-db6a9fac1153" class="">Which of the following are valid lambda expressions in Java?  Assume that we have the following declaration (and nothing else):</p><pre id="f10635a9-a664-47ea-ac5f-17126a158ed5" class="code code-wrap"><code>int y;</code></pre><p id="53763e8a-1e97-400d-87ad-6f45a6914e0b" class="">Pretty okay question</p></div><div id="591db801-340f-4917-a4aa-09c30e405700" style="width:50%" class="column"><figure id="0cce3692-1e66-46fe-a2ef-68beaf5d1201" class="image"><a href="Side%20effect%20Free%20Programming%20aa59106ac1c445d884c7bfed435a906a/Untitled.png"><img style="width:192px" src="Side%20effect%20Free%20Programming%20aa59106ac1c445d884c7bfed435a906a/Untitled.png"/></a></figure><p id="325cbb7b-1fc9-46f7-aa85-21c843be8f2f" class="">
+</p><p id="e4ca303f-5697-41e3-99bc-a728c93148a2" class="">
+</p></div></div></details></li></ul><ul id="5ffd74ce-c17e-466d-bdd1-dc3f963ecfd7" class="toggle"><li><details open=""><summary>Practice #8</summary><p id="61ba5a89-6989-429c-b77e-fb8ea3bcc25a" class="">Consider the following chain method:</p><pre id="ae2bf166-e6b0-4268-b46d-6f1bb7aaf949" class="code code-wrap"><code> &lt;T, S, R&gt; Transformer&lt;T, R&gt; chain(Transformer&lt;T, S&gt; t1, Transformer&lt;S, R&gt; t2) {
+  return new Transformer&lt;&gt;() {
+    public R transform(T value) {
+      return t2.transform(t1.transform(value));
+    }
+  };
+}
+</code></pre><p id="d710f996-f0d9-44f8-821e-57f9d3523ef2" class="">and we call it with</p><pre id="25f49763-f06a-472a-8e14-f09d266e8e87" class="code code-wrap"><code>Transformer&lt;Integer, Integer&gt; f = chain(x -&gt; x + 1, x -&gt; x * x);
+</code></pre><p id="1cc9e808-ad9d-4bc9-9a55-d3b1ab69818c" class="">What is the value returned by the expression below?</p><pre id="2e08c6d1-5191-4722-b92a-cc6746d62e75" class="code code-wrap"><code>f.transform(2);</code></pre><p id="ab5cb108-90d2-408c-a493-e011d5acbcb7" class="">Answer<strong><strong><strong><strong><strong> 9 , </strong></strong></strong></strong></strong>pretty obvious (2 + 1) * (2 + 1)</p></details></li></ul><ul id="636db243-2caf-4495-b4cd-6214b8b0d1b2" class="toggle"><li><details open=""><summary>Practice #9</summary><p id="60c3c59a-a540-41a2-bd28-ca6c625cea06" class="">Consider the following method:</p><pre id="13660108-7a90-4910-8899-0e7c2f84f81c" class="code code-wrap"><code>
+Transformer&lt;Integer, Integer&gt; foo(int loss) {
+  int factor = 10;
+  return x -&gt; x * factor - loss;
+}
+</code></pre><p id="afd9751d-0a75-4e5c-a232-ee21808f9af0" class="">What is the value returned by the expression below?</p><pre id="ea03a20c-6206-4d3a-a4be-5defc3869b21" class="code code-wrap"><code>foo(4).transform(6);</code></pre><p id="2f6b580e-1b9a-4718-98c4-4caf1c09ed05" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Answer: 56</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong> , the loss will be 4 so <code>foo(4)</code> will return a <code>Transformer</code> when <code>transform(6)</code> is done then the value of <code>x </code> will be 6 so it will be 6 * 10 - 4 = 56</p></details></li></ul><ul id="33aff091-d8f5-43b4-97e9-b124c2f87e27" class="toggle"><li><details open=""><summary>Practice #10</summary><p id="019d3cbb-8403-49ca-85e6-58379e020226" class="">Consider the following function:</p><pre id="e7476bee-ba6f-4442-9017-f36dfe69e695" class="code code-wrap"><code>int foo(String s1, String s2, int sum) {
+  return s1.length() + s2.length() + sum;
+}
+</code></pre><p id="f34c940b-4013-4c31-90e5-9c3c7cd4850a" class="">Which of the following lambda expression(s), when fully evaluated, computes the function above?</p><p id="0d96aec0-851a-4858-8c58-407398c7c6c0" class="">✅ <code>s1 -&gt; s2 -&gt; sum -&gt; s1.length() + s2.length() + sum</code></p><p id="4e7f8b2c-c2be-4379-b965-dc4acd89b437" class="">✅ <code>(s1, s2) -&gt; sum -&gt; s1.length() + s2.length() + sum</code></p><p id="43e3fed1-1393-45de-8eee-4a1cf20382e9" class="">✅ <code>sum -&gt; s1 -&gt; s2 -&gt; s1.length() + s2.length() + sum</code></p><p id="97e86bb8-ff7f-4b4a-aa21-163a42e9105d" class="">✅ <code>sum -&gt; (s1, s2) -&gt; s1.length() + s2.length() + su</code></p></details></li></ul><ul id="a83f39e4-55c0-4570-8d89-06c6d1e9dd9f" class="toggle"><li><details open=""><summary>Practice #11</summary><p id="fabc25bf-6b9a-4608-9f13-87a048f6abeb" class="">Suppose we have the following functional interfaces:</p><pre id="18661d82-a0f3-43b0-aaee-3b78667b3f4f" class="code code-wrap"><code>
+interface I {
+  void foo();
+}
+
+interface J&lt;T&gt; {
+  void bar(T t);
+}
+
+interface K&lt;T&gt; {
+  T qux();
+}
+
+interface L&lt;T,R&gt; {
+  R thud(T t);
+}</code></pre><p id="fab37ea1-2389-4d7a-9b9f-a7697aa6b32a" class="">Match each of the given lambda expressions below to a matching type on the right.</p><figure id="165d3f70-7436-4862-9958-d18b2d45cbe5" class="image"><a href="Side%20effect%20Free%20Programming%20aa59106ac1c445d884c7bfed435a906a/Untitled%201.png"><img style="width:571px" src="Side%20effect%20Free%20Programming%20aa59106ac1c445d884c7bfed435a906a/Untitled%201.png"/></a></figure><p id="f1a731c0-5e74-49f6-8c36-1f338225dd00" class="">If the functional interface accepts an argument then there should be <code>x</code> otherwise just an empty <code>()</code> . If the return statement is <code>void</code> then the answer return body should just be <code>{}</code></p></details></li></ul><ul id="c8f677df-1550-4256-9ceb-64d511559118" class="toggle"><li><details open=""><summary>Practice #12</summary><p id="11f93a7a-167f-4c89-a715-6da43f6055f8" class="">Consider the lambda expression:
+<code>x -&gt; y -&gt; z -&gt; f(x,y,z)</code>
+where x, y, z are of some type T and f returns a value of type R.</p><p id="eb2bc63a-685c-4494-b59c-15d9584cd89d" class="">Suppose that T and R are of type Integer, f(x, y, z) is given by x + y + z,
+and that the above lambda expression implements the Transformer functional interface. Initialise the appropriate the lambda expression and assign it to a variable trisum. Given three inputs x, y, and z, show how you can evaluate the lambda expression with x, y, z to obtain f(x, y, z).</p><p id="749f2528-35a9-4442-827e-6322a63c3d92" class=""><code>Transformer&lt;Integer, Transformer&lt;Integer, Transformer&lt;Integer, Integer&gt;&gt;&gt; trisum = x -&gt; y -&gt; z -&gt; x + y + z</code></p></details></li></ul><ul id="912c03c5-c870-403b-a613-a93b059e8fd6" class="toggle"><li><details open=""><summary>Practice #13</summary><p id="176bcd2a-6605-4de9-b5e9-05ccad7c7689" class="">Suppose we have the following lambda expression of type <code>Function&lt;String, Integer&gt; f = str -&gt; str.indexOf(&#x27; &#x27;)</code></p><ol type="1" id="9acd1cf0-ba83-4d9b-86c8-8fb3f916f2ba" class="numbered-list" start="1"><li>Write a main method to test the usage of the lambda expression above<ol type="a" id="f4d33bef-3f3a-4f6b-8be6-ce0b0503bda5" class="numbered-list" start="1"><li><code>f.apply(&quot;HELLO&quot;)</code></li></ol></li></ol><ol type="1" id="0b3d730f-bf55-4131-ab23-6935d05af129" class="numbered-list" start="2"><li>Write the equivalent anonymous class for the lambda expression above.<pre id="be75b022-e58d-4e21-a595-1695b6068f5c" class="code code-wrap"><code>Function&lt;String, Integer&gt; f = new Function&lt;&gt; {
+			public Integer apply(String s) {
+				return s.indexOf(&#x27; &#x27;);
+			}
+}</code></pre></li></ol></details></li></ul><ul id="77e4782f-025c-4288-9898-8ff37ad5ec50" class="toggle"><li><details open=""><summary>Practice #14</summary><p id="fe927f8f-8669-4ac4-bc04-07f28b27ec40" class="">Complete the method and that takes in two Predicate objects p1 and p2 and returns a new Predicate object that evaluates to true if and only if both p1 and p2 evaluate to true</p><pre id="84e202ef-ee28-4e15-a09f-44506f473f90" class="code code-wrap"><code>// Anonymous class
+Predicate&lt;T&gt; and(Predicate&lt;T&gt; p1, Predicate&lt;T&gt; p2) {
+			public boolean test(T t) {
+					return p1.test(t) &amp;&amp; p2.test(t);
+			}
+}
+
+//lambda expression
+return x -&gt; p1.test(x) &amp;&amp; p2.test(x);</code></pre></details></li></ul><ul id="b9beaab3-f935-4ed8-8132-1e424a0c092f" class="toggle"><li><details open=""><summary>Practice #15</summary><p id="8d160b3c-ffed-4407-9f32-cb8325c52ce2" class="">SAM. The interface <code>SummaryStrategy</code> has a single abstract method summarize, allowing any implementing class to define its own strategy of summarizing a long String to within the length of a given <code>lengthLimit.</code> The declaration of the interface is as follows:</p><pre id="524534ce-9a10-4af2-aae2-aae9fa276c31" class="code code-wrap"><code>@FunctionalInterface
+interface SummaryStrategy {
+String summarize(String text, int lengthLimit);
+}</code></pre><p id="5985d6ec-e000-46af-9eb3-a06f904222a5" class="">There is another method createSnippet that takes in a SummaryStrategy object as an argument.
+<code>void createSnippet(SummaryStrategy strategy) { ... }</code>
+Suppose that there is a class TextShortener with a static method <code>String shorten(String s,int n)</code> that shortens the String s to within the length of n. This method can serve as a summary strategy, and you want to use shorten as a <code>SummaryStrategy</code> in the method <code>createSnippet.</code> Show how you would call <code>createSnippet</code> with the static method shorten from the class <code>TextShortener</code> as the strategy</p><p id="d199e613-bdac-481e-b6ec-13c4e4cfc5ce" class=""><strong><strong><strong><strong><strong>Answer : </strong></strong></strong></strong></strong><code><strong><strong><strong><strong><strong>createSnippet((x, y) -&gt; TextShortener.shorten(x, y))</strong></strong></strong></strong></strong></code><strong><strong><strong><strong><strong>;</strong></strong></strong></strong></strong></p><p id="3ae7a0f3-3133-4020-b4ec-04634e033e59" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Alternative answer : </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>createSnippet(TextShortener::shorten)</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code></p><p id="56b73d6d-6930-4d3d-913e-790b9ef1f326" class="">since <code>TextShortener</code> is a class then we can just call the static method using class::methodName(), also since the functional interface requires 2 arguments then we just supply it with 2 arguments</p><p id="9b9b7fee-4f25-4ad6-93e7-d3234ed40364" class="">
+</p></details></li></ul></div></article></body></html>

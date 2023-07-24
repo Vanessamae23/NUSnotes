@@ -1,0 +1,781 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Monad</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-interactiveBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-translucentGray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="d9e8cf40-e497-4a9e-b914-c36382019306" class="page sans"><header><div class="page-header-icon undefined"><span class="icon">📖</span></div><h1 class="page-title">Monad</h1><p class="page-description"></p></header><div class="page-body"><p id="c005692b-71b5-4f69-a928-d71b1cf1d56c" class="">Each class has a method:</p><ul id="cb618be9-e6a2-4a56-862a-3adf0beae37f" class="bulleted-list"><li style="list-style-type:disc">an <code>of</code> method to initialize the value and side information.</li></ul><ul id="d6095316-af6b-44f9-88d8-98279e5267ee" class="bulleted-list"><li style="list-style-type:disc">have a <code>flatMap</code> method to update the value and side information.</li></ul><table id="8019ed39-f738-40d2-a9fa-e6a460cae786" class="simple-table"><thead class="simple-table-header"><tr id="545ba01b-44a1-4282-b368-febe9953e147"><th id="w?Ao" class="block-color-blue_background simple-table-header" style="width:147px">Container</th><th id="^R&gt;d" class="block-color-blue_background simple-table-header" style="width:414px">Side information</th></tr></thead><tbody><tr id="cd73eaa8-cd8c-48a2-a5e3-df1b80a18657"><td id="w?Ao" class="block-color-gray_background" style="width:147px"><code>Maybe&lt;T&gt;</code></td><td id="^R&gt;d" class="block-color-gray_background" style="width:414px">The value might be there (i.e., <code>Some&lt;T&gt;</code>) or might not be there (i.e., <code>None</code>)</td></tr><tr id="872ffca1-16a6-49bd-bd10-52eab94e4de9"><td id="w?Ao" class="block-color-gray_background" style="width:147px"><code>Lazy&lt;T&gt;</code></td><td id="^R&gt;d" class="block-color-gray_background" style="width:414px">The value has been evaluated or not</td></tr><tr id="77a02474-a7af-430a-92e1-8375d213dd62"><td id="w?Ao" class="" style="width:147px"><code>Loggable&lt;T&gt;</code></td><td id="^R&gt;d" class="" style="width:414px">The log describing the operations done on the value</td></tr><tr id="1664ef71-e259-4f97-8c4f-e1a8df401434"><td id="w?Ao" class="" style="width:147px"><code>Array&lt;T&gt;</code></td><td id="^R&gt;d" class="" style="width:414px">Items in a sequence</td></tr><tr id="aa9b8303-3852-4f7c-8dff-88b8a40513e8"><td id="w?Ao" class="" style="width:147px"><code>InfiniteList&lt;T&gt;</code></td><td id="^R&gt;d" class="" style="width:414px">Items in a lazily evaluated sequence</td></tr><tr id="ec0eb78a-557b-40c3-88f6-bac4050f5612"><td id="w?Ao" class="" style="width:147px"><code>Box&lt;T&gt;</code></td><td id="^R&gt;d" class="" style="width:414px">Items in a box</td></tr></tbody></table><p id="d58b85ec-fa57-49ae-86e7-0cea356ba6fd" class="">These classes that we wrote follow certain patterns that make them well behaved when we create them with <code>of</code>and chain them with <code>flatMap</code>. Such classes that are &quot;well behaved&quot; are examples of a programming construct called <strong><em>monads</em></strong>. A monad must follow three laws, to behave well.</p><p id="574ebbbc-ea87-4c15-bb66-73b5140cdf33" class="">
+</p><h2 id="02c069dd-983c-4d5e-b1c6-c774c7adaf77" class="">Identity Law</h2><p id="3ea952f0-bd4b-482b-a989-e4ff4d0a4ecc" class="">The <code>of</code> method in a monad should behave like an identity. <span style="border-bottom:0.05em solid">It creates a new monad by initializing our monad with a value and its side information.</span></p><pre id="2732e0c3-7e4e-438b-9ded-3ac8cd98b86a" class="code"><code>public static &lt;T&gt; Loggable&lt;T&gt; of(T value) {
+  return new Loggable&lt;&gt;(value, &quot;&quot;);
+}</code></pre><p id="d0ec770f-0de6-4dab-9bdf-89350b9a0269" class="">The logger is initialized with<strong> empty side information.</strong> We pass the information into <code>flatMap</code>-- such a lambda takes in a value, compute it, and wrap it in a &quot;new&quot; monad, together with the corresponding side information.</p><pre id="1bf2c263-5f50-466d-ba07-f6141e1d453c" class="code"><code>Loggable&lt;Integer&gt; incrWithLog(int x) {
+  return new Loggable&lt;&gt;(incr(x), &quot;incr &quot; + x + &quot;; &quot;);
+}
+Loggable.of(4).flatMap(x -&gt; incrWithLog(x)) 
+// should just result in the same value 
+//exactly as calling incrWithLog(4)
+//we have a Loggable with a value 5 and a log message of &quot;incr 4&quot;</code></pre><p id="081619da-7ad8-4e99-93ad-1d0249701063" class="block-color-blue"><strong>Our </strong><strong><code>of</code></strong><strong>  method should not do anything extra to the value or side information so it should simply wrap the value 4 into a</strong><strong><code> Loggable</code></strong></p><p id="aa2c8fc4-19d2-41ee-b3bc-70489e903d6a" class="">Our <code>flatMap </code>method should not do anything extra to the value and the side information, it should simply apply the given lambda expression to the value</p><figure class="block-color-orange_background callout" style="white-space:pre-wrap;display:flex" id="a6e9fbc5-c2e2-45b9-a5f0-c358477bd522"><div style="font-size:1.5em"><span class="icon">⚙</span></div><div style="width:100%"><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Right identity Law : </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code>monad.flatMap(x -&gt; Monad.of(x))</code> must be the same as <code>monad</code> where monad is some instance of it
+<em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em>Example : For the Box class, say item is x, take that x and put it in another box</em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></div></figure><figure class="block-color-orange_background callout" style="white-space:pre-wrap;display:flex" id="ec952583-5b39-4bdb-9b70-534540803d8f"><div style="font-size:1.5em"><span class="icon">⚙</span></div><div style="width:100%"><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Left identity law : </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong> <code>Monad.of(x).flatMap(x -&gt; f(x))</code> must be the same as <code>f(x)</code>
+<em><em><em><em><em><em><em><em><em><em><em><em><em>Example : </em></em></em></em></em></em></em></em></em></em></em></em></em><code><em><em><em><em><em><em><em><em><em><em><em><em><em> Maybe.of(x).flatMap(f) = f.apply(x) = f(x)</em></em></em></em></em></em></em></em></em></em></em></em></em></code></div></figure><ul id="c1976e46-1420-40ac-8af2-8f8c80ea2298" class="toggle"><li><details open=""><summary>Example</summary><figure id="2fc5eac2-932f-45b5-88dd-05031a95fafd" class="image"><a href="Monad%20d9e8cf40e4974a9eb914c36382019306/Untitled.png"><img style="width:661px" src="Monad%20d9e8cf40e4974a9eb914c36382019306/Untitled.png"/></a></figure><p id="2095d4ca-3949-4d53-ba7e-3d8a8a5d6698" class="">
+</p><p id="c0c3d932-f946-4ca2-acef-65969b4bd971" class="">a.flatmap(x → A.of(x)) ⇒ is not the same as a </p><p id="354afb0b-6d3f-4c12-910c-e4aa8e3addfc" class=""> </p><figure id="d487b5f9-9513-4ce5-b270-343d10795d2f" class="image"><a href="Monad%20d9e8cf40e4974a9eb914c36382019306/Untitled%201.png"><img style="width:288px" src="Monad%20d9e8cf40e4974a9eb914c36382019306/Untitled%201.png"/></a></figure></details></li></ul><h2 id="098d5710-4779-4b6d-b874-b1b2a1b7d5f7" class="">Associative Law</h2><hr id="77475cf0-57f2-4794-b8e6-a6800c829c44"/><p id="be148e92-c175-4c4a-a55c-a39314320c92" class="">The effects of operation should be exactly the same. It does not matter if we group the functions together into another function before applying it to a value x.</p><pre id="7b43d843-1a36-428c-bd81-5bab92fffbfe" class="code"><code>Loggable.of(4)
+      .flatMap(x -&gt; incrWithLog(x))
+      .flatMap(x -&gt; absWithLog(x))</code></pre><pre id="8544534e-c592-4be3-b385-d33079720ae8" class="code"><code>Loggable&lt;Integer&gt; absIncrWithLog(int x) {
+  return incrWithLog(x).flatMap(y -&gt; absWithLog(y));
+}
+Loggable.of(4)
+    .flatMap(x -&gt; absIncrWithLog(x))</code></pre><p id="0afc7e48-e2ae-49e6-bbc2-6db25ce9f0ef" class="">The two expressions must have exactly the same effect on the value and its log message.
+</p><figure class="block-color-teal_background callout" style="white-space:pre-wrap;display:flex" id="bfbdf030-726c-4f5c-b54e-9d0ac3a40352"><div style="font-size:1.5em"><span class="icon">💡</span></div><div style="width:100%">• <code>monad.flatMap(x -&gt; f(x)).flatMap(x -&gt; g(x))</code> must be the same as <code>monad.flatMap(x -&gt; f(x).flatMap(y -&gt; g(y)))</code> ⇒ this is equal to saying x + ( y + z ) = ( x + y ) + z</div></figure><details open=""><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0">Counterexample #1 (Not a Monad)</summary><div class="indented"><pre id="15a18f53-a096-4569-b243-140dc6b4e439" class="code code-wrap"><code>// version 0.3 (NOT a monad)
+class Loggable&lt;T&gt; {
+  private final T value;
+  private final String log;
+
+  private Loggable(T value, String log) {
+    this.value = value;
+    this.log = log;
+  }
+
+  public static &lt;T&gt; Loggable&lt;T&gt; of(T value) {
+    return new Loggable&lt;&gt;(value, &quot;Logging starts: &quot;);
+  }
+
+  public &lt;R&gt; Loggable&lt;R&gt; flatMap(Transformer&lt;? super T, ? extends Loggable&lt;? extends R&gt;&gt; transformer) {
+    Loggable&lt;? extends R&gt; logger = transformer.transform(this.value);
+    return new Loggable(logger.value, logger.log + this.log + &quot;\n&quot;);
+  }
+
+private static Loggable compose(Loggable p, Loggable n) {
+  return new Loggable(n.value, p.log + n.log);
+}
+
+  public String toString() {
+    return &quot;value: &quot; + this.value + &quot;, log: &quot; + this.log;
+  }
+}</code></pre><p id="465954de-912e-4e96-a875-aa91f2e40ec0" class="">Our <code>of</code> adds a little initialization message. Our <code>flatMap</code> adds a little new line before appending with the given log message. Now, our <code>Loggable&lt;T&gt;</code> is not that well behaved anymore.</p><p id="e3c76e20-0701-44cd-a682-f090505540e3" class="">Suppose we have two methods <code>foo</code> and <code>bar</code>, both take in an <code>x</code> and perform a series of operations on <code>x</code>. Both returns us a <code>Loggable</code> instance on the final value and its log.</p><pre id="d544a71a-d4d2-45fb-8a7f-40e542ff3aad" class="code"><code>Loggable&lt;Integer&gt; foo(int x) {
+  return Loggable.of(x)
+      .flatMap(...)
+      .flatMap(...)
+        :
+  ;
+}
+Loggable&lt;Integer&gt; bar(int x) {
+  return Loggable.of(x)
+      .flatMap(...)
+      .flatMap(...)
+        :
+  ;
+}
+
+foo(4).flatMap(x -&gt; bar(x))</code></pre><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="cf1b0b16-a3fc-4fda-ab11-491f1b516643"><div style="font-size:1.5em"><span class="icon">❗</span></div><div style="width:100%"><code>&quot;Logging starts&quot;</code>appears twice in our logs and there is now an extra blank line in the log file! So to make it pure, we need to do this
+<pre id="2cd3d754-45cb-485c-8287-1c8fb5d77410" class="code code-wrap"><code>private Loggable(int value, String log) {
+    this.value = value;
+    this.log = log;
+  }
+  public static Loggable of(int value) { // with variant Loggable::ofWithLog(int, String)
+    return new Loggable(value, &quot;&quot;);
+  }</code></pre></div></figure><p id="946aae23-4c78-4504-881b-870b9684e755" class="">
+</p></div></details><ul id="9123d33b-dc4c-4ea9-8618-918593fecb41" class="toggle"><li><details open=""><summary><strong><strong><strong><strong><strong><strong>Practice #1</strong></strong></strong></strong></strong></strong></summary><figure id="7e5c5609-ec8f-4a9f-87b9-736388dc69fd" class="image"><a href="Monad%20d9e8cf40e4974a9eb914c36382019306/Untitled%202.png"><img style="width:803px" src="Monad%20d9e8cf40e4974a9eb914c36382019306/Untitled%202.png"/></a></figure><ol type="1" id="bb05a4ff-9458-4c5b-be43-afefa97cdab1" class="numbered-list" start="1"><li>Implementation of Map<p id="15ae12b8-fa60-4944-9b86-1556acd19ea5" class=""><code>return new LazyInt(() → mapper.apply(this.get()))</code></p></li></ol><ol type="1" id="0a999e61-6219-47ed-b655-e245b5ef3b18" class="numbered-list" start="2"><li>Implementation of <code>flatMap</code><p id="a546cc6f-c28b-4870-90cb-38d054b3b424" class=""><code>return new LazyInt(() → mapper.apply(this.get()).get());</code></p></li></ol><ol type="1" id="7dac5793-0ad2-4405-be77-1866a032c015" class="numbered-list" start="3"><li>Is<code> LazyInt </code>a functor? Explain<p id="8fe58c3d-c8bb-48c5-9799-3e9097194693" class="">It preserves identity because <code>LazyInt(() → x).map(x → x)</code> is the same as just<code> LazyInt(() → x)</code></p><p id="b79d2abd-8067-445d-be9f-fc32b448bc09" class="">Calling <code>map(g).map(f)</code> gives a LazyInt of
+<code>f.apply(new LazyInt(() -&gt; g.apply(get())).get()),</code>
+which is just<code> f.apply(g.apply(get())).</code></p></li></ol><ol type="1" id="757ce8ec-7ca0-4dcb-918a-74e27887ccee" class="numbered-list" start="4"><li>Is LazyInt a Monad? Explain.<p id="75078cc0-eabf-4731-a8db-ffc4c051c6db" class="">Yes. <code>new LazyInt(() -&gt; x) </code>as the of operator for value x.</p><p id="68e00978-99b3-4627-8e9d-3f4fb09f909d" class="">It also follows the right identity law → <code>LazyInt.flatMap(() → new LazyInt(() → x).get()) = LazyInt</code></p><p id="e4304e0b-908c-4164-81b1-971cd63701a6" class="">It also follows the left identity law → <code>new LazyInt(() → x).flatMap(f)</code> is the same as <code>f(x)</code></p><p id="d90ef562-25d7-4fc2-a3ef-49d47a3cee41" class="">It also follows the associative law → <code>LazyInt.flatMap(f).flatMap(g) </code>is equal to<code> LazyInt.flatMap(x -&gt; f.apply(x).flatMap(g))</code></p></li></ol><ol type="1" id="1fdc57a3-321d-43cb-a5d2-2cfcd8faf3d7" class="numbered-list" start="5"><li> Why is it better to declare the argument to map as <code>Function&lt;? super Integer, Integer&gt;</code> instead of <code>Function&lt;Integer, Integer&gt;?</code><p id="eeae4ebc-c17a-4f80-a019-017472c9a09e" class="">When it is declared this way, we can pass in any function that operates on the superclass of Integer, with Integer being the lower bound. For example, we can pass in a<code> Function&lt;Number, Integer&gt;</code> or <code>Function&lt;Object, Integer&gt; h = x -&gt; x.hashCode() </code>into the map</p></li></ol></details></li></ul><ul id="a6e6b262-6a73-4b5d-acbe-7291e21d0209" class="toggle"><li><details open=""><summary><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Practice #2</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></summary><figure id="bf3507c2-3fc2-44d2-bcd8-28cb1c504361" class="image"><a href="Monad%20d9e8cf40e4974a9eb914c36382019306/Untitled%203.png"><img style="width:480px" src="Monad%20d9e8cf40e4974a9eb914c36382019306/Untitled%203.png"/></a></figure><ol type="a" id="c40c3229-b2cd-423d-bd7a-28181a6a150c" class="numbered-list" start="1"><li><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Left violated, </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong>because <code>IntMonad.of(i).flatMap(f)</code> should be the same as <code>f.apply(i)</code> but in here, it will just return <code>IntMonad.of(i)</code> which is violating the law</li></ol><ol type="a" id="45d629df-b088-4f42-8b9b-aaf761b66815" class="numbered-list" start="2"><li><strong><strong>LR violated, </strong></strong>because <code>IntMonad.of(i).flatMap(f)</code> will return <code>f(2i)</code> which is not the same as <code>f(i)</code> so it violates the left identity rule<p id="b512eabb-57c4-47c8-a8d4-6d03f0f637a1" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Right identity violated, </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong>because it says that <code>monad.flatMap(x -&gt; Monad.of(x))</code> should be the same as <code>monad </code>so in here it will be say the value of <code>monad</code> is <code>i</code> then it will just be <code>2i</code> but not the intended <code>i</code></p></li></ol><ol type="a" id="0219d5a9-e769-4128-8bd7-96fa8b417a98" class="numbered-list" start="3"><li><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Left violated, </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong>because it is <code>f(f(i))</code> and not just <code>f(i)</code><p id="b3d9634a-870c-4c98-a5e6-8d5d8cce8ccb" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Associative violated</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong> because it says that <code>monad.flatMap(f).flatMap(g)</code> is the same as  <code>monad.flatMap(x -&gt; f.apply(x).flatMap(g))</code> but in this case one will be <code>g(g(ff(x)))</code> and the second one will be <code>g(g(f(g(g(f(x))))))</code></p></li></ol><figure id="da85ecfb-f75d-4c07-b85f-08a9cfffd400" class="image"><a href="Monad%20d9e8cf40e4974a9eb914c36382019306/Untitled%204.png"><img style="width:432px" src="Monad%20d9e8cf40e4974a9eb914c36382019306/Untitled%204.png"/></a></figure><ol type="a" id="a70422a6-61db-41b9-a123-9280dba35c2d" class="numbered-list" start="1"><li>The analysis is the same as above</li></ol><ol type="a" id="29d0614e-62dd-4705-98ef-49ad162e48a1" class="numbered-list" start="2"><li><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>For the left identity law, </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code>IntMonad.of(i).flatMap(f)</code> is the same as <code>f(i)</code> . Here, if say v is a negative number -1 then <code>f.apply(-1)</code> is supposed to be obtained but if we do <code>IntMonad.of(-1).flatMap(f)</code> it will give us <code>f(0)</code> instead so <strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Left Identity Law violated</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><p id="0fece39c-f6f3-4472-81ed-2c1841251b27" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>For the right identity law, </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>monad.</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code><code>flatMap(x -&gt; IntMonad.of(x))</code> in the case of -1 in <code>monad</code> , this will give us <code>0</code> as the value and that is not the same as the initial <code>monad</code> so it is violated</p><p id="f7c192b5-dc00-4730-9d58-c3bdc2f4a257" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>For the associative law, say we have </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>monad.</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code><code>flatMap(f).flatMap(g)</code> , this will give us <code>g(f(x))</code> according to the value of <code>v</code> while the other side <code>monad.flatMap(x -&gt; f.apply(x).flatMap(g))</code> will give us <code>g(f(x))</code> which is the same thing so this is not violated</p></li></ol><ol type="a" id="f82dcd67-06de-4f60-bb90-d63d90a6cd89" class="numbered-list" start="3"><li><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>For the left identity law,</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code>IntMonad.of(i).flatMap(f)</code> will give us <code>2f(i)</code> which is not the same as <code>f(i)</code> so <strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>left identity law violated</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><p id="0ac625ad-050e-4cfe-a661-c82ec414a869" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>For the right identity law violated, </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong> it will give us for negative number is 0 so <code>2f(0)</code> meanwhile what we had initially was supposed to be just <code>i</code> or the value of <code>monad</code></p><p id="18756c09-db6f-4f70-8a54-f9d9c36afcf0" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>The associative law, </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong>we have <code>monad.flatMap(f).flatMap(g)</code> to be <code>2g(2f(i))</code> but the other side will be <code>monad.flatMap(x -&gt; f.apply(x).flatMap(g))</code> which is <code>2(2g(f(i)))</code> which is different</p></li></ol><p id="02e21907-3ead-432d-b5a4-d78a29c59d0c" class=""><strong><strong><strong><strong><strong>Extension</strong></strong></strong></strong></strong>: </p><ol type="1" id="9ee434d9-80dc-41c0-b1e2-c651a6afd35a" class="numbered-list" start="1"><li><code>map.apply(this.v + 2)</code><p id="9781d9ff-2fca-4c8d-9450-97f3bbe38ebd" class=""><strong><strong><strong><strong><strong><strong><strong><strong>Left identity law violated </strong></strong></strong></strong></strong></strong></strong></strong>since this is the same as <code>f(2x)</code> not <code>f(x)</code></p><p id="6cd1a00c-d0ab-418b-8ba0-1117ab91358b" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Right identity law violated</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong> because if we have<code> monad</code> then this one will be <code>IntMonad.of(v + 2)</code> which is not same as <code>IntMonad.of(v)</code></p><p id="cf13e6bf-00fe-4e8c-897b-5cc8994a2134" class=""><strong><strong><strong><strong><strong><strong><strong>Associative Law not violated since </strong></strong></strong></strong></strong></strong></strong>this is associative, we can have <code>monad.flatMap(f).flatMap(g)</code> as <code>g(f(v+2)+2)</code> and <code>monad.flatMap(x -&gt; f.apply(x).flatMap(g))</code> as <code>g(f(v+2)+2)</code> which is the same</p></li></ol></details></li></ul><hr id="e99d623f-fe37-486d-93a0-a24e62fc9e5a"/><h1 id="825e96dc-10ce-45dd-857e-dd047b228ec7" class="">Functors</h1><hr id="fcfad0ae-c39b-47bc-80c7-8d0155c41c6c"/><p id="4e609715-bef0-4b88-967f-30aa56957851" class=""><strong><strong><strong><strong><strong><strong>Definition : </strong></strong></strong></strong></strong></strong>A functor is a simpler construction than a monad in that it only ensures lambdas can be applied sequentially to the value, without worrying about side information.</p><p id="aa7bf724-8fe7-4cc3-9306-47300b1b77aa" class="">Examples of Functor : InfiniteList, Stream, Optional, Maybe</p><p id="a9faadbb-d52b-4a5a-9f6b-c9ccc83ebd2b" class="">A functor needs to adhere to two laws:</p><ul id="6066618c-3fff-4f16-a667-54d4c95ca3ab" class="bulleted-list"><li style="list-style-type:disc">preserving identity: <code>functor.map(x -&gt; x)</code> is the same as <code>functor</code><figure id="2751dcaf-4944-4002-b622-1a7a77c92135" class="image"><a href="Monad%20d9e8cf40e4974a9eb914c36382019306/Untitled%205.png"><img style="width:384px" src="Monad%20d9e8cf40e4974a9eb914c36382019306/Untitled%205.png"/></a></figure></li></ul><ul id="ada80dca-2076-4596-9dfb-0b097fb516bb" class="bulleted-list"><li style="list-style-type:disc">preserving composition: <code>functor.map(x -&gt; f(x)).map(x -&gt; g(x))</code> is the same as <code>functor.map(x -&gt; g(f(x))</code>.<figure id="b79a2c38-f35c-4099-8a50-e213d38d388f" class="image"><a href="Monad%20d9e8cf40e4974a9eb914c36382019306/Untitled%206.png"><img style="width:336px" src="Monad%20d9e8cf40e4974a9eb914c36382019306/Untitled%206.png"/></a></figure></li></ul><p id="842ef506-ded2-4bce-8d79-e9c27cc3cb9d" class="">Our classes from <code>cs2030s.fp</code>, <code>Lazy&lt;T&gt;</code>, <code>Maybe&lt;T&gt;</code>, and <code>InfiniteList&lt;T&gt;</code> are functors as well.</p><figure id="1f8c6e54-b543-438f-9e0a-8b1e4278e9c8" class="image" style="text-align:left"><a href="Monad%20d9e8cf40e4974a9eb914c36382019306/Untitled%207.png"><img style="width:336px" src="Monad%20d9e8cf40e4974a9eb914c36382019306/Untitled%207.png"/></a></figure><ul id="cc8f7292-c4e8-4f69-b17e-f0947840bd24" class="toggle"><li><details open=""><summary>Example</summary><div id="57e05bd0-4017-4d1f-81b1-fe0d8557c378" class="column-list"><div id="25f0af28-7efc-48c3-95ad-8c9caeca5f41" style="width:100%" class="column"><pre id="72f28aef-4de7-44ed-9a90-eb159305303a" class="code"><code>class A {
+private int x;
+	public A(int x) { this.x = x; }
+			public A f(Function&lt;Integer,Integer&gt; func) {
+			if(this.x &gt; 0) {
+					return new A(func.apply(x));
+			} else {
+					return new A(0);
+			}
+	}
+	public boolean equals(A a) {
+			return this.x == a.x;
+	}
+}
+
+A a = new A(-1);
+a.equals(a.f(x -&gt; x)));</code></pre><p id="04040ff0-92c4-4f23-a4f6-5903bbf280b2" class="">
+</p></div><div id="b881d336-0974-4348-a0ed-66d43b138b23" style="width:100%" class="column"><pre id="c598aa40-361b-41d7-a6c5-acfeea49c393" class="code"><code>class B {
+		private int x;
+		public B(int x) { this.x = x; }
+		public B f(Function&lt;Integer,Integer&gt; func) {
+				return new B(func.apply(x));
+		}
+		public boolean equals(B b) {
+			return this.x == b.x;
+		}
+}
+B b = new B(-1);
+b.equals(b.f(x -&gt; x)));</code></pre><p id="4889b4c6-eca0-4a49-85a6-d528498db1b6" class="">
+</p></div></div></details></li></ul><ul id="55c90330-1a30-4784-8713-a2040c9d65c5" class="toggle"><li><details open=""><summary><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Practice #2 This just to analyze Monad And Functor but actually both Maybe and Optional are Monads!</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></summary><div id="6f62fbac-9a66-45f2-8bb3-1c33ce0c7dc7" class="column-list"><div id="b563ea78-6f0a-4fe3-9eba-5c40daeb88f3" style="width:112.5%" class="column"><figure id="45c77a60-8654-4a29-823a-d4cde5d8cfd6" class="image"><a href="Monad%20d9e8cf40e4974a9eb914c36382019306/Untitled%208.png"><img style="width:480px" src="Monad%20d9e8cf40e4974a9eb914c36382019306/Untitled%208.png"/></a></figure><p id="cb1861ef-3f6c-4604-a47c-11ce85dee895" class="">
+</p></div><div id="b690c4c3-a845-4c84-be22-d5cdfa869c5a" style="width:68.74999999999999%" class="column"><figure id="df449cd0-5fb3-40bb-96d4-5a7f9e806854" class="image"><a href="Monad%20d9e8cf40e4974a9eb914c36382019306/Untitled%209.png"><img style="width:436px" src="Monad%20d9e8cf40e4974a9eb914c36382019306/Untitled%209.png"/></a></figure><p id="e5dca907-de94-4527-8361-3de18d65c7b2" class="">Does Maybe and Optional obey the laws of Monad?</p><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="1078cc7e-09eb-4ce6-8d6c-d5a63a936405"><div style="font-size:1.5em"><span class="icon">❗</span></div><div style="width:100%">Remember that this is simpler implementation of Maybe so there is no Maybe.of()</div></figure><p id="cc032a6d-60fd-4e01-9c60-7dccc00983c9" class="">
+</p><p id="1b49e0a9-d612-4d90-a8d0-45c8631ed77e" class="">
+</p><p id="195f957e-53a2-4824-93c3-60fe3cbae606" class="">
+</p></div></div><p id="0a593ac0-43c6-40ca-9eaf-59014242c1dc" class=""><strong>Left Identity law</strong><div class="indented"><p id="11358f8f-251f-4a9e-a813-cfcb6c578208" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong>Optional :</strong></strong></strong></strong></strong></strong></strong></strong></strong> <code>Optional.ofNullable(null).flatMap(x → foo(x))</code> ⇒ <code>Optional.empty()</code> ||<code> foo(null)</code> ⇒ null so they are not the same and so Optional does not obey the left identity law</p><p id="fb4ba229-fa58-487a-b87b-6eed7c7bce44" class=""><strong><strong><strong><strong><strong><strong>Maybe: </strong></strong></strong></strong></strong></strong><code>Maybe.some(null).flatMap(x → bar(x))</code> ⇒ null || <code>bar(null)</code> ⇒ null so they are the same and hence Maybe class obeys the left identity law</p></div></p><p id="dcb224e7-b5c0-4479-85e5-6467b5f307c3" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Right Identity law</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><div class="indented"><p id="33d3bcdc-a1c1-41dc-b421-403836e51937" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Optional : </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code>Optional&lt;Integer&gt; opt</code> = <code>Optional.ofNullable(null)</code> ⇒<code> Optional.empty   || opt.flatMap(x → Optional.ofNullable(x))</code> ⇒ <code>Optional.empty</code></p><p id="23b086b2-5f77-4cc1-b538-94c1a8de33f6" class="">So since they are the same Optional obeys the right identity law</p><p id="37663fd3-aec9-4cd7-99b5-4e68e1d3eb48" class=""><strong><strong><strong><strong><strong><strong><strong>Maybe : </strong></strong></strong></strong></strong></strong></strong><code>Maybe&lt;Integer&gt; maybe = Maybe.some(null) </code> ⇒ <code> Null || maybe.flatMap(x → Maybe.some(x))</code> ⇒<code> Null</code></p><p id="5bc9f91c-b729-46ef-950c-59b771d110b2" class="">So since they are the same Maybe obeys the right identity law</p></div></p><p id="1b82dbc4-eed7-4e0b-bea3-472c47bf8f78" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Associative Law</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><div class="indented"><p id="efd26275-c465-4d70-89f7-6d35425d7c8e" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong>Optional : </strong></strong></strong></strong></strong></strong></strong></strong></strong><code>Optional&lt;Integer&gt; opt</code> = <code>Optional.ofNullable(4)</code></p><p id="9ef2bca8-b75a-490b-be9c-7f808d544fa0" class=""><code>opt.flatMap(x -&gt; foo(x)).flatMap(y -&gt; foo(y))</code> ⇒ Optional[16]</p><p id="35d58fec-a552-49e5-b2ac-9b9a433afc28" class=""><code>opt.flatMap(x -&gt; foo(x).flatMap(y -&gt; foo(y)))</code> ⇒ Optional[16]</p><p id="57da3aa1-633f-43fa-893f-4865c2599147" class=""><strong><strong><strong><strong><strong><strong><strong><strong>Maybe : </strong></strong></strong></strong></strong></strong></strong></strong><code>Maybe&lt;Integer&gt; maybe = Maybe.some(4)</code></p><p id="3416c5db-62c1-4264-a6b0-18ec2e385e6f" class=""><code>maybe.flatMap(x → bar(x)).flatMap(y → bar(y))</code> ⇒ [16]</p><p id="53d6224e-3727-4ea9-b716-25fc0eae6165" class=""><code>maybe.flatMap(x → bar(x).flatMap(y → bar(y)))</code> ⇒ [16]</p><p id="dccc38a2-ebe8-4166-97e3-80f84e6cf69e" class="">So Both Optional and Maybe will obey the associative law</p><figure id="6b12a910-30f5-403c-bd70-a3780cc0038b" class="image"><a href="Monad%20d9e8cf40e4974a9eb914c36382019306/Untitled%2010.png"><img style="width:480px" src="Monad%20d9e8cf40e4974a9eb914c36382019306/Untitled%2010.png"/></a></figure><figure id="d1dd6969-b33b-40ff-a400-0a742fb73226" class="image"><a href="Monad%20d9e8cf40e4974a9eb914c36382019306/Untitled%2011.png"><img style="width:432px" src="Monad%20d9e8cf40e4974a9eb914c36382019306/Untitled%2011.png"/></a></figure></div></p></details></li></ul><h1 id="b19af397-6146-4274-a60c-38a2b71a8e03" class="">Embed links</h1><hr id="b053f62f-b067-4a34-b795-d4f2d4ec0592"/><figure id="064d3e3f-0447-4870-8093-2ea5e26f0321"><a href="https://nus-cs2030s.github.io/2223-s2/36-monad.html" class="bookmark source"><div class="bookmark-info"><div class="bookmark-text"><div class="bookmark-title">36. Monad - CS2030S Programming Methodology II</div></div><div class="bookmark-href"><img src="https://nus-cs2030s.github.io/2223-s2/assets/images/favicon.png" class="icon bookmark-icon"/>https://nus-cs2030s.github.io/2223-s2/36-monad.html</div></div></a></figure><p id="9ed8ab9e-fe4b-47c2-9cae-e90eb0f3ea7a" class="">
+</p><figure id="0d258d3c-6898-4f59-b209-937c6d5f2a45" class="image"><a href="Monad%20d9e8cf40e4974a9eb914c36382019306/Untitled%2012.png"><img style="width:436px" src="Monad%20d9e8cf40e4974a9eb914c36382019306/Untitled%2012.png"/></a></figure><p id="f14aec54-0606-4482-9ba1-66b70670d678" class="">
+</p></div></article></body></html>

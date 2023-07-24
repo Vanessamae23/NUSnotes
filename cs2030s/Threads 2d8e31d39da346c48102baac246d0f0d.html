@@ -1,0 +1,789 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Threads</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-interactiveBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-translucentGray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="2d8e31d3-9da3-46c4-8102-baac246d0f0d" class="page sans"><header><div class="page-header-icon undefined"><span class="icon">🚠</span></div><h1 class="page-title">Threads</h1><p class="page-description"></p></header><div class="page-body"><h2 id="5d48f8c9-bf1e-444a-a3af-af55804c17f9" class="">Synchronous Programming </h2><p id="624677cb-a8df-4551-8683-353814e7a8f9" class="">Execution of program will stall if the method is done until the method completes its execution. This method blocks until it returns which is not very efficient especially when there are frequent method calls that block</p><h2 id="6ed2e4de-02fd-4581-a6b4-5ebf75be6002" class="">Threading</h2><figure class="block-color-blue_background callout" style="white-space:pre-wrap;display:flex" id="d72a91b4-badc-47c7-a09d-c1724ebbad33"><div style="font-size:1.5em"><span class="icon">💡</span></div><div style="width:100%">A single flow of execution in a program. We can use <code>java.lang.Thread</code></div></figure><pre id="44d7552e-4e53-4951-b047-451e3c44e581" class="code code-wrap"><code>new Thread(() -&gt; {
+  for (int i = 1; i &lt; 100; i += 1) {
+    System.out.print(&quot;_&quot;);
+  }
+}).start();
+
+new Thread(() -&gt; {
+  for (int i = 2; i &lt; 100; i += 1) {
+    System.out.print(&quot;*&quot;);
+  }
+}).start();
+
+//Returns below
+//_______________________________________________**************__
+//__*******************************************_______
+//___________******___************______________************_____
+//________***********</code></pre><ul id="e58647a5-7679-48c0-b124-4caee2b2f36e" class="bulleted-list"><li style="list-style-type:disc">A <code>Runnable</code> is a functional interface with a method <code>run()</code>that takes in no parameter and returns <code>void</code></li></ul><ul id="f9673885-923b-4e17-9875-4e2d4b0e9435" class="bulleted-list"><li style="list-style-type:disc">The <code>new Thread(..)</code>is our usual constructor to create a <code>Thread</code>instance.</li></ul><ul id="e467c11f-9c2c-4a22-b03d-cd5cfead2366" class="bulleted-list"><li style="list-style-type:disc">Use <code>start()</code> to cause the lambda expression to run. The thread will not start without <code>start()</code></li></ul><ul id="e00ca986-9850-4322-aff0-59de1c4ad091" class="bulleted-list"><li style="list-style-type:disc">The thread above will run in two separate sequences of execution. The operating system will have a scheduler to decide which thread to run when and on which processor / core</li></ul><ul id="61d31511-b907-4a1c-8121-aa3bbacfd105" class="bulleted-list"><li style="list-style-type:disc">There is interleaving of “_” and “*”</li></ul><figure class="block-color-yellow_background callout" style="white-space:pre-wrap;display:flex" id="9c39d8e3-b463-4e00-b087-4f41da660644"><div style="font-size:1.5em"><span class="icon">📎</span></div><div style="width:100%"><code>start()</code> will return immediately and <strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>does not return</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong> only after the given lambda expression completes it execution</div></figure><pre id="1c5dfe1d-ef09-412f-8477-e4b0d410faa0" class="code code-wrap"><code>System.out.println(Thread.currentThread().getName());
+new Thread(() -&gt; {
+  System.out.print(Thread.currentThread().getName());
+  for (int i = 1; i &lt; 100; i += 1) {
+    System.out.print(&quot;_&quot;);
+  }
+}).start();
+
+new Thread(() -&gt; {
+  System.out.print(Thread.currentThread().getName());
+  for (int i = 2; i &lt; 100; i += 1) {
+    System.out.print(&quot;*&quot;);
+  }
+}).start();</code></pre><p id="5f67897a-bb0a-42ea-bfbc-a13116dcc462" class="">Returns: <code>main</code></p><p id="88321dcc-1df3-478c-bf07-722657a73ed1" class=""><code>Thread0________________________________________________________________________________Thread1***************************</code><code><strong>*****************************</strong></code><code>___***************************************</code></p><div id="7f0f4699-2f3f-4e40-8ebc-5db09172f48d" class="column-list"><div id="f67eee83-0e95-4d20-b299-4e8ef0a5835a" style="width:100%" class="column"><figure id="f6e96d3e-228c-415b-a167-0d888e3dd266" class="image"><a href="Threads%202d8e31d39da346c48102baac246d0f0d/Untitled.png"><img style="width:288px" src="Threads%202d8e31d39da346c48102baac246d0f0d/Untitled.png"/></a></figure></div><div id="26c7c6ca-5dcf-4164-8347-a8cb4685e200" style="width:81.25%" class="column"><p id="91093766-7d5c-4488-b23e-6a597e9e209b" class="">Every time we call the method <code>main()</code> there will be a thread created when we run the program call <code>main</code></p><p id="9dfbb327-2a68-4723-b2fb-5b372b02ee27" class="">The gap in the timing is due to “context switching”</p><p id="94bef966-9cc3-465f-b267-38b2aa87f410" class="">
+</p></div></div><pre id="61bf6378-7570-476a-806a-6e76163e7090" class="code code-wrap"><code>Stream.of(1, 2, 3, 4)
+      .parallel()
+      .reduce(0, (x, y) -&gt; { 
+        System.out.println(Thread.currentThread().getName()); 
+        return x + y; 
+      });
+
+// Printed
+/* main
+ForkJoinPool.commonPool-worker-5
+ForkJoinPool.commonPool-worker-5
+ForkJoinPool.commonPool-worker-9
+ForkJoinPool.commonPool-worker-3
+ForkJoinPool.commonPool-worker-3
+ForkJoinPool.commonPool-worker-3 */</code></pre><ul id="6d2238b7-991c-440e-a625-6cf6478d880f" class="bulleted-list"><li style="list-style-type:disc">There will be 4 different concurrent thread running to reduce it including the main. But if we remove the <code>parallel()</code> then the reduction will just be done sequentially in a single thread</li></ul><h3 id="670a0aeb-788e-480d-be4b-299c6a9d9312" class="">Thread sleep()</h3><p id="65002793-2013-4243-905c-4937ccb20080" class="">We can cause the current execution to pause execution immediately for a given time period. After it is over, the thread will be ready to be chosen by the scheduler to run again</p><pre id="067f75cd-0e01-4ee8-bfd9-2be896fb4e05" class="code code-wrap"><code>Thread findPrime = new Thread(() -&gt; {
+  System.out.println(
+      Stream.iterate(2, i -&gt; i + 1)
+          .filter(i -&gt; isPrime(i))
+          .limit(1_000_000L)
+          .reduce((x, y) -&gt; y)
+          .orElse(null));
+});
+
+findPrime.start();
+
+while (findPrime.isAlive()) {
+  try {
+    Thread.sleep(1000);
+    System.out.print(&quot;.&quot;);
+  } catch (InterruptedException e) {
+    System.out.print(&quot;interrupted&quot;);
+  }
+}</code></pre><p id="4f8929fe-4c8e-45d4-99f7-014e252debf7" class="">The following code prints a <code>&quot;.&quot; </code>on-screen every second while another expensive computation is running. Use <code>isAlive()</code> to check if another thread is still running</p><h3 id="797642c7-a065-4e2b-947a-b9d460bb5535" class="">Benefits</h3><ul id="3bfe4220-4444-48af-8021-b975be8fbcbe" class="bulleted-list"><li style="list-style-type:disc">Long runtime code</li></ul><ul id="e26ab09b-aa90-4c9a-8add-1048d76f98e8" class="bulleted-list"><li style="list-style-type:disc">Do something else until finished</li></ul><h3 id="f75462ae-271d-496b-a3eb-71d760c05f80" class="">Drawbacks</h3><ul id="b58ebea2-e708-4bfe-996f-6845e6cb60b8" class="bulleted-list"><li style="list-style-type:disc">Possible overheads<ul id="a75ae244-1e6c-4453-a1ba-fe1efbeccce6" class="bulleted-list"><li style="list-style-type:circle">Starting a thread</li></ul><ul id="3b7b8ea4-30fa-4a79-bebb-fd9dc49b07f9" class="bulleted-list"><li style="list-style-type:circle">Scheduling a thread</li></ul><ul id="1dc7c359-ef79-4e1b-9b50-29c0106ae506" class="bulleted-list"><li style="list-style-type:circle">Context switching</li></ul></li></ul><ul id="dd8c2f40-650a-43ba-871a-9191c849e91f" class="bulleted-list"><li style="list-style-type:disc">Difficulty in passing information. <ul id="13a7d1ce-38f4-4f0c-aacc-528e5318f6c8" class="bulleted-list"><li style="list-style-type:circle">Thread does not accept argument (due to <code>Runnable</code>)</li></ul><ul id="849f25be-fa9d-4595-b71d-e7a3f92f2b33" class="bulleted-list"><li style="list-style-type:circle">Thread has no return value</li></ul><ul id="cd4d01d4-4290-497a-a323-0d128c45be30" class="bulleted-list"><li style="list-style-type:circle">Since it is a void Runnable, so we do not have any return value. Also sum is supposedly <strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>effectively final (Shared value problem)</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></li></ul><pre id="60e4b7ef-526b-4e2c-a696-e08be49bc6d8" class="code code-wrap"><code>Thread half1 = new Thread(() -&gt;{
+  int sum = 0;
+  for (int i=0; i&lt;n; i++) {
+    sum += arr[i];
+  } // How to return sum?
+});
+Thread half2 = new Thread(() -&gt;{
+  int sum = 0;
+  for (int i=n/2; i&lt;n; i++) {
+    sum += arr[i];
+  } // How to return sum?
+});</code></pre><ul id="e7a312de-953a-43d4-8cbd-79ba6deb51a9" class="bulleted-list"><li style="list-style-type:circle">Making it into sum[] to avoid the effectively final by creating a mutable may cause<strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong> race condition which may give the wrong result. </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong>Below we will use the old value of sum[0] even though it is has been updated by the other thread thus making the final value wrong</li></ul><div id="42b741e3-e8e4-41bf-a69a-ab27e173aac9" class="column-list"><div id="21e790b0-c762-48ae-b4b6-d3ee1a73be66" style="width:93.75%" class="column"><pre id="d5f1ba03-1a06-4bc2-8934-595d21fa0c5e" class="code code-wrap"><code>int n = 100000;
+int[] arr = new int[n];
+int[] sum = new int[]{ 0 };
+
+for (int i=0; i&lt;n; i++) {
+  arr[i] = 1;
+}
+
+  : // Thread Initialization
+
+half1.start();
+half2.start();</code></pre><p id="04e8ead5-2a5b-4507-a27c-f90305ae40c2" class="">
+</p></div><div id="6f72beb1-08db-488f-adc9-2efb5ed52cde" style="width:106.25%" class="column"><pre id="68952872-e65b-43a7-b58e-e343d7be7b24" class="code code-wrap"><code>Thread half1 = new Thread(() -&gt;{
+  // sum is effectively final
+  for (int i=0; i&lt;n/2; i++) {
+    sum[0] += arr[i];
+  }
+});
+Thread half2 = new Thread(() -&gt;{
+  // sum is effectively final
+  for (int i=n/2; i&lt;n; i++) {
+    sum[0] += arr[i];
+  }
+});</code></pre></div></div></li></ul><ul id="585c4c89-65ea-4549-887c-177a8cc578d5" class="bulleted-list"><li style="list-style-type:disc">Thread is <strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>single use </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong>so we cannot call <code>Thread::start()</code> on a completed thread</li></ul><ul id="32735605-35cd-4b45-8f08-5dcd69b02f26" class="toggle"><li><details open=""><summary>Practice #1</summary><p id="2e909ae2-5b4e-49ca-8cb5-709b30d7c74e" class="">Which of the following code snippet ensures that &quot;world&quot; is always printed after &quot;hello&quot;?</p><ul id="376f42e0-da12-4be7-82df-4f16ff833bac" class="to-do-list"><li><div class="checkbox checkbox-on"></div> <span class="to-do-children-checked"><code>System.out.println(&quot;hello&quot;);
+System.out.println(&quot;world&quot;);</code></span><div class="indented"></div></li></ul><ul id="dff1371d-8dc8-40e0-ac34-b58ca7f42318" class="to-do-list"><li><div class="checkbox checkbox-on"></div> <span class="to-do-children-checked"><code>System.out.println(&quot;hello&quot;);
+new Thread(() -&gt; { System.out.println(&quot;world&quot;); }).start();</code></span><div class="indented"></div></li></ul><ul id="031e76e0-2ae1-4637-9446-110a38dcb10c" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked"><code>new Thread(() -&gt; { System.out.println(&quot;hello&quot;); }).start();
+System.out.println(&quot;world&quot;);</code>❌ the thread hello will start so the “world” can be printed before the thread ends so “hello” might get printed afterwards</span><div class="indented"></div></li></ul><ul id="f8befacb-5b3a-44de-92cd-80abb6455cbf" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked"><code>new Thread(() -&gt; { System.out.println(&quot;hello&quot;); }).start();
+new Thread(() -&gt; { System.out.println(&quot;world&quot;); }).start();</code></span><div class="indented"></div></li></ul><ul id="2dec7210-e90b-4b9f-8c88-c750752b948e" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked"><code>new Thread(() -&gt; { System.out.println(&quot;hello&quot;); });
+new Thread(() -&gt; { System.out.println(&quot;world&quot;); });</code></span><div class="indented"></div></li></ul><p id="59c07d29-fb16-4efb-960b-567f1e84fe96" class="">
+</p></details></li></ul><ul id="e08b84b6-32c8-4f62-a9af-2bf09c007c90" class="toggle"><li><details open=""><summary>Practice #2</summary><pre id="09887c85-05af-4a0f-a56f-33264006b983" class="code code-wrap"><code>new Thread(() -&gt; {
+  for (int i = 0; i &lt; 3; i += 1) {
+    System.out.print(&quot;*&quot;);
+  }
+}).start();
+
+new Thread(() -&gt; {
+  for (int i = 0; i &lt; 3; i += 1) {
+    System.out.print(&quot;@&quot;);
+  }
+}).start();</code></pre><p id="cc3e5352-d81f-44d7-a346-684c83efeabb" class="">Which of the following might be printed? (select all correct answers)</p><p id="543a0b23-f1ed-4a30-84bf-5e16f13db9f1" class="">✅***@@@</p><p id="97435cb6-726b-40fa-87de-ab9b0672702c" class="">✅ *@*@*@</p><p id="356ea173-335f-4c51-bd26-78957e55f05c" class="">❌ **@@*</p><p id="d8dac236-42d2-4dfd-abc4-0b8484034866" class="">❌ @@*@@</p><p id="2fb2cb81-eb62-4bc4-ab95-7cecb17b7f8f" class="">✅ **@*@@</p><p id="3afe6ead-f8cf-4388-b4e7-c118b8462a9a" class="">
+</p></details></li></ul></div></article></body></html>

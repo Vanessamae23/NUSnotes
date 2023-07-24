@@ -1,0 +1,715 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>OOP</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-interactiveBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-translucentGray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="1b53f547-ff2f-49d6-8f84-e679612efde6" class="page sans"><header><img class="page-cover-image" src="https://www.notion.so/images/page-cover/nasa_earth_grid.jpg" style="object-position:center 30.000000000000004%"/><div class="page-header-icon page-header-icon-with-cover"><span class="icon">👛</span></div><h1 class="page-title">OOP</h1><p class="page-description"></p></header><div class="page-body"><figure class="block-color-teal_background callout" style="white-space:pre-wrap;display:flex" id="8fbca603-3e3a-468a-ad0f-4a163911e121"><div style="font-size:1.5em"><span class="icon">⚠️</span></div><div style="width:100%"><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>instanceof</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong> </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong>checks if an object of a subclass is an instance of a particular class</div></figure><h3 id="86f86a4f-c8ba-4bc3-b47a-c8a41d222834" class="">Type Casting</h3><div id="bd5b2cb1-537c-410d-a825-e343bf8631da" class="column-list"><div id="87780096-360c-4d63-bba6-2913d1ae08f5" style="width:50%" class="column"><ul id="7f729df9-f45f-4fd3-a030-6cef560bfc79" class="bulleted-list"><li style="list-style-type:disc">Widening type casting</li></ul><p id="3e7ce1d8-295a-4645-8147-0627972990e4" class=""><code>int num = 1;</code></p><p id="9391368f-3c3f-4745-ae17-b0b5c7cb2aa1" class=""><code>double data = num; </code></p><p id="5017c11d-6aa8-4f5d-8533-392cd7e1e4ea" class="">There is no need for <strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>explicit type casting </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong>because <code>int &lt;: double</code></p></div><div id="f963fa96-f790-4c2f-8293-f77f1c251bd7" style="width:50%" class="column"><ul id="c0c12734-693a-42bb-a511-61b80c283c2c" class="bulleted-list"><li style="list-style-type:disc">Narrowing type casting</li></ul><p id="822ec893-0c94-4861-9ef2-10dce06fd4f7" class=""><code>double num = 1.0;</code></p><p id="06d33443-810a-42ac-92c5-97c7637d3c6b" class=""><code>int data = (int) num;</code></p><p id="aef720d1-6aee-4d19-affa-a30a05fd5f63" class="">There is a need to explicitly type cast </p></div></div><figure class="block-color-teal_background callout" style="white-space:pre-wrap;display:flex" id="012680dd-89cf-46ec-8dc5-78dc0015427b"><div style="font-size:1.5em"><span class="icon">⚠️</span></div><div style="width:100%">Assigning a type to a variable is <em><em><em><em><em><em><em><em><em><em><em><em>compile-time </em></em></em></em></em></em></em></em></em></em></em></em>type. </div></figure><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="3d3624e7-93e9-4504-977a-1fad7af542fb"><div style="font-size:1.5em"><span class="icon">⛔</span></div><div style="width:100%">Just like a parent-child relationship in real-life, however, anything private to the parent remains inaccessible to the child.</div></figure><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="e538716a-bf86-4c45-a5de-11456ad6d216"><div style="font-size:1.5em"><span class="icon">❗</span></div><div style="width:100%"><strong><strong><strong><strong><strong><strong><strong><strong>REMEMBER</strong></strong></strong></strong></strong></strong></strong></strong> to always instantiate a reference variable before using it. </div></figure><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="ab17ff59-db30-4aed-b454-f89fd8f59fae"><div style="font-size:1.5em"><span class="icon">❗</span></div><div style="width:100%"><strong><strong><strong><strong><strong><strong><strong><strong>REMEMBER</strong></strong></strong></strong></strong></strong></strong></strong> that narrowing type casting requires explicit typecasting and validation during run-time. <strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>If we do not ensure that the object has the correct runtime type, casting can lead to a runtime error.</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><p id="e464522a-e692-4ca8-97be-ece54c26f7cf" class="">Such conversion is checked at runtime and may cause an exception</p></div></figure><figure class="block-color-purple_background callout" style="white-space:pre-wrap;display:flex" id="8ba42593-1265-410b-8474-336d2e4be2e9"><div style="font-size:1.5em"><span class="icon">🐙</span></div><div style="width:100%"><code>byte :&lt; short :&lt; int :&lt; long :&lt; float &lt;: double
+char &lt;: int</code></div></figure><figure id="4e01d1e6-e5ab-439c-a793-8fe1481526cf" class="image"><a href="OOP%201b53f547ff2f49d68f84e679612efde6/Untitled.png"><img style="width:827px" src="OOP%201b53f547ff2f49d68f84e679612efde6/Untitled.png"/></a></figure><h3 id="5b66df19-d5bc-4d80-a2c7-c530dfa901b8" class="">Polymorphism</h3><figure class="block-color-teal_background callout" style="white-space:pre-wrap;display:flex" id="aabeee3c-9772-406d-a04b-af3bb6011831"><div style="font-size:1.5em"><span class="icon">⚠️</span></div><div style="width:100%">Polymorphism allows us <em>to write succinct code that is future proof</em>. By dynamically deciding which method implementation to execute during run-time, the implementer can write short yet very general code that works for existing classes as well as new classes that might be added in the future by the client, without even the need to re-compile!</div></figure><pre id="d4069f76-05ff-49b9-9c18-2517cd87afc4" class="code code-wrap"><code>@Override 
+public boolean equals(Object obj) {
+   if(obj instanceof Point) {
+       // Point p = obj; =&gt; cannot do this since Point :&lt; Object
+       Point p = (Point) obj;
+       return this.x == obj.x &amp;&amp; this.y == obj.y;
+   }
+}</code></pre><h3 id="874b5a8b-003a-4152-9ba4-d51dd1dd925e" class="">Java Method Overriding</h3><ul id="17c9c18a-1718-4bf6-bf1c-2c368101b465" class="bulleted-list"><li style="list-style-type:disc">If the same method is present in both the superclass and the subclass. Then, the method in the subclass overrides the same method in the superclass</li></ul><ul id="64671b0c-711c-49da-b1a5-92d9056d50e4" class="bulleted-list"><li style="list-style-type:disc">The method that is called is determined during the execution of the program. Hence, method overriding is a <strong>run-time polymorphism.</strong></li></ul><figure class="block-color-blue_background callout" style="white-space:pre-wrap;display:flex" id="43b25315-cb31-4598-827f-70c1a33c461c"><div style="font-size:1.5em"><span class="icon">💡</span></div><div style="width:100%"><em><strong>method signature</strong></em><strong> </strong>of a method as the<strong> method name and the number, type, and order of its parameters</strong><p id="1e3094f0-51aa-4a00-ae9f-552fd5f78098" class="">the <em><strong>method descriptor </strong></em>as the <strong>method signature plus the return type.</strong></p></div></figure><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="e1648237-2205-4d17-b668-c15a2737c6a9"><div style="font-size:1.5em"><span class="icon">❗</span></div><div style="width:100%">Static method cannot be overridden ⇒ cannot override static method because method overriding is based on <strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>dynamic binding</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong> at <strong><strong><strong><strong><strong><strong><strong>runtime</strong></strong></strong></strong></strong></strong></strong> while <strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>static method are bonded using static binding at compile time. </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></div></figure><figure class="block-color-teal_background callout" style="white-space:pre-wrap;display:flex" id="9ecbd275-87d0-4040-adce-57ba77d2a11d"><div style="font-size:1.5em"><span class="icon">⚠️</span></div><div style="width:100%"><code>@Override</code> ⇒ The notation is to hint to the compiler so that if there is any typo and overriding is not possible, the compiler will tell the programmer<ul id="bd64e0fb-3dca-49f1-89b1-191a64abb920" class="bulleted-list"><li style="list-style-type:disc"><strong><strong><strong><strong><strong>Argument list should be </strong></strong></strong></strong></strong><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><strong><strong><strong><strong><strong>exactly</strong></strong></strong></strong></strong></span></span></span></span></span></span></span><strong><strong><strong><strong><strong> the </strong></strong></strong></strong></strong><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><strong><strong><strong><strong><strong>same</strong></strong></strong></strong></strong></span></span></span></span><strong><strong><strong><strong><strong> as the overridden method cannot even be subtype because if it is subtype then it is </strong></strong></strong></strong></strong><em><em><em><em><em><em><em><em><em><em><em><strong><strong><strong><strong><strong>overloading</strong></strong></strong></strong></strong></em></em></em></em></em></em></em></em></em></em></em></li></ul><ul id="838883e1-1099-40fc-b70e-52524d7be2ac" class="bulleted-list"><li style="list-style-type:disc"><em><em><em><em><em><em><em><em><em><em><em><em>Access level</em></em></em></em></em></em></em></em></em></em></em></em> cannot be more restrictive than the overridden method’s access</li></ul><ul id="4d060ce2-8dc5-491e-8b13-b290e7d5bfb2" class="bulleted-list"><li style="list-style-type:disc">A method declared <code>final</code> cannot be overridden</li></ul><ul id="a3ee0795-fd02-48c7-b87a-27152996e94e" class="bulleted-list"><li style="list-style-type:disc">A method declared <code>static</code> cannot be overridden but can be re-declared</li></ul><ul id="21e09695-712a-4a71-acba-abf2c0f93211" class="bulleted-list"><li style="list-style-type:disc">Constructors <span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid">cannot</span></span></span></span></span></span> be overridden</li></ul><ul id="5c680d54-e38c-4b40-be93-2f63881aea1c" class="bulleted-list"><li style="list-style-type:disc">The <strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>return type</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong> should be the <strong><strong><strong><strong>same</strong></strong></strong></strong> or <strong><strong><strong><strong><strong><strong><strong>subtype</strong></strong></strong></strong></strong></strong></strong> of the return type</li></ul><ul id="1b575e2b-462e-4e4b-ba09-216289164320" class="bulleted-list"><li style="list-style-type:disc">An <strong>overriding method can throw any unchecked exceptions, regardless of whether the overridden method throws exceptions or not.</strong>
+However, the overriding method should not throw checked exceptions that are new or broader than the ones declared by the overridden method. The<strong> overriding method can throw narrower or fewer exceptions than the overridden method but it can also not throw at all</strong></li></ul></div></figure><ul id="a3d035c5-62f0-4689-a727-3a5618ca4b03" class="toggle"><li><details open=""><summary>Practice 1</summary><figure id="fe1083f0-59bd-4ce2-8cf5-54e6933b495d" class="image"><a href="OOP%201b53f547ff2f49d68f84e679612efde6/Untitled%201.png"><img style="width:751px" src="OOP%201b53f547ff2f49d68f84e679612efde6/Untitled%201.png"/></a></figure><p id="5636919e-3aa9-49ee-8eaa-b40d56e3e9ab" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Answer: true, this is a valid overriding for </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>S foo()</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong> because the return type of the method is the subtype of </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>T</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong> so since it is guaranteed that </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>S</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong> is going to be a subtype of </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>T</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong> so it is perfectly fine</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></p></details></li></ul><h3 id="13dfc2e5-64ec-4d41-8c0f-2a0d636f2a69" class=""><strong>Java Method Overloading</strong></h3><p id="95d2005a-3f06-40fc-9c44-8aa4cfcea49d" class="">When we have two or more methods in <mark class="highlight-orange_background">the </mark><mark class="highlight-orange_background"><strong>same class</strong></mark><mark class="highlight-orange_background"> with the</mark><mark class="highlight-orange_background"><strong> same name</strong></mark><mark class="highlight-orange_background"> but a </mark><mark class="highlight-orange_background"><strong>differing method signature</strong></mark><strong>.</strong> Create an overloaded method by<strong> changing the type, order, and number of parameter</strong>s of the method but<strong> keeping the method name identical.</strong></p><figure id="0614eb89-975c-481f-9ea7-85d4f874d057" class="image"><a href="OOP%201b53f547ff2f49d68f84e679612efde6/Untitled%202.png"><img style="width:665px" src="OOP%201b53f547ff2f49d68f84e679612efde6/Untitled%202.png"/></a></figure><figure class="block-color-blue_background callout" style="white-space:pre-wrap;display:flex" id="539cec9c-7a54-4438-ac35-043265ce9878"><div style="font-size:1.5em"><span class="icon">💡</span></div><div style="width:100%">We can use <strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>overloading</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong> for constructors</div></figure><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="c4125eee-7819-41c7-a5cf-741c3212e33b"><div style="font-size:1.5em"><span class="icon">⛔</span></div><div style="width:100%">Swapping the same type parameter does not imply overloading for example <code>public boolean contains(double x, double y)</code> does not overload <code>public boolean contains(double y, double x)</code> so it <strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>will not compile</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></div></figure><div id="ed456881-c8c9-4f83-948f-84e638006fce" class="column-list"><div id="d6998541-442d-4830-b0c4-7646b049e160" style="width:68.75%" class="column"><figure id="53a15d56-6fef-4a3e-a43b-6284878a2024" class="image"><a href="OOP%201b53f547ff2f49d68f84e679612efde6/Untitled%203.png"><img style="width:723px" src="OOP%201b53f547ff2f49d68f84e679612efde6/Untitled%203.png"/></a></figure></div><div id="67e12f1b-2e8a-4f1f-a935-801986f6457e" style="width:31.25%" class="column"><p id="4fd3bfa4-96a0-4c48-9726-e6ba7d9bfa71" class="">For part d, the return type is not part of the method signature so we cannot have two methods with the same name and same argument but different return type</p><p id="f674f28e-2da0-4da0-8632-65b6492e7a59" class="">
+</p><p id="91e6a680-64ac-4eff-bd70-c8d356983ce7" class="">
+</p><p id="b2279034-dca6-4b30-89a6-e1c0afe49629" class="">
+</p></div></div><div id="ff7461e6-abf3-48b1-ac0a-53b8e8246630" class="column-list"><div id="0df038eb-4653-4b32-a234-60c40ca85c67" style="width:62.5%" class="column"><figure id="27d40971-0ee7-445b-864c-106a959643b9" class="image"><a href="OOP%201b53f547ff2f49d68f84e679612efde6/Untitled%204.png"><img style="width:384px" src="OOP%201b53f547ff2f49d68f84e679612efde6/Untitled%204.png"/></a></figure></div><div id="77b05b93-1e1b-405d-9160-033f0849aae0" style="width:37.50000000000001%" class="column"><p id="85b093d8-a82a-4e20-a02b-a6110f5f6051" class="">Since 1 is an <code>int</code> and we know that <code>int &lt;: double</code> so the more specific one here is <code>int</code>so <code>.f(int x)</code> will be called instead. We know that the method called that suits it is <code>class A</code> so “A” will be printed</p><p id="155bf58d-274f-43a8-ab00-36c78e5dee0f" class="">
+</p></div></div><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="1ff086b7-f5ab-4f6c-bbaf-438c1c1920f8"><div style="font-size:1.5em"><span class="icon">❗</span></div><div style="width:100%"><code>public void f(int i, int j)</code> is different from <code>public void(Integer i, Integer j)</code> so if we put <code>f(1,2)</code> , it will call the <code>int</code> instead because it is more specific</div></figure><ul id="01fdadc7-a54d-4748-bc5a-c067dbd5f0e8" class="toggle"><li><details open=""><summary>Practice 1</summary><figure id="49b8666a-1247-416f-b109-361e328acea7" class="image"><a href="OOP%201b53f547ff2f49d68f84e679612efde6/Untitled%205.png"><img style="width:755px" src="OOP%201b53f547ff2f49d68f84e679612efde6/Untitled%205.png"/></a></figure><p id="f8ce7675-67f2-47c5-bc15-5a664e385da6" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Answer: True, the question is whether </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>foo(T a, X b)</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong> overloads </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>foo(T a, Y b)</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong> which after type erasure will be erased to </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>foo(object a, X b)</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong> and </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>foo(Object a, Y b)</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong> but we know that </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Y</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong> and </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>X</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></code><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong> are NOT TYPE PARAMETERS  so the overloading is allowed</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></p></details></li></ul><p id="b6ad6c33-f547-4ec5-b188-aa673621c8b2" class="">
+</p><p id="d16f1b70-006a-4775-9cf3-81246357ab8d" class="">
+</p><p id="33300fb5-bec6-4be3-8350-ae0b7f821009" class="">
+</p><p id="9214ebb9-42fe-4b1e-8eb7-9c2f42d7665f" class="">
+</p><h3 id="83eb93f0-2b75-4368-95db-bce7f46a8a10" class="">Dynamic Binding</h3><pre id="b4e05771-1c71-4b88-87e5-ebe757ccc508" class="code code-wrap"><code>boolean equals(Circle c) { .. }
+
+@Override
+boolean equals(Object c) { .. }</code></pre><p id="0b5ccb17-67e0-4aa1-b9ed-8ddd81512162" class="">Then, <code>equals(Circle)</code> is more specific than <code>equals(Object)</code>. Every <code>Circle</code>
+ is an <code>Object</code>, but not every <code>Object</code> is a <code>Circle</code>.</p><ul id="11c5fa19-b9e5-45ab-9eb4-e5d9508af7ef" class="bulleted-list"><li style="list-style-type:disc">At<strong> compile time,</strong> which method <code>.equals(Object)</code> or <code>.equals(Circle)</code> will be determined and stored in <em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em><em>generated binaries</em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em></em> according to which one is more specific. A method M is more specific than N if the arguments to M can be passed to N without compilation error. Suppose I have a <code>Circle</code> object called <code>c1</code> and a <code>Rectangle r1</code> then I can pass <code>c1</code> to <code>.equals(Circle)</code> but I cannot pass <code>r1</code> to the same method</li></ul><ul id="0a5f2a86-5309-4b86-b807-5c2c233c57e6" class="bulleted-list"><li style="list-style-type:disc">At<strong><strong><strong><strong><strong><strong><strong><strong><strong> runtime,</strong></strong></strong></strong></strong></strong></strong></strong></strong> when a method is invoked, the runtime type of the target will be determined. Suppose that the <code>Circle</code> class does not override the method <code>equals</code> in <code>Object</code>. As a result, Java can&#x27;t find a matching method descriptor <code>boolean equals(Object)</code> in the method <code>Circle</code>. It then looks for the method in the parent of <code>Circle</code>, which is the class <code>Object</code>. It finds the method <code>Object::equals(Object)</code> with a matching descriptor. Thus, the method <code>Object::equals(Object)</code> is executed.<ul id="19f27da9-10a8-4d8d-a664-4416c3ff06ed" class="bulleted-list"><li style="list-style-type:circle">Now, suppose that <code>Circle</code> overrides the method  <code>Object::equals(Object)</code>  with its own <code>Circle::equals(Object)</code>
+method. Since Java starts searching from the class <code>Circle</code>, it finds the method <code>Circle::equals(Object)</code> that matches the descriptor. In this case, <code>curr.target(obj)</code> will invoke the method <code>Circle::equals(Object) </code> instead.</li></ul></li></ul><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="5f5d6c1d-6f21-499a-91b1-184f2cfa0b1f"><div style="font-size:1.5em"><span class="icon">⛔</span></div><div style="width:100%">Class methods do not support dynamic binding so the method to be invoked is resolved statically during compile time</div></figure><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="d374f72c-1b00-42c3-b60b-d38c7cc284d3"><div style="font-size:1.5em"><span class="icon">⛔</span></div><div style="width:100%">The runtime type of the parameter does not matter in most cases</div></figure><p id="91662c74-166b-4606-bac1-2e334128218a" class="">
+</p><p id="33d8dba9-6b68-4b9c-bd15-471c6e47c849" class="">
+</p><p id="ffb505bc-ba53-4604-9a2f-c1c9071b4fda" class="">
+</p><h3 id="18c62e89-3481-4414-9e43-ebb7a8287bad" class="">Abstract Method</h3><ul id="470e214c-db3f-4a92-bd73-9cbeaa9fbaac" class="bulleted-list"><li style="list-style-type:disc">An abstract method cannot be implemented and therefore should not have any method body</li></ul><ul id="926cc5a5-0d19-40d5-beb1-ac2456dae147" class="bulleted-list"><li style="list-style-type:disc">It can have multiple methods and fields</li></ul><ul id="a5aaef2c-bf64-4cb1-95e0-a6f05ee0a5e1" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-orange">Not all the methods have to be abstract as long as one is abstract ⇒ the class will automatically be abstract</mark></li></ul><pre id="38038bc6-82e3-4337-9f22-60974dd45dca" class="code code-wrap"><code>abstract class Shape {
+    private int numOfAxesOfSymmetry ;
+
+    public boolean isSymmetric() {
+        return numOfAxesOfSymmetry &gt; 0;
+    }
+
+    abstract public double getArea();
+}
+
+// Shape s = new Shape(); will lead to error</code></pre><h3 id="ef84f983-4785-4095-b92e-e3c79d9e2c1e" class="">Interface</h3><ul id="8cd9d186-f243-494a-818f-b940d65c2c4a" class="bulleted-list"><li style="list-style-type:disc">Interface is a type and declared with the word <code>interface</code></li></ul><ul id="7b8f7168-ba4f-4656-b0f9-22ba2617c04a" class="bulleted-list"><li style="list-style-type:disc">All methods declared in an interface are <code>public abstract</code>. Methods in an interface are implicitly public </li></ul><ul id="10b5892e-da24-4971-a2cf-e19afb3e3bc0" class="bulleted-list"><li style="list-style-type:disc">Every <strong><strong><strong><strong><strong><strong><strong><strong>class</strong></strong></strong></strong></strong></strong></strong></strong> that wants to use the methods in the interface can use the keyword <code>implements</code> but if it is an <strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>interface </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong>that wants to use that method need to use the keyword <code>extends</code></li></ul><ul id="760c05ab-a3ce-43db-ab80-cbcb7cb13e9a" class="bulleted-list"><li style="list-style-type:disc">For a class to implement an interface and be concrete, it has to override all abstract methods from the interface and provide an implementation to each. Otherwise, the class will become abstract</li></ul><ul id="f7b1f8b3-a14e-4030-8e61-adc7fb485e73" class="bulleted-list"><li style="list-style-type:disc">Unlike a class, interface does not contain any constructors. An interface cannot contain any instance fields. The only fields it can have must be declared static and final</li></ul><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="22c5e373-a35d-428a-89c2-bd6246965f23"><div style="font-size:1.5em"><span class="icon">⛔</span></div><div style="width:100%">A class can only <strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>extend from one superclass</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong> but it can <strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>implement </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><span style="border-bottom:0.05em solid"><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>multiple</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span></strong></span><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong> interfaces</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></div></figure><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="0d1877bf-eb3a-466d-8457-7ecdfc68a19c"><div style="font-size:1.5em"><span class="icon">⛔</span></div><div style="width:100%">An interface can extend from one or more other interfaces, but an interface cannot extend from another class</div></figure><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="88cd0332-aa94-4502-9e3f-b7d15fabdd03"><div style="font-size:1.5em"><span class="icon">⛔</span></div><div style="width:100%"><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Cannot instantiate</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong> an interface</div></figure><figure id="45a618e8-135d-4775-98c3-db0e1bbd12cb" class="image"><a href="OOP%201b53f547ff2f49d68f84e679612efde6/Untitled%206.png"><img style="width:688px" src="OOP%201b53f547ff2f49d68f84e679612efde6/Untitled%206.png"/></a></figure><figure class="block-color-blue_background callout" style="white-space:pre-wrap;display:flex" id="e13fb618-a401-4807-9d1a-75298a915921"><div style="font-size:1.5em"><span class="icon">💡</span></div><div style="width:100%">If a class <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi></mrow><annotation encoding="application/x-tex">C</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span></span></span></span></span><span>﻿</span></span> implements an interface <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi><mo separator="true">,</mo></mrow><annotation encoding="application/x-tex">I,</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mpunct">,</span></span></span></span></span><span>﻿</span></span> then <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mo>:</mo><mo>&lt;</mo><mi>I</mi></mrow><annotation encoding="application/x-tex">C:&lt; I</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72243em;vertical-align:-0.0391em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">:&lt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span></span></span></span></span><span>﻿</span></span> so a type can have multiple supertypes</div></figure><figure id="3069de6f-8f51-4233-91ec-ea5c7d8a2d18" class="image"><a href="OOP%201b53f547ff2f49d68f84e679612efde6/Untitled%207.png"><img style="width:912px" src="OOP%201b53f547ff2f49d68f84e679612efde6/Untitled%207.png"/></a></figure><p id="1c2f6d2d-2c88-45e7-9665-e681b2647a20" class="">Java will allow us to cast between two classes which have no subtype relationship because there is a <span style="border-bottom:0.05em solid"><strong>possibility</strong></span> that a subclass could implement the interface later thus Java will allow it to compile</p><figure class="block-color-purple_background callout" style="white-space:pre-wrap;display:flex" id="a0930ece-e313-4f07-a985-48d151687b12"><div style="font-size:1.5em"><span class="icon">🐙</span></div><div style="width:100%">Look at the example below, at compile time, <code>p</code> has a type of <code>Printable</code> and we are trying to invoke the method <code>getArea()</code> which is a method in <code>Circle</code> but <code>Printable</code> interface does not have this method, so the compiler will complain<pre id="5820574e-d10e-45d7-a686-e68ecfa836ba" class="code code-wrap"><code>Circle c = new Circle(3.00);
+Printable p = c;
+p.getArea(); // assume .getArea() is a method in Circle</code></pre></div></figure><figure id="b2ed70ea-1ce3-4ad6-8a5e-92110dfab195" class="image"><a href="OOP%201b53f547ff2f49d68f84e679612efde6/Untitled%208.png"><img style="width:734px" src="OOP%201b53f547ff2f49d68f84e679612efde6/Untitled%208.png"/></a></figure><h3 id="f724f953-b150-4766-939d-45ef98cd5a41" class="">Inheritance</h3><figure id="25d9debc-8353-4891-b7f1-65759e84f2e2" class="image"><a href="OOP%201b53f547ff2f49d68f84e679612efde6/Untitled%209.png"><img style="width:720px" src="OOP%201b53f547ff2f49d68f84e679612efde6/Untitled%209.png"/></a></figure><ul id="272bf6aa-5d2b-4074-89b1-2a8c300cad0c" class="bulleted-list"><li style="list-style-type:disc">Java <strong>DOES NOT</strong> support<strong> multiple</strong> inheritance</li></ul><ul id="a5b5555c-a7a8-4168-bc1e-dcb10637a7e3" class="bulleted-list"><li style="list-style-type:disc">If you are going to use the super constructor in your child class you<strong> MUST put the super()</strong> call as the first thing in your constructor.</li></ul><ul id="37551853-c468-4851-83e4-292a5b8c07d1" class="bulleted-list"><li style="list-style-type:disc">Use <strong>composition to model a has-a relationship</strong>; <strong>inheritance for a is-a relationship.</strong> Make sure inheritance preserves the meaning of subtyping.</li></ul><ul id="2b08da47-69b7-42ec-b10c-f5e3d040c2df" class="bulleted-list"><li style="list-style-type:disc"><strong>Inheritance </strong><strong>is not always the right solution to reduce code duplicates - must follow LSP and use composition when appropriate</strong></li></ul><ul id="f4c81443-8e49-403a-83bc-533fb0fa4846" class="bulleted-list"><li style="list-style-type:disc"><strong>Anything private to the parent remains inaccessible </strong>to the child.</li></ul><figure class="block-color-red_background callout" style="white-space:pre-wrap;display:flex" id="5a116a68-dadc-4d37-9f0a-254488397f47"><div style="font-size:1.5em"><span class="icon">❗</span></div><div style="width:100%">Inheritance is not always to reduce code duplicates, we must ensure it follows LSP and use composition when needed</div></figure><p id="626640b1-0ee6-402f-8c21-6c6530deeb52" class="">
+</p><h3 id="00063796-ac9c-4568-93c1-4290633b41fa" class="">Static Methods</h3><p id="e8700202-6f0a-43c9-9243-94e6145b6547" class=""><strong>Static variables</strong></p><ul id="4fa4cc8a-4427-43cc-8e09-a78d1ede2dac" class="bulleted-list"><li style="list-style-type:disc">Static variables can be accessed by calling with the class name <code>ClassName.VariableName</code></li></ul><ul id="c6eb2eaa-8ec5-41c4-ac0f-003a33d89efd" class="bulleted-list"><li style="list-style-type:disc">static variables are declared with the static keyword in a class, but outside a method, constructor or a block.</li></ul><ul id="4897df25-b8a4-423b-925d-73fd5567a7fc" class="bulleted-list"><li style="list-style-type:disc">There would <strong>only be one copy of each class variable per class,</strong><strong> </strong>regardless of how many objects are created from it.</li></ul><p id="ff876579-1607-4983-aa6f-93c796e6b579" class=""><strong>Static class</strong></p><ul id="fcf15197-20c9-4bcd-9102-b1963f1fe4e0" class="bulleted-list"><li style="list-style-type:disc">The static keyword is used to create variables that will exist independently of any instances created for the class. Only one copy of the static variable exists regardless of the number of instances of the class.</li></ul><p id="a8ee531a-c87b-4dc6-9e01-a114e82b038c" class=""><strong>Static method</strong></p><ul id="e17175b2-8bf3-4519-ac4b-b6f2b446aa94" class="bulleted-list"><li style="list-style-type:disc">The <strong>static keyword is used to create methods that will exist independently of any instances created for the class.</strong></li></ul><ul id="150e1e36-f91b-4f35-8889-3342caef08ea" class="bulleted-list"><li style="list-style-type:disc">Static methods<strong> </strong><strong>do not use any instance variables </strong>of any <strong>OBJECT</strong> of the class they are defined in. Static methods<strong> take all the data from parameters</strong> and compute something from those parameters, with <strong>no reference to variables</strong>.</li></ul><ul id="5ebf515a-2778-4eb4-a798-fa991c069d6e" class="bulleted-list"><li style="list-style-type:disc">Class variables and methods can be accessed using the class name followed by a dot and the name of the variable or method</li></ul><figure id="79cf3920-d126-417c-89d1-efbf2ad13eb1" class="image"><a href="OOP%201b53f547ff2f49d68f84e679612efde6/Untitled%2010.png"><img style="width:774px" src="OOP%201b53f547ff2f49d68f84e679612efde6/Untitled%2010.png"/></a></figure><p id="a418f37a-bf4d-400b-8e53-d1b32a6afca2" class="">
+</p><h3 id="6704f768-ee7a-4030-95f0-07282aea4236" class="">Wrapper class</h3><ul id="42edecc1-bb43-4419-ad92-9ec8ee39e04a" class="bulleted-list"><li style="list-style-type:disc">Autoboxing ⇒ <code>Integer i = 4;</code> where the primitive value <code>int</code> is converted into an instance of <code>Integer</code></li></ul><ul id="8c3a19d9-9323-4ca2-b92b-fda12a8ec2a5" class="bulleted-list"><li style="list-style-type:disc">Unboxing ⇒ <code>int j = i;</code> where an instance of <code>Integer</code> is converted back to <code>int</code></li></ul><ul id="81d5b6f5-2563-4961-be9a-4ad76939212d" class="bulleted-list"><li style="list-style-type:disc">A new <code>Integer</code> is created for different values of <code>i</code></li></ul><pre id="2587612d-a2ad-414d-b35b-57cb08b832b6" class="code code-wrap"><code>for(Integer i = 2030; i &lt;= 2040; i++) {}</code></pre><figure id="1a9c838e-865c-4744-bbe8-4c953c347655" class="image"><a href="OOP%201b53f547ff2f49d68f84e679612efde6/Untitled%2011.png"><img style="width:690px" src="OOP%201b53f547ff2f49d68f84e679612efde6/Untitled%2011.png"/></a></figure><ul id="9397ebfb-6580-40cc-a4f0-b8b2494a9834" class="toggle"><li><details open=""><summary>Practice</summary><p id="89fc06a6-6954-4d87-8ffa-fe8798c00765" class="">Try out the following in jshell.  Which one is not a valid statement?</p><p id="e2247a7f-e0a1-491d-92e2-4d4b3de4e3f3" class="">❌ <code>double d = 4;</code></p><p id="b0d8a9be-b7c5-4670-a7f2-a83b311aff23" class="">✅ <code>Double d = 4;</code> 4 is of type <code>int</code> so there is a need to type cast this to <code>Double d = (double) 4;</code> which will work </p><p id="7d3c1f1a-a7b7-4cf3-bde3-9c1496b0df88" class="">❌ <code>Double d = 4.0;</code></p><p id="26efe3fa-2d01-4dc2-87f9-e670db4f01bb" class="">❌ <code>int i = 4;</code></p><p id="6e99474c-54ab-4380-a689-7c8620fc2098" class="">✅ <code>int i = 4.0; </code> this is not allowed since 4.0 is of type double and <code>int &lt;: double</code></p><p id="51963680-a2af-4ac6-8593-31667842303e" class="">❌ <code>Integer i = 4;</code></p></details></li></ul><h3 id="4f38578e-bf7b-47e9-81c0-d58b435ae7c5" class=""><strong>Java Final</strong></h3><p id="6bf47630-1f96-49b1-bfa8-66290a12b78d" class=""><strong>Final variables</strong></p><ul id="024ad387-d8e0-47e2-9595-13345e2e9307" class="bulleted-list"><li style="list-style-type:disc">A final variable can be <strong>explicitly initialized only once</strong>. <strong>A reference variable declared final can never be reassigned to refer to a different object</strong>.</li></ul><ul id="0e4711b6-d8e6-43b2-8246-ccfd45f0e65e" class="bulleted-list"><li style="list-style-type:disc">However, the data <strong>within the object</strong> can be changed. So, the state of the object can be changed but not the reference.</li></ul><ul id="9b8a9b86-68cd-4a9b-9b76-3daeb0399826" class="bulleted-list"><li style="list-style-type:disc"><strong>With variables, the final modifier often is used with static to make the constant a class variable</strong>.</li></ul><figure id="b6820bf6-e57c-4610-9b72-bbc47d81ef55" class="image"><a href="https://lh4.googleusercontent.com/di_RHBcmlOD-KvR5sRl6soCg3A4Zx-j2Ez5cRKjrPuiSJnsYd4PAbwCHsiIgayBiGgnYo-unG2_dUZ4FRhZQzeZ7zg4V7tNivOvADJXJJgHoJeQz-lc_zrXWX964p2enZz1xjEbQqD1KFBoX9omPupw"><img style="width:480px" src="https://lh4.googleusercontent.com/di_RHBcmlOD-KvR5sRl6soCg3A4Zx-j2Ez5cRKjrPuiSJnsYd4PAbwCHsiIgayBiGgnYo-unG2_dUZ4FRhZQzeZ7zg4V7tNivOvADJXJJgHoJeQz-lc_zrXWX964p2enZz1xjEbQqD1KFBoX9omPupw"/></a></figure><p id="5460cb66-8878-47f8-ad6f-ca4a112c378a" class=""><strong>Final methods</strong></p><ul id="d09f699d-18a1-44f3-b3f8-6c61c7a271b3" class="bulleted-list"><li style="list-style-type:disc">A final method <strong>cannot be overridden</strong> by any subclasses. As mentioned previously, the final modifier prevents a method from being modified in a subclass.</li></ul><ul id="a9d06791-3943-443b-ab9f-9bd5c0aa5596" class="bulleted-list"><li style="list-style-type:disc">The main intention of making a method final would be that the content of the method should not be changed by any outsider.</li></ul><figure id="70f3e215-f3e3-4795-9c69-1dde21430638" class="image"><a href="https://lh6.googleusercontent.com/2AezzonlY-XQw1EyrV7g4Sj3zsiOjLFM5DIF1yiLaFXcM2HXo_wPsXDYWeUeizIcVG59WX7-CIuWYxGhpPqvmCKV9ERichwG_PCffNsLXO7EEOjJ1V7Z_S070kAoXB9bEQx--U1jsUvjsIkZT0X3Q10"><img style="width:240px" src="https://lh6.googleusercontent.com/2AezzonlY-XQw1EyrV7g4Sj3zsiOjLFM5DIF1yiLaFXcM2HXo_wPsXDYWeUeizIcVG59WX7-CIuWYxGhpPqvmCKV9ERichwG_PCffNsLXO7EEOjJ1V7Z_S070kAoXB9bEQx--U1jsUvjsIkZT0X3Q10"/></a></figure><p id="7272d327-e7ee-4991-a097-30cb52b7ec3a" class=""><strong>Final classes</strong></p><ul id="ba112b88-87d8-4daa-98b1-512a4e08af00" class="bulleted-list"><li style="list-style-type:disc">The main purpose of using a class being declared as final is to<strong> prevent the class from being sub-classed / inherited</strong> . If a class is marked as final then no class can inherit any feature from the final class.</li></ul><ul id="c98776fa-516c-4a16-8865-d68d7a0902ea" class="bulleted-list"><li style="list-style-type:disc"><figure id="053e5001-d52e-4e8a-a71a-f4172f91c6ab" class="image"><a href="https://lh5.googleusercontent.com/T1LAM-oB9Lj4sSuwdAJa_8QdXUTUNPrsgL6jPjq0PSohOM28qyiLb2mVAT_VNqyizT8msR4LJczBPUI4pZ2CR6WAhtZ39YAujtuvxboCvV02LZmaW5wXAXRQGEZIKwu_rTRKasghDzqyuDQJFT5M-44"><img style="width:288px" src="https://lh5.googleusercontent.com/T1LAM-oB9Lj4sSuwdAJa_8QdXUTUNPrsgL6jPjq0PSohOM28qyiLb2mVAT_VNqyizT8msR4LJczBPUI4pZ2CR6WAhtZ39YAujtuvxboCvV02LZmaW5wXAXRQGEZIKwu_rTRKasghDzqyuDQJFT5M-44"/></a></figure></li></ul></div></article></body></html>
